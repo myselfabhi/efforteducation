@@ -1,5 +1,5 @@
 @tailwind base;
-@tailwind components;
+@tailwind component;
 @tailwind utilities;
 
 :root {
@@ -30,4 +30,11 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.contact-img{
+  object-fit: cover;
+  
+  z-index: -5;
+  
 }
