@@ -1,4 +1,4 @@
-import ContactPage from "./contactPage";
+import ContactPage from "./contact_us";
 
 export default function contact()
 {

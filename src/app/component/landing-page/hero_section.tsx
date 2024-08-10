@@ -1,10 +1,9 @@
 "use client"
 
 import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image'
+import Image from 'next/image';
 import CTASection from './CTASection';
-import P from './1653393633phphF03nQ.jpeg'
+import P from '../../../../public/ctet-cards.jpeg';
 import { useState } from 'react';
 
 const HomePage: React.FC = () => {

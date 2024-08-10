@@ -1,7 +1,7 @@
 import React from 'react';
-import YouTubeVideo from './YoutubeVideo';
-import ReviewsSection from './ReviewSection';
-import DirectorMessage from './Directormessage';
+import YouTubeVideo from './yt_section';
+import ReviewsSection from './review_section';
+import DirectorMessage from './directors_message';
 
 const AboutUsPage: React.FC = () => {
   return (
