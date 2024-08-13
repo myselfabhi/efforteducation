@@ -15,7 +15,7 @@ const navItems: NavItem[] = [
 
 const Header: React.FC = () => {
   return (
-    <header className="bg-stone-700 shadow-md">
+    <header className="bg-black shadow-md">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         {/* Logo */}
         <Link href="/" legacyBehavior>
@@ -33,7 +33,7 @@ const Header: React.FC = () => {
         <nav className="hidden md:flex space-x-8">
           {navItems.map((item) => (
             <Link key={item.href} href={item.href} legacyBehavior>
-              <a className="text-white hover:text-red-600">{item.label}</a>
+              <a className="text-gray-300 hover:text-red-600">{item.label}</a>
             </Link>
           ))}
         </nav>
