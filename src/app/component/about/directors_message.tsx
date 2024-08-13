@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import Pic from './Director.jpg';
+import Pic from './director.jpg';
 
 const DirectorMessage: React.FC = () => {
   return (

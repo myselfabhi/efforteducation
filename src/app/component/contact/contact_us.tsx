@@ -1,7 +1,6 @@
 import { NextPage } from 'next';
-import React from 'react';
-import Image from 'next/image'
-import backgroundImage from './backgroundImage.jpg';
+import Image from 'next/image';
+import backgroundImage from './contact-us-bg.jpg';
 
 const ContactPage: NextPage = () => {
   return (
