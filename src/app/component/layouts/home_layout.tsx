@@ -1,11 +1,10 @@
 "use client"
 
-import dynamic from "next/dynamic"
 import React, { useEffect } from "react"
+import Navbar from "../landing-page/navbar"
+import Footer from "../landing-page/footer"
 
-// Dynamically import Navbar and Footer components
-const Navbar = dynamic(() => import("../landing-page/navbar"))
-const Footer = dynamic(() => import("../landing-page/footer"))
+
 
 type Props = {
   children: React.ReactNode
