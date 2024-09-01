@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic"
 import React, { useEffect } from "react"
-// Dynamically import Navbar and Footer components
 const Navbar = dynamic(() => import("../navbar"))
 const Footer = dynamic(() => import("../footer"))
 

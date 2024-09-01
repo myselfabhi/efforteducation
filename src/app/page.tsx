@@ -1,4 +1,4 @@
-import CourseSection from "./component/landing-page/course-section";
+import CourseSection from "./component/landing-page/course_section";
 import FAQSection from "./component/landing-page/faq_section";
 
 import FeatureSection from "./component/landing-page/feature_section";
