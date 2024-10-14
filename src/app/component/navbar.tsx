@@ -1,4 +1,4 @@
-"use client"; // Ensure this is a client-side component
+"use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
@@ -13,9 +13,9 @@ type Props = {
 };
 
 const navItems: NavItem[] = [
-  { label: "About Us", href: "/about" },
-  { label: "Our Courses", href: "/courses" },
-  { label: "Blog", href: "/blog" },
+  { label: "IAS Program", href: "/ias-program" },
+  { label: "Courses", href: "/courses" },
+  { label: "Success Stories", href: "/success-stories" },
   { label: "Contact Us", href: "/contact" },
 ];
 
@@ -34,52 +34,52 @@ const Navbar: React.FC<Props> = ({ isLandingPage }) => {
   }, []);
 
   const navbarStyle = `sticky top-0 z-40 transition-all duration-300 ${
-    scrolled ? "bg-opacity-90 backdrop-blur-sm bg-gray-900" : "bg-gray-900"
+    scrolled ? "bg-opacity-90 backdrop-blur-sm bg-black" : "bg-black"
   }`;
 
   return (
     <div className={navbarStyle}>
       <nav className="container mx-auto lg:mx-16 flex justify-between items-center py-4 px-4 ">
         {/* Logo */}
-        <Link href="/" legacyBehavior>
-          <a className="text-2xl font-bold">
+        <Link href="/">
+          <span className="text-2xl font-bold">
             <span
               className="text-red-600"
-              style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)" }}
+              style={{ textShadow: "2px 2px 4px rgba(255, 255, 255, 0.3)" }}
             >
-              effort
+              Effort
             </span>
             <span
               className={`ml-1 ${
                 isLandingPage ? "text-white" : "text-gray-200"
               }`}
-              style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.3)" }}
+              style={{ textShadow: "2px 2px 4px rgba(255, 255, 255, 0.3)" }}
             >
-              education
+              Education
             </span>
-          </a>
+          </span>
         </Link>
 
         {/* Navigation Links */}
         <div className="hidden md:flex space-x-8">
           {navItems.map((item) => (
-            <Link key={item.href} href={item.href} legacyBehavior>
-              <a
+            <Link key={item.href} href={item.href}>
+              <span
                 className={`hover:text-red-600 ${
                   isLandingPage ? "text-gray-300" : "text-gray-400"
                 }`}
               >
                 {item.label}
-              </a>
+              </span>
             </Link>
           ))}
         </div>
 
-        {/* Sign In Button */}
-        <Link href="/sign-in" legacyBehavior>
-          <a className="bg-red-600 text-white py-2 px-6 rounded-md hover:bg-red-700">
-            Sign In
-          </a>
+        {/* Register Button */}
+        <Link href="/register">
+          <span className="bg-red-600 text-white py-2 px-6 rounded-md hover:bg-red-700">
+            Join Our Program
+          </span>
         </Link>
 
         {/* Mobile Menu */}
@@ -108,17 +108,17 @@ const Navbar: React.FC<Props> = ({ isLandingPage }) => {
 
         {/* Dropdown for Mobile Menu */}
         {hamburgerMenuState && (
-          <div className="absolute top-full left-0 w-full bg-gray-900 border-t border-gray-700 md:hidden">
+          <div className="absolute top-full left-0 w-full bg-black border-t border-gray-700 md:hidden">
             <div className="flex flex-col w-full p-4 gap-4">
               {navItems.map((item) => (
                 <Link key={item.href} href={item.href}>
-                  <a className="text-white hover:text-red-600">{item.label}</a>
+                  <span className="text-white hover:text-red-600">{item.label}</span>
                 </Link>
               ))}
-              <Link href="/sign-in">
-                <a className="bg-red-600 text-white py-2 px-6 rounded-md hover:bg-red-700 text-center">
-                  Sign In
-                </a>
+              <Link href="/register">
+                <span className="bg-red-600 text-white py-2 px-6 rounded-md hover:bg-red-700 text-center">
+                  Join Our Program
+                </span>
               </Link>
             </div>
           </div>
