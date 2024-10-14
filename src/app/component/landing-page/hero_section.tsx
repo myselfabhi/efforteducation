@@ -39,7 +39,7 @@ const Hero: React.FC = () => {
           transition={{ duration: 1, delay: 0.3 }}
         >
           <Image
-            src="/hero.jpg" // Replace with an appropriate educational image
+            src="/hero.jpg" 
             alt="Effort Education"
             width={450}
             height={450}
