@@ -1,5 +1,4 @@
 import CourseSection from "./component/landing-page/course_section";
-import FAQSection from "./component/landing-page/faq_section";
 
 import FeatureSection from "./component/landing-page/feature_section";
 import HomePage from "./component/landing-page/hero_section";
@@ -14,7 +13,7 @@ export default function LandingPage() {
             <CourseSection />
             <WhyChooseUsSection/>
             {/* <BlogSection/> */}
-            <FAQSection />
+            {/* <FAQSection /> */}
         </HomeLayout>
     );
 }
