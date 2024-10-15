@@ -43,7 +43,7 @@ const socialLinks = [
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-black text-white py-12">
+    <footer className="bg-gray-900 text-white py-12">
       <div className="container mx-auto flex flex-col space-y-14 items-center">
         <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 px-4">
           {/* Logo and Contact Info */}

@@ -34,7 +34,7 @@ const Navbar: React.FC<Props> = ({ isLandingPage }) => {
   }, []);
 
   const navbarStyle = `sticky top-0 z-40 transition-all duration-300 ${
-    scrolled ? "bg-opacity-90 backdrop-blur-sm bg-black" : "bg-black"
+    scrolled ? "bg-opacity-90 backdrop-blur-sm bg-gray-900" : "bg-gray-900"
   }`;
 
   return (
