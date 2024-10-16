@@ -33,7 +33,7 @@ const FeatureSection: React.FC = () => {
               </div>
               <h3 className="text-xl font-semibold mb-2 text-gray-900">Comprehensive Curriculum</h3>
               <p className="text-gray-700">
-                Access an in-depth curriculum covering all subjects needed for IAS exams, created by top educators.
+                Our curriculum covers every critical subject for IAS exams, meticulously crafted by expert educators.
               </p>
             </div>
             
@@ -44,7 +44,7 @@ const FeatureSection: React.FC = () => {
               </div>
               <h3 className="text-xl font-semibold mb-2 text-gray-900">Top-Notch Educators</h3>
               <p className="text-gray-700">
-                Learn from experienced tutors who have guided thousands of students to success.
+                Our seasoned educators, with years of expertise, have successfully mentored thousands of students toward their IAS aspirations.
               </p>
             </div>
             
@@ -55,7 +55,7 @@ const FeatureSection: React.FC = () => {
               </div>
               <h3 className="text-xl font-semibold mb-2 text-gray-900">Proven Success Stories</h3>
               <p className="text-gray-700">
-                Join the ranks of students who have successfully cleared competitive exams with our guidance.
+                Our students consistently excel in competitive exams, with a high success rate backed by years of proven results.
               </p>
             </div>
 

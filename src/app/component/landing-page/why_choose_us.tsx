@@ -14,7 +14,7 @@ const WhyChooseUsSection: React.FC = () => {
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-red-600 mb-4">Why Choose Effort Education?</h2>
           <p className="text-lg text-gray-600">
-            At Effort Education, we offer a comprehensive range of educational services that help students excel and achieve their goals.
+            At Effort Education, we empower young minds with the skills, knowledge,<br/> and discipline needed to  excel in competitive exams like IAS, SSC, and more.
           </p>
         </div>
 
@@ -24,7 +24,7 @@ const WhyChooseUsSection: React.FC = () => {
             <Book className="w-12 h-12 text-red-600 mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">Comprehensive Curriculum</h3>
             <p className="text-gray-600">
-              Our well-rounded curriculum covers all aspects needed for competitive exams, built by top educators in the field.
+              Our carefully structured curriculum covers every subject needed for government exams, ensuring a holistic learning experience.
             </p>
           </div>
 
@@ -32,7 +32,7 @@ const WhyChooseUsSection: React.FC = () => {
             <UserCheck className="w-12 h-12 text-red-600 mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">Expert Educators</h3>
             <p className="text-gray-600">
-              Learn from industry-leading educators with decades of experience guiding students to success.
+              Our team consists of experienced educators who have mentored thousands of students to success in the most challenging exams.
             </p>
           </div>
 
@@ -40,7 +40,7 @@ const WhyChooseUsSection: React.FC = () => {
             <CheckCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">Proven Success Rate</h3>
             <p className="text-gray-600">
-              95% of our students successfully clear competitive exams and go on to achieve their dreams.
+              With a 95% success rate, our students consistently outperform their peers in competitive exams.
             </p>
           </div>
 
@@ -48,7 +48,7 @@ const WhyChooseUsSection: React.FC = () => {
             <Clock className="w-12 h-12 text-red-600 mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">Flexible Learning</h3>
             <p className="text-gray-600">
-              Attend live classes at your convenience and access resources anytime with our flexible learning platform.
+              Our flexible learning platform allows students to attend live classes and access study materials at their convenience.
             </p>
           </div>
         </div>

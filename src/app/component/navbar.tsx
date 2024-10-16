@@ -13,7 +13,7 @@ type Props = {
 };
 
 const navItems: NavItem[] = [
-  { label: "IAS Program", href: "/ias-program" },
+  { label: "Young Scholars IAS", href: "/young-scholars-ias" },
   { label: "Courses", href: "/courses" },
   { label: "Success Stories", href: "/success-stories" },
   { label: "Contact Us", href: "/contact" },
@@ -40,7 +40,6 @@ const Navbar: React.FC<Props> = ({ isLandingPage }) => {
   return (
     <div className={navbarStyle}>
       <nav className="container mx-auto lg:mx-16 flex justify-between items-center py-4 px-4 ">
-        {/* Logo */}
         <Link href="/">
           <span className="text-2xl font-bold">
             <span
@@ -60,7 +59,6 @@ const Navbar: React.FC<Props> = ({ isLandingPage }) => {
           </span>
         </Link>
 
-        {/* Navigation Links */}
         <div className="hidden md:flex space-x-8">
           {navItems.map((item) => (
             <Link key={item.href} href={item.href}>
@@ -75,14 +73,12 @@ const Navbar: React.FC<Props> = ({ isLandingPage }) => {
           ))}
         </div>
 
-        {/* Register Button */}
         <Link href="/register">
           <span className="bg-red-600 text-white py-2 px-6 rounded-md hover:bg-red-700">
-            Join Our Program
+            Enroll Now
           </span>
         </Link>
 
-        {/* Mobile Menu */}
         <div className="md:hidden">
           <button
             className={`focus:outline-none ${
@@ -106,18 +102,19 @@ const Navbar: React.FC<Props> = ({ isLandingPage }) => {
           </button>
         </div>
 
-        {/* Dropdown for Mobile Menu */}
         {hamburgerMenuState && (
           <div className="absolute top-full left-0 w-full bg-black border-t border-gray-700 md:hidden">
             <div className="flex flex-col w-full p-4 gap-4">
               {navItems.map((item) => (
                 <Link key={item.href} href={item.href}>
-                  <span className="text-white hover:text-red-600">{item.label}</span>
+                  <span className="text-white hover:text-red-600">
+                    {item.label}
+                  </span>
                 </Link>
               ))}
               <Link href="/register">
                 <span className="bg-red-600 text-white py-2 px-6 rounded-md hover:bg-red-700 text-center">
-                  Join Our Program
+                  Enroll Now
                 </span>
               </Link>
             </div>

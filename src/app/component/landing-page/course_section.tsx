@@ -5,7 +5,6 @@ import { Star, Award, Users, CheckCircle } from 'lucide-react'; // Import Lucide
 import Link from 'next/link';
 
 const CourseSection: React.FC = () => {
-
   return (
     <section id="homecourses" className="py-12 bg-gray-900 text-white relative">
       {/* Background Visual (optional abstract patterns or light gradients) */}
@@ -19,7 +18,7 @@ const CourseSection: React.FC = () => {
             <h2 className="text-4xl font-bold">Discover Our Range of Courses</h2>
           </div>
           <p className="text-lg text-gray-300 mt-4">
-            Effort Education has been delivering high-quality coaching for school children aiming for IAS and competitive exams since 1991. Learn live from expert educators and take your preparation to the next level.
+            Effort Education has been delivering high-quality coaching for <strong>school children</strong> aspiring to crack the toughest exams since 1991. With the <strong>Young Scholars IAS</strong> program, we are shaping the future leaders of tomorrow by instilling critical thinking, knowledge, and leadership skills at a young age. Learn live from expert educators and take the first step toward your success.
           </p>
         </div>
 

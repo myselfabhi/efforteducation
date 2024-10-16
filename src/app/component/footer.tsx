@@ -9,26 +9,26 @@ interface FooterLink {
 
 const footerLinks: FooterLink[] = [
   {
-    title: 'Our Courses',
+    title: 'Our Programs',
     links: [
-      { label: 'Education and Mastery', href: '/courses/education-mastery' },
-      { label: 'Graphic Design', href: '/courses/graphic-design' },
-      { label: 'Machine Learning', href: '/courses/machine-learning' },
+      { label: 'Young Scholars IAS', href: '/courses/young-scholars-ias' },
+      { label: 'UGC NET/JRF Preparation', href: '/courses/ugc-net-jrf' },
+      { label: 'Bank Entrance Exams', href: '/courses/bank-exams' },
     ],
   },
   {
-    title: 'Links',
+    title: 'Quick Links',
     links: [
-      { label: 'About us', href: '/about' },
-      { label: 'Our Team', href: '/team' },
+      { label: 'About Us', href: '/about' },
+      { label: 'Our Educators', href: '/team' },
       { label: 'Privacy Policy', href: '/privacy-policy' },
     ],
   },
   {
-    title: 'Pages',
+    title: 'Resources',
     links: [
       { label: 'Blog', href: '/blog' },
-      { label: 'Our Courses', href: '/courses' },
+      { label: 'Success Stories', href: '/success-stories' },
       { label: 'Contact Us', href: '/contact' },
     ],
   },
@@ -56,7 +56,7 @@ const Footer: React.FC = () => {
               </div>
             </div>
             <div>
-              <p>Info@elearning.com</p>
+              <p>Info@efforteducation.com</p>
               <p>+00 12354664</p>
             </div>
           </div>
