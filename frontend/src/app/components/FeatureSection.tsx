@@ -1,0 +1,49 @@
+"use client";
+
+import { Book, Medal, GraduationCap } from "lucide-react";
+
+export default function FeatureSection() {
+  return (
+    <section className="py-16 bg-gray-50 text-black relative" id="features">
+      <div className="absolute inset-0 bg-gradient-to-b from-white via-red-50 to-white opacity-80" />
+      <div className="container relative mx-auto px-4 text-center">
+        <div className="w-full max-w-7xl mx-auto flex flex-col space-y-14 items-center">
+          <div className="w-full flex flex-col items-center space-y-6">
+            <h2 className="text-4xl font-bold text-red-600">About Effort Education</h2>
+            <p className="text-lg text-gray-700 max-w-xl leading-relaxed">
+              Since 1991, we have been offering a wide range of educational courses. Post-COVID, we transitioned online and introduced specialized IAS coaching for children, empowering future leaders.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="bg-white border border-gray-200 p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-2">
+              <div className="flex items-center justify-center mb-4 text-red-600">
+                <Book className="w-12 h-12" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2 text-gray-900">Comprehensive Curriculum</h3>
+              <p className="text-gray-700">Our curriculum covers every critical subject for IAS exams, meticulously crafted by expert educators.</p>
+            </div>
+
+            <div className="bg-white border border-gray-200 p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-2">
+              <div className="flex items-center justify-center mb-4 text-red-600">
+                <Medal className="w-12 h-12" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2 text-gray-900">Top-Notch Educators</h3>
+              <p className="text-gray-700">Our seasoned educators, with years of expertise, have successfully mentored thousands of students toward their IAS aspirations.</p>
+            </div>
+
+            <div className="bg-white border border-gray-200 p-6 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-2">
+              <div className="flex items-center justify-center mb-4 text-red-600">
+                <GraduationCap className="w-12 h-12" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2 text-gray-900">Proven Success Stories</h3>
+              <p className="text-gray-700">Our students consistently excel in competitive exams, with a high success rate backed by years of proven results.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
