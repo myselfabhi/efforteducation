@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
 
 export default function Hero() {
   return (
@@ -15,11 +14,10 @@ export default function Hero() {
           transition={{ duration: 1 }}
         >
           <h1 className="text-4xl font-bold leading-tight mb-6 text-white">
-            Empower Tomorrow’s Leaders with <br />
-            <span className="text-5xl md:text-6xl text-red-500">Effort Education</span>
+            Building Skills Beyond Classrooms & Preparing Leaders of Tomorrow
           </h1>
           <p className="text-gray-300 text-lg mb-8">
-            Equip your child with the knowledge, critical thinking, and leadership skills needed to excel in competitive exams. Our <b>Young Scholars IAS</b> program is tailored to prepare students for a bright future in public service.
+            Effort Education empowers students with real-world skills and academic excellence. Explore our Government Competitive Exams and School Enrichment Programs designed to build confident, future-ready leaders.
           </p>
           <motion.button
             className="bg-red-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-red-700 transition"
@@ -27,7 +25,7 @@ export default function Hero() {
             whileTap={{ scale: 0.95 }}
             transition={{ type: "spring", stiffness: 300 }}
           >
-            Get Started
+            Explore Courses
           </motion.button>
         </motion.div>
 
@@ -37,13 +35,9 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.3 }}
         >
-          <Image
-            src="/hero.jpg"
-            alt="Effort Education"
-            width={450}
-            height={450}
-            className="rounded-lg shadow-lg"
-          />
+          <div className="w-[450px] h-[300px] bg-gray-800 rounded-lg shadow-lg flex items-center justify-center text-gray-400">
+            Hero Image
+          </div>
         </motion.div>
       </div>
     </section>

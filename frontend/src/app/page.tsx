@@ -1,19 +1,25 @@
-import Navbar from "./components/Navbar";
+import Header from "./components/Header";
 import Hero from "./components/Hero";
-import FeatureSection from "./components/FeatureSection";
-import CoursesSection from "./components/CoursesSection";
-import Footer from "./components/Footer";
+import About from "./components/About";
+import Programs from "./components/Programs";
+import WhyChoose from "./components/WhyChoose";
+import Testimonials from "./components/Testimonials";
+import Contact from "./components/Contact";
+import SiteFooter from "./components/SiteFooter";
 
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
+      <Header />
       <main className="flex-1">
         <Hero />
-        <FeatureSection />
-        <CoursesSection />
+        <About />
+        <Programs />
+        <WhyChoose />
+        <Testimonials />
+        <Contact />
       </main>
-      <Footer />
+      <SiteFooter />
     </div>
   );
 }
