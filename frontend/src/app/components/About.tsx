@@ -1,29 +1,71 @@
-export default function About() {
-  return (
-    <section id="about" className="py-16 bg-white text-gray-900">
-      <div className="container mx-auto px-4 max-w-6xl">
-        <h2 className="text-3xl font-bold text-center mb-8">About Effort Education</h2>
-        <p className="text-gray-700 text-center max-w-3xl mx-auto mb-10">
-          Effort Education is a modern learning initiative focused on building real-world skills and academic excellence. We offer coaching for government competitive exams and enrichment programs that enhance communication, confidence, and leadership.
-        </p>
+import { Target, Lightbulb, Heart } from "lucide-react";
+import { Card, CardContent } from "./ui/card";
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 rounded-lg border bg-gray-50">
-            <h3 className="font-semibold mb-2">Our Mission</h3>
-            <p className="text-gray-700">To empower young minds with knowledge, skills, and values that prepare them for future challenges.</p>
-          </div>
-          <div className="p-6 rounded-lg border bg-gray-50">
-            <h3 className="font-semibold mb-2">Our Approach</h3>
-            <p className="text-gray-700">Balanced focus on academics and skill development through engaging, student-first pedagogy.</p>
-          </div>
-          <div className="p-6 rounded-lg border bg-gray-50">
-            <h3 className="font-semibold mb-2">Founder’s Note</h3>
-            <p className="text-gray-700">“Education should build character, confidence, and competence.” — Founder</p>
-          </div>
+export default function About() {
+  const aboutCards = [
+    {
+      icon: Target,
+      title: "Our Mission",
+      content:
+        "To bridge the gap between traditional education and real-world skills, empowering students to excel in competitive examinations while developing essential life skills and leadership qualities.",
+    },
+    {
+      icon: Lightbulb,
+      title: "Our Approach",
+      content:
+        "We combine proven teaching methodologies with innovative learning techniques, focusing on conceptual clarity, practical application, and holistic development of each student.",
+    },
+    {
+      icon: Heart,
+      title: "Founder's Note",
+      content:
+        "Education should inspire and empower. At Effort Education, we believe every student has unique potential, and our role is to nurture that potential through dedicated guidance and comprehensive skill development.",
+    },
+  ];
+
+  return (
+    <section id="about" className="py-16 bg-gray-50">
+      <div className="container mx-auto max-w-6xl px-4 lg:px-8">
+        {/* Section Header */}
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+            About Effort Education
+          </h2>
+          <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+            Founded on the principle of student-first education,
+            Effort Education is dedicated to providing
+            comprehensive learning solutions that prepare
+            students not just for examinations, but for success
+            in life. We believe in nurturing talent, building
+            confidence, and developing skills that extend far
+            beyond the classroom.
+          </p>
+        </div>
+
+        {/* About Cards */}
+        <div className="grid md:grid-cols-3 gap-8">
+          {aboutCards.map((card, index) => (
+            <Card
+              key={index}
+              className="border border-gray-200 hover:shadow-lg transition-shadow duration-300 bg-white"
+            >
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <card.icon className="w-8 h-8 text-red-600" />
+                </div>
+
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  {card.title}
+                </h3>
+
+                <p className="text-gray-700 leading-relaxed">
+                  {card.content}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </div>
     </section>
   );
 }
-
-

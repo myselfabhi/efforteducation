@@ -1,89 +1,134 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useEffect, useState } from "react";
-
-const navItems = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Courses", href: "#courses" },
-  { label: "Programs", href: "#programs" },
-  { label: "Contact", href: "#contact" },
-];
+import { useState } from 'react';
+import { Menu, X } from 'lucide-react';
+import { Button } from './ui/button';
 
 export default function Header() {
-  const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  const classes = scrolled
-    ? "bg-opacity-90 backdrop-blur-sm bg-gray-900"
-    : "bg-gray-900";
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    setIsMenuOpen(false);
+  };
 
   return (
-    <header className={`sticky top-0 z-40 transition-all duration-300 ${classes}`}>
-      <nav className="container mx-auto px-4 lg:px-8 py-4 flex items-center justify-between">
-        <Link href="#home" className="text-2xl font-bold">
-          <span className="text-red-600">Effort</span>
-          <span className="ml-1 text-white">Education</span>
-        </Link>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
+      <nav className="container mx-auto max-w-7xl px-4 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Brand */}
+          <div className="flex items-center">
+            <button
+              onClick={() => scrollToSection('home')}
+              className="text-xl font-bold text-white hover:text-red-400 transition-colors"
+            >
+              Effort Education
+            </button>
+          </div>
 
-        <button
-          className="md:hidden text-gray-200"
-          onClick={() => setOpen((v) => !v)}
-          aria-label="Toggle Menu"
-        >
-          <svg className="h-7 w-7" viewBox="0 0 24 24" stroke="currentColor" fill="none">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center space-x-8">
+            <button
+              onClick={() => scrollToSection('home')}
+              className="text-gray-300 hover:text-white transition-colors"
+            >
+              Home
+            </button>
+            <button
+              onClick={() => scrollToSection('about')}
+              className="text-gray-300 hover:text-white transition-colors"
+            >
+              About
+            </button>
+            <button
+              onClick={() => scrollToSection('courses')}
+              className="text-gray-300 hover:text-white transition-colors"
+            >
+              Courses
+            </button>
+            <button
+              onClick={() => scrollToSection('programs')}
+              className="text-gray-300 hover:text-white transition-colors"
+            >
+              Programs
+            </button>
+            <button
+              onClick={() => scrollToSection('contact')}
+              className="text-gray-300 hover:text-white transition-colors"
+            >
+              Contact
+            </button>
+          </div>
 
-        <div className="hidden md:flex items-center space-x-8 text-gray-300">
-          {navItems.map((item) => (
-            <a key={item.href} href={item.href} className="hover:text-red-500">
-              {item.label}
-            </a>
-          ))}
-        </div>
-
-        <a
-          href="#contact"
-          className="hidden md:inline-block bg-red-600 text-white py-2 px-5 rounded-md hover:bg-red-700"
-        >
-          Get in Touch
-        </a>
-      </nav>
-
-      {open && (
-        <div className="md:hidden border-t border-gray-800 bg-gray-900">
-          <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
-            {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className="text-gray-200 hover:text-red-500"
-              >
-                {item.label}
-              </a>
-            ))}
-            <a
-              href="#contact"
-              onClick={() => setOpen(false)}
-              className="bg-red-600 text-white py-2 px-5 rounded-md hover:bg-red-700 text-center"
+          {/* CTA Button */}
+          <div className="hidden md:flex">
+            <Button
+              onClick={() => scrollToSection('contact')}
+              className="bg-red-600 hover:bg-red-700 text-white rounded-md px-6 py-2 transition-colors focus-visible:outline-2 focus-visible:outline-red-500"
             >
               Get in Touch
-            </a>
+            </Button>
           </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={toggleMenu}
+            className="md:hidden text-white p-2 rounded-md hover:bg-gray-800 transition-colors focus-visible:outline-2 focus-visible:outline-red-500"
+            aria-label="Toggle navigation menu"
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
-      )}
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden absolute top-16 left-0 right-0 bg-gray-900/98 backdrop-blur-sm border-b border-gray-800">
+            <div className="px-4 py-4 space-y-4">
+              <button
+                onClick={() => scrollToSection('home')}
+                className="block text-gray-300 hover:text-white transition-colors w-full text-left"
+              >
+                Home
+              </button>
+              <button
+                onClick={() => scrollToSection('about')}
+                className="block text-gray-300 hover:text-white transition-colors w-full text-left"
+              >
+                About
+              </button>
+              <button
+                onClick={() => scrollToSection('courses')}
+                className="block text-gray-300 hover:text-white transition-colors w-full text-left"
+              >
+                Courses
+              </button>
+              <button
+                onClick={() => scrollToSection('programs')}
+                className="block text-gray-300 hover:text-white transition-colors w-full text-left"
+              >
+                Programs
+              </button>
+              <button
+                onClick={() => scrollToSection('contact')}
+                className="block text-gray-300 hover:text-white transition-colors w-full text-left"
+              >
+                Contact
+              </button>
+              <Button
+                onClick={() => scrollToSection('contact')}
+                className="bg-red-600 hover:bg-red-700 text-white rounded-md px-6 py-2 w-full transition-colors focus-visible:outline-2 focus-visible:outline-red-500"
+              >
+                Get in Touch
+              </Button>
+            </div>
+          </div>
+        )}
+      </nav>
     </header>
   );
 }
-
-

@@ -1,47 +1,69 @@
-"use client";
+'use client';
 
-import { motion } from "framer-motion";
+import { ImageWithFallback } from './figma/ImageWithFallback';
+import { Button } from './ui/button';
 
 export default function Hero() {
-  return (
-    <section className="relative py-16 bg-gray-900" id="home">
-      <div className="absolute inset-0 opacity-20 bg-gradient-to-r from-red-600 via-black to-red-800" />
-      <div className="relative container mx-auto flex flex-col md:flex-row items-center justify-between space-y-10 md:space-y-0 px-4 sm:px-6 lg:px-8">
-        <motion.div
-          className="md:w-1/2 text-left z-10"
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1 }}
-        >
-          <h1 className="text-4xl font-bold leading-tight mb-6 text-white">
-            Building Skills Beyond Classrooms & Preparing Leaders of Tomorrow
-          </h1>
-          <p className="text-gray-300 text-lg mb-8">
-            Effort Education empowers students with real-world skills and academic excellence. Explore our Government Competitive Exams and School Enrichment Programs designed to build confident, future-ready leaders.
-          </p>
-          <motion.button
-            className="bg-red-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-red-700 transition"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            Explore Courses
-          </motion.button>
-        </motion.div>
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
-        <motion.div
-          className="md:w-1/2 flex justify-center z-10"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.3 }}
-        >
-          <div className="w-[450px] h-[300px] bg-gray-800 rounded-lg shadow-lg flex items-center justify-center text-gray-400">
-            Hero Image
+  return (
+    <section id="home" className="relative min-h-screen bg-gray-900 overflow-hidden">
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-red-600/20 via-black/40 to-red-800/20"></div>
+      
+      <div className="relative container mx-auto max-w-7xl px-4 lg:px-8 pt-32 pb-16">
+        <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[calc(100vh-8rem)]">
+          
+          {/* Left Column - Content */}
+          <div className="text-center lg:text-left">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+              Building Skills Beyond Classrooms & Preparing 
+              <span className="text-red-500"> Leaders of Tomorrow</span>
+            </h1>
+            
+            <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto lg:mx-0">
+              Empowering students with comprehensive Government Exam preparation and enriching school programs that develop real-world skills, public speaking abilities, and leadership qualities.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <Button
+                onClick={() => scrollToSection('programs')}
+                className="bg-red-600 hover:bg-red-700 text-white text-lg px-8 py-4 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-red-500"
+              >
+                Explore Courses
+              </Button>
+              <Button
+                onClick={() => scrollToSection('about')}
+                variant="outline"
+                className="border-2 border-white text-white hover:bg-white hover:text-gray-900 text-lg px-8 py-4 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-white"
+              >
+                Learn More
+              </Button>
+            </div>
           </div>
-        </motion.div>
+
+          {/* Right Column - Hero Image */}
+          <div className="flex justify-center lg:justify-end">
+            <div className="relative">
+              <div className="w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl">
+                <ImageWithFallback
+                  src="https://images.unsplash.com/photo-1641683521844-700c456379bd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHVkZW50cyUyMHN0dWR5aW5nJTIwZWR1Y2F0aW9uJTIwY2xhc3Nyb29tfGVufDF8fHx8MTc1NTYyMDAxM3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+                  alt="Students studying and learning"
+                  className="w-full h-auto object-cover"
+                />
+              </div>
+              {/* Decorative Elements */}
+              <div className="absolute -top-4 -right-4 w-24 h-24 bg-red-600/30 rounded-full blur-xl"></div>
+              <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-red-800/20 rounded-full blur-xl"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
 }
-
-

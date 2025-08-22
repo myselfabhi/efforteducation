@@ -1,33 +1,126 @@
+'use client';
+
+import { Facebook, Instagram, Youtube } from 'lucide-react';
+
 export default function SiteFooter() {
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <footer className="bg-gray-900 text-white py-10">
-      <div className="container mx-auto px-4 max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div>
-          <div className="text-2xl font-bold mb-2">
-            <span className="text-red-600">effort</span>
-            <span className="ml-1">education</span>
+    <footer className="bg-gray-900 text-white py-12">
+      <div className="container mx-auto max-w-6xl px-4 lg:px-8">
+        
+        <div className="grid md:grid-cols-4 gap-8">
+          
+          {/* Brand & Description */}
+          <div className="md:col-span-2">
+            <h3 className="text-2xl font-bold text-white mb-4">
+              Effort Education
+            </h3>
+            <p className="text-gray-300 mb-6 leading-relaxed">
+              Empowering students with comprehensive learning solutions for competitive exams and life skills development. Building tomorrow&apos;s leaders through quality education and personal growth.
+            </p>
+            
+            {/* Social Links */}
+            <div className="flex space-x-4">
+              <a
+                href="#"
+                className="w-10 h-10 bg-gray-800 hover:bg-red-600 rounded-lg flex items-center justify-center transition-colors focus-visible:outline-2 focus-visible:outline-red-500"
+                aria-label="Visit our YouTube channel"
+              >
+                <Youtube className="w-5 h-5" />
+              </a>
+              <a
+                href="#"
+                className="w-10 h-10 bg-gray-800 hover:bg-red-600 rounded-lg flex items-center justify-center transition-colors focus-visible:outline-2 focus-visible:outline-red-500"
+                aria-label="Visit our Facebook page"
+              >
+                <Facebook className="w-5 h-5" />
+              </a>
+              <a
+                href="#"
+                className="w-10 h-10 bg-gray-800 hover:bg-red-600 rounded-lg flex items-center justify-center transition-colors focus-visible:outline-2 focus-visible:outline-red-500"
+                aria-label="Follow us on Instagram"
+              >
+                <Instagram className="w-5 h-5" />
+              </a>
+            </div>
           </div>
-          <p className="text-gray-400 text-sm">© Effort Education 2025</p>
-        </div>
-        <div>
-          <h4 className="font-semibold mb-2">Quick Links</h4>
-          <ul className="space-y-1 text-gray-300 text-sm">
-            <li><a href="#about" className="hover:text-red-500">About</a></li>
-            <li><a href="#programs" className="hover:text-red-500">Programs</a></li>
-            <li><a href="#contact" className="hover:text-red-500">Contact</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4 className="font-semibold mb-2">Follow</h4>
-          <div className="flex space-x-3 text-gray-300">
-            <a href="#" className="hover:text-red-500">YouTube</a>
-            <a href="#" className="hover:text-red-500">Facebook</a>
-            <a href="#" className="hover:text-red-500">Instagram</a>
+
+          {/* Quick Links */}
+          <div>
+            <h4 className="text-lg font-bold text-white mb-4">Quick Links</h4>
+            <nav className="space-y-3">
+              <button
+                onClick={() => scrollToSection('about')}
+                className="block text-gray-300 hover:text-white transition-colors"
+              >
+                About Us
+              </button>
+              <button
+                onClick={() => scrollToSection('programs')}
+                className="block text-gray-300 hover:text-white transition-colors"
+              >
+                Our Programs
+              </button>
+              <button
+                onClick={() => scrollToSection('contact')}
+                className="block text-gray-300 hover:text-white transition-colors"
+              >
+                Contact Us
+              </button>
+              <a
+                href="#"
+                className="block text-gray-300 hover:text-white transition-colors"
+              >
+                Admissions
+              </a>
+            </nav>
           </div>
+
+          {/* Programs */}
+          <div>
+            <h4 className="text-lg font-bold text-white mb-4">Programs</h4>
+            <nav className="space-y-3">
+              <a
+                href="#"
+                className="block text-gray-300 hover:text-white transition-colors"
+              >
+                Bank PO & Clerk
+              </a>
+              <a
+                href="#"
+                className="block text-gray-300 hover:text-white transition-colors"
+              >
+                SSC & CGL
+              </a>
+              <a
+                href="#"
+                className="block text-gray-300 hover:text-white transition-colors"
+              >
+                Public Speaking
+              </a>
+              <a
+                href="#"
+                className="block text-gray-300 hover:text-white transition-colors"
+              >
+                Skill Development
+              </a>
+            </nav>
+          </div>
+        </div>
+
+        {/* Copyright */}
+        <div className="border-t border-gray-800 mt-8 pt-8 text-center">
+          <p className="text-gray-400">
+            © 2025 Effort Education. All rights reserved. | Built with dedication for student success.
+          </p>
         </div>
       </div>
     </footer>
   );
 }
-
-
