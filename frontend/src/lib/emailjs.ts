@@ -1,9 +1,10 @@
 import emailjs from '@emailjs/browser';
 
 // EmailJS configuration
-const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'your_service_id';
-const EMAILJS_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || 'your_template_id';
-const EMAILJS_PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || 'your_public_key';
+const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'service_w7aecsh';
+const EMAILJS_TEMPLATE_ID_CONTACT = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID_CONTACT || 'template_w2ld6p4';
+const EMAILJS_TEMPLATE_ID_AUTOREPLY = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID_AUTOREPLY || 'template_qfevr9q';
+const EMAILJS_PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || 'ltMNM8tfLpmo3M1wa';
 
 // Initialize EmailJS
 emailjs.init(EMAILJS_PUBLIC_KEY);
@@ -31,7 +32,7 @@ export const sendContactEmail = async (data: EmailData): Promise<boolean> => {
 
     const result = await emailjs.send(
       EMAILJS_SERVICE_ID,
-      EMAILJS_TEMPLATE_ID,
+      EMAILJS_TEMPLATE_ID_CONTACT,
       templateParams
     );
 
@@ -54,7 +55,7 @@ export const sendAutoReplyEmail = async (data: EmailData): Promise<boolean> => {
 
     const result = await emailjs.send(
       EMAILJS_SERVICE_ID,
-      'template_auto_reply', // Auto-reply template ID
+      EMAILJS_TEMPLATE_ID_AUTOREPLY,
       templateParams
     );
 

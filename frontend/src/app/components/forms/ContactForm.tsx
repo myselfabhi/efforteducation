@@ -9,8 +9,8 @@ import { Textarea } from '../ui/textarea';
 import { Button } from '../ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { contactFormSchema, ContactFormData } from '../../../lib/validations';
-// Use fallback for development, replace with real EmailJS when ready
-import { sendContactEmail, sendAutoReplyEmail } from '../../../lib/emailjs-fallback';
+// EmailJS integration for production
+import { sendContactEmail, sendAutoReplyEmail } from '../../../lib/emailjs';
 import { Loader2, CheckCircle, XCircle, Send } from 'lucide-react';
 
 export default function ContactForm() {
