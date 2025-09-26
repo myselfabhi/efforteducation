@@ -7,19 +7,19 @@ export default function About() {
       icon: Target,
       title: "Our Mission",
       content:
-        "To bridge the gap between traditional education and real-world skills, empowering students to excel in competitive examinations while developing essential life skills and leadership qualities.",
+        "To empower students with comprehensive Government Exam preparation, enhance school performance, and develop leadership skills that create confident, successful individuals ready to make a positive impact in society.",
     },
     {
       icon: Lightbulb,
-      title: "Our Approach",
+      title: "Our Success",
       content:
-        "We combine proven teaching methodologies with innovative learning techniques, focusing on conceptual clarity, practical application, and holistic development of each student.",
+        "Over 2,000+ successful students, 95% exam success rate, and 100+ students placed in prestigious government positions. Our proven track record speaks for our commitment to student success.",
     },
     {
       icon: Heart,
-      title: "Founder's Note",
+      title: "Why Choose Us",
       content:
-        "Education should inspire and empower. At Effort Education, we believe every student has unique potential, and our role is to nurture that potential through dedicated guidance and comprehensive skill development.",
+        "Personalized attention, experienced faculty, comprehensive study materials, regular mock tests, and continuous mentorship. We don't just teach subjects; we build futures and create leaders.",
     },
   ];
 
@@ -32,13 +32,7 @@ export default function About() {
             About <span className="text-red-600">Effort Education</span>
           </h2>
           <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
-            Founded on the principle of student-first education,
-            Effort Education is dedicated to providing
-            comprehensive learning solutions that prepare
-            students not just for examinations, but for success
-            in life. We believe in nurturing talent, building
-            confidence, and developing skills that extend far
-            beyond the classroom.
+            With over 5 years of excellence in education, Effort Education has successfully guided more than 2,000 students to achieve their dreams. We specialize in Government Exam preparation, school studies enhancement, and leadership development programs that build confident, capable leaders of tomorrow.
           </p>
         </div>
 

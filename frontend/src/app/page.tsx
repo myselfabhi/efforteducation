@@ -21,10 +21,10 @@ export default function Home() {
           <div className="container mx-auto max-w-6xl px-4 lg:px-8">
             <div className="text-center mb-20">
               <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-                Get in <span className="text-red-600">Touch</span>
+                Start Your <span className="text-red-600">Success Journey</span>
               </h2>
               <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
-                Ready to start your learning journey? Contact us today to learn more about our programs and how we can help you achieve your goals.
+                Ready to achieve your dreams? Get a free consultation and personalized study plan. Join thousands of successful students who chose Effort Education for their competitive exam preparation.
               </p>
             </div>
             <div className="max-w-3xl mx-auto">

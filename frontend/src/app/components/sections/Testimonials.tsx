@@ -5,21 +5,21 @@ import { Avatar, AvatarFallback } from '../ui/avatar';
 export default function Testimonials() {
   const testimonials = [
     {
-      quote: "Effort Education transformed my approach to competitive exams. The personalized guidance and comprehensive study material helped me clear Bank PO on my first attempt. The faculty's dedication and support made all the difference.",
+      quote: "I cleared SBI PO in my first attempt with AIR 45! The mock test series and personalized doubt sessions at Effort Education were game-changers. The faculty's expertise in banking exams is unmatched.",
       name: "Priya Sharma",
-      role: "Bank PO, 2024",
+      role: "SBI PO, AIR 45",
       initials: "PS"
     },
     {
-      quote: "The public speaking program at Effort Education boosted my confidence tremendously. What started as fear of speaking in front of others turned into my greatest strength. The skills I learned here continue to help me in college.",
+      quote: "From being extremely shy to winning the district debate competition - Effort Education's public speaking program transformed me completely. The confidence I gained here helped me get selected for college leadership roles.",
       name: "Rajesh Kumar",
-      role: "Class 12 Graduate",
+      role: "College Student Leader",
       initials: "RK"
     },
     {
-      quote: "As a parent, I've seen remarkable improvement in my daughter's overall personality and academic performance. The balanced approach of focusing on both studies and life skills is truly commendable.",
+      quote: "My son cleared SSC CGL with rank 127! The comprehensive study plan and regular assessments at Effort Education made all the difference. The teachers are not just educators but mentors who truly care.",
       name: "Mrs. Anjali Patel",
-      role: "Parent",
+      role: "Parent of SSC CGL Success",
       initials: "AP"
     }
   ];

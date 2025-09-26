@@ -23,12 +23,12 @@ export default function Hero() {
           {/* Left Column - Content */}
           <div className="text-center lg:text-left">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight animate-fade-in">
-              Building Skills Beyond Classrooms & Preparing 
-              <span className="text-red-500 bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent"> Leaders of Tomorrow</span>
+              Transform Your Future with 
+              <span className="text-red-500 bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent"> Effort Education</span>
             </h1>
             
             <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto lg:mx-0 animate-fade-in-delay">
-              Empowering students with comprehensive Government Exam preparation and enriching school programs that develop real-world skills, public speaking abilities, and leadership qualities.
+              Master Government Exams, Excel in School Studies, and Develop Leadership Skills. Join thousands of successful students who achieved their dreams with our proven teaching methods and comprehensive programs.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-delay-2">
@@ -36,14 +36,14 @@ export default function Hero() {
                 onClick={() => scrollToSection('programs')}
                 className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-lg px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-red-500 shadow-lg hover:shadow-red-500/25"
               >
-                Explore Courses
+                Start Your Journey
               </Button>
               <Button
-                onClick={() => scrollToSection('about')}
+                onClick={() => scrollToSection('contact')}
                 variant="outline"
                 className="border-2 border-white text-white hover:bg-white hover:text-gray-900 text-lg px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-white backdrop-blur-sm"
               >
-                Learn More
+                Get Free Consultation
               </Button>
             </div>
           </div>

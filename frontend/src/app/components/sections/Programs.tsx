@@ -15,18 +15,18 @@ export default function Programs() {
   const governmentExams = [
     {
       icon: TrendingUp,
-      title: "Bank PO & Clerk",
-      description: "Comprehensive preparation for banking sector examinations with focus on quantitative aptitude, reasoning, and general awareness."
+      title: "Banking Exams (PO/Clerk/SO)",
+      description: "Complete preparation for IBPS, SBI, and other banking exams. Includes quantitative aptitude, reasoning, English, and general awareness with 200+ mock tests and personalized doubt sessions."
     },
     {
       icon: Award,
-      title: "SSC & CGL",
-      description: "Complete coverage of Staff Selection Commission exams including tier-wise preparation and mock test series."
+      title: "SSC CGL/CHSL/MTS",
+      description: "Comprehensive SSC exam preparation with tier-wise strategy, previous year analysis, and specialized coaching for each subject. 95% success rate in SSC exams."
     },
     {
       icon: BookOpen,
-      title: "Other Competitive Exams",
-      description: "Specialized coaching for railway, insurance, and other government sector examinations with expert guidance."
+      title: "Railway & Insurance Exams",
+      description: "Specialized coaching for RRB NTPC, Group D, LIC AAO, and other government exams. Expert faculty with proven track record of student success."
     }
   ];
 
@@ -34,17 +34,17 @@ export default function Programs() {
     {
       icon: Megaphone,
       title: "Public Speaking & Communication",
-      description: "Build confidence and eloquence through structured speaking programs, debate sessions, and presentation skills."
+      description: "Transform from shy to confident speaker! Weekly debate sessions, presentation workshops, and personality development programs. Build the communication skills that set you apart."
     },
     {
       icon: Brain,
       title: "General Knowledge & Current Affairs",
-      description: "Stay updated with comprehensive GK sessions covering history, geography, science, and current events."
+      description: "Stay ahead with our comprehensive GK program covering history, geography, science, and daily current affairs. Regular quizzes and monthly assessments to track progress."
     },
     {
       icon: Users,
-      title: "Leadership & Skill Development",
-      description: "Develop leadership qualities, teamwork skills, and practical life skills through interactive workshops."
+      title: "Leadership & Life Skills",
+      description: "Develop leadership qualities, teamwork, time management, and decision-making skills. Interactive workshops and real-world projects that build character and confidence."
     }
   ];
 
