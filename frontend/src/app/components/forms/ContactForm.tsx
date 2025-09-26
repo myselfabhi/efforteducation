@@ -2,13 +2,13 @@
 
 import { useState } from 'react';
 import { Mail, Phone, MapPin } from 'lucide-react';
-import { Card, CardContent } from './ui/card';
-import { Input } from './ui/input';
-import { Textarea } from './ui/textarea';
-import { Button } from './ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Card, CardContent } from '../ui/card';
+import { Input } from '../ui/input';
+import { Textarea } from '../ui/textarea';
+import { Button } from '../ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
-export default function Contact() {
+export default function ContactForm() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',

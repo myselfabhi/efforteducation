@@ -1,5 +1,5 @@
 import { Target, Lightbulb, Heart } from "lucide-react";
-import { Card, CardContent } from "./ui/card";
+import { Card, CardContent } from "../ui/card";
 
 export default function About() {
   const aboutCards = [

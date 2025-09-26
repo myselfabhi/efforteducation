@@ -2,7 +2,7 @@
 
 import { Facebook, Instagram, Youtube } from 'lucide-react';
 
-export default function SiteFooter() {
+export default function Footer() {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {

@@ -1,8 +1,8 @@
 'use client';
 
 import { BookOpen, Users, Award, TrendingUp, Megaphone, Brain } from 'lucide-react';
-import { Card, CardContent } from './ui/card';
-import { Button } from './ui/button';
+import { Card, CardContent } from '../ui/card';
+import { Button } from '../ui/button';
 
 export default function Programs() {
   const scrollToContact = () => {

@@ -1,6 +1,6 @@
 import { Quote } from 'lucide-react';
-import { Card, CardContent } from './ui/card';
-import { Avatar, AvatarFallback } from './ui/avatar';
+import { Card, CardContent } from '../ui/card';
+import { Avatar, AvatarFallback } from '../ui/avatar';
 
 export default function Testimonials() {
   const testimonials = [

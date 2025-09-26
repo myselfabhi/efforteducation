@@ -1,7 +1,7 @@
 'use client';
 
-import { ImageWithFallback } from './figma/ImageWithFallback';
-import { Button } from './ui/button';
+import { ImageWithFallback } from '../common/ImageWithFallback';
+import { Button } from '../ui/button';
 
 export default function Hero() {
   const scrollToSection = (sectionId: string) => {
