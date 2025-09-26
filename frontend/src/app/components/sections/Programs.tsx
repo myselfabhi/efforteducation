@@ -49,45 +49,45 @@ export default function Programs() {
   ];
 
   return (
-    <section id="programs" className="py-20 bg-gradient-to-b from-white to-gray-50">
+    <section id="programs" className="py-16 sm:py-20 bg-gradient-to-b from-white to-gray-50">
       <div className="container mx-auto max-w-6xl px-4 lg:px-8">
         
         {/* Section Header */}
-        <div className="text-center mb-20">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+        <div className="text-center mb-16 sm:mb-20">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 animate-slide-up">
             Our <span className="text-red-600">Programs</span>
           </h2>
-          <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed animate-slide-up-delay">
             Choose from our comprehensive range of programs designed to meet diverse learning needs and career aspirations.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
           
           {/* Government Competitive Exams */}
-          <div>
-            <h3 className="text-3xl font-bold text-gray-900 mb-10 text-center">
+          <div className="animate-slide-up">
+            <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 sm:mb-10 text-center">
               Government Competitive Exams
             </h3>
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {governmentExams.map((exam, index) => (
-                <Card key={index} className="border border-gray-200 hover:shadow-xl transition-all duration-300 bg-white transform hover:-translate-y-1 hover:border-red-200">
-                  <CardContent className="p-8">
-                    <div className="flex items-start space-x-6">
-                      <div className="w-16 h-16 bg-gradient-to-br from-red-100 to-red-200 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                        <exam.icon className="w-8 h-8 text-red-600" />
+                <Card key={index} className="border border-gray-200 hover:shadow-xl transition-all duration-300 bg-white transform hover:-translate-y-1 hover:border-red-200 animate-scale-in" style={{animationDelay: `${index * 0.1}s`}}>
+                  <CardContent className="p-6 sm:p-8">
+                    <div className="flex items-start space-x-4 sm:space-x-6">
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-red-100 to-red-200 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                        <exam.icon className="w-6 h-6 sm:w-8 sm:h-8 text-red-600" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-2xl font-bold text-gray-900 mb-3">
+                        <h4 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">
                           {exam.title}
                         </h4>
-                        <p className="text-gray-700 mb-6 text-lg leading-relaxed">
+                        <p className="text-gray-700 mb-4 sm:mb-6 text-sm sm:text-base lg:text-lg leading-relaxed">
                           {exam.description}
                         </p>
                         <Button
                           onClick={scrollToContact}
                           variant="ghost"
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50 p-0 h-auto font-semibold text-lg group"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50 p-0 h-auto font-semibold text-sm sm:text-base lg:text-lg group"
                         >
                           Learn More 
                           <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
@@ -101,29 +101,29 @@ export default function Programs() {
           </div>
 
           {/* School Enrichment Programs */}
-          <div>
-            <h3 className="text-3xl font-bold text-gray-900 mb-10 text-center">
+          <div className="animate-slide-up" style={{animationDelay: '0.2s'}}>
+            <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 sm:mb-10 text-center">
               School Enrichment Programs
             </h3>
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {enrichmentPrograms.map((program, index) => (
-                <Card key={index} className="border border-gray-200 hover:shadow-xl transition-all duration-300 bg-white transform hover:-translate-y-1 hover:border-red-200">
-                  <CardContent className="p-8">
-                    <div className="flex items-start space-x-6">
-                      <div className="w-16 h-16 bg-gradient-to-br from-red-100 to-red-200 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                        <program.icon className="w-8 h-8 text-red-600" />
+                <Card key={index} className="border border-gray-200 hover:shadow-xl transition-all duration-300 bg-white transform hover:-translate-y-1 hover:border-red-200 animate-scale-in" style={{animationDelay: `${(index + 3) * 0.1}s`}}>
+                  <CardContent className="p-6 sm:p-8">
+                    <div className="flex items-start space-x-4 sm:space-x-6">
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-red-100 to-red-200 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                        <program.icon className="w-6 h-6 sm:w-8 sm:h-8 text-red-600" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-2xl font-bold text-gray-900 mb-3">
+                        <h4 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-2 sm:mb-3">
                           {program.title}
                         </h4>
-                        <p className="text-gray-700 mb-6 text-lg leading-relaxed">
+                        <p className="text-gray-700 mb-4 sm:mb-6 text-sm sm:text-base lg:text-lg leading-relaxed">
                           {program.description}
                         </p>
                         <Button
                           onClick={scrollToContact}
                           variant="ghost"
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50 p-0 h-auto font-semibold text-lg group"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50 p-0 h-auto font-semibold text-sm sm:text-base lg:text-lg group"
                         >
                           Learn More 
                           <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
