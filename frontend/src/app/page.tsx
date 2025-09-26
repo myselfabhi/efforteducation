@@ -17,17 +17,17 @@ export default function Home() {
         <Programs />
         <WhyChoose />
         <Testimonials />
-        <div className="py-16 bg-white">
+        <div className="py-20 bg-gradient-to-b from-white to-gray-50">
           <div className="container mx-auto max-w-6xl px-4 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                Get in Touch
+            <div className="text-center mb-20">
+              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                Get in <span className="text-red-600">Touch</span>
               </h2>
-              <p className="text-lg text-gray-700 max-w-3xl mx-auto">
-                Ready to start your learning journey? Contact us today to learn more about our programs.
+              <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
+                Ready to start your learning journey? Contact us today to learn more about our programs and how we can help you achieve your goals.
               </p>
             </div>
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-3xl mx-auto">
               <ContactForm />
             </div>
           </div>

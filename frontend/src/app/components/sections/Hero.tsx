@@ -12,35 +12,36 @@ export default function Hero() {
   };
 
   return (
-    <section id="home" className="relative min-h-screen bg-gray-900 overflow-hidden">
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-red-600/20 via-black/40 to-red-800/20"></div>
+    <section id="home" className="relative min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-hidden">
+      {/* Enhanced Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-red-600/30 via-transparent to-red-800/20"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/40"></div>
       
       <div className="relative container mx-auto max-w-7xl px-4 lg:px-8 pt-32 pb-16">
         <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[calc(100vh-8rem)]">
           
           {/* Left Column - Content */}
           <div className="text-center lg:text-left">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight animate-fade-in">
               Building Skills Beyond Classrooms & Preparing 
-              <span className="text-red-500"> Leaders of Tomorrow</span>
+              <span className="text-red-500 bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent"> Leaders of Tomorrow</span>
             </h1>
             
-            <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto lg:mx-0">
+            <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto lg:mx-0 animate-fade-in-delay">
               Empowering students with comprehensive Government Exam preparation and enriching school programs that develop real-world skills, public speaking abilities, and leadership qualities.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-delay-2">
               <Button
                 onClick={() => scrollToSection('programs')}
-                className="bg-red-600 hover:bg-red-700 text-white text-lg px-8 py-4 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-red-500"
+                className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-lg px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-red-500 shadow-lg hover:shadow-red-500/25"
               >
                 Explore Courses
               </Button>
               <Button
                 onClick={() => scrollToSection('about')}
                 variant="outline"
-                className="border-2 border-white text-white hover:bg-white hover:text-gray-900 text-lg px-8 py-4 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-white"
+                className="border-2 border-white text-white hover:bg-white hover:text-gray-900 text-lg px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-white backdrop-blur-sm"
               >
                 Learn More
               </Button>

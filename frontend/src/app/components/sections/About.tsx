@@ -24,14 +24,14 @@ export default function About() {
   ];
 
   return (
-    <section id="about" className="py-16 bg-gray-50">
+    <section id="about" className="py-20 bg-gradient-to-b from-gray-50 to-white">
       <div className="container mx-auto max-w-6xl px-4 lg:px-8">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-            About Effort Education
+        <div className="text-center mb-20">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            About <span className="text-red-600">Effort Education</span>
           </h2>
-          <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
             Founded on the principle of student-first education,
             Effort Education is dedicated to providing
             comprehensive learning solutions that prepare
@@ -47,18 +47,18 @@ export default function About() {
           {aboutCards.map((card, index) => (
             <Card
               key={index}
-              className="border border-gray-200 hover:shadow-lg transition-shadow duration-300 bg-white"
+              className="border border-gray-200 hover:shadow-xl transition-all duration-300 bg-white transform hover:-translate-y-2 hover:border-red-200"
             >
               <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <card.icon className="w-8 h-8 text-red-600" />
+                <div className="w-20 h-20 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                  <card.icon className="w-10 h-10 text-red-600" />
                 </div>
 
-                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">
                   {card.title}
                 </h3>
 
-                <p className="text-gray-700 leading-relaxed">
+                <p className="text-gray-700 leading-relaxed text-lg">
                   {card.content}
                 </p>
               </CardContent>
