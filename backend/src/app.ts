@@ -12,6 +12,8 @@ import courseRoutes from './routes/courses';
 import studentRoutes from './routes/students';
 import enrollmentRoutes from './routes/enrollments';
 import adminRoutes from './routes/admin';
+import testimonialRoutes from './routes/testimonials';
+import contactRoutes from './routes/contact';
 
 // Import middleware
 import { errorHandler } from './middleware/errorHandler';
@@ -36,9 +38,18 @@ app.use(helmet({
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: [
+    process.env.FRONTEND_URL || 'http://localhost:3000',
+    'http://localhost:3001',
+    'http://localhost:3002',
+    'http://localhost:3003',
+    'http://localhost:3004',
+    'http://localhost:3005'
+  ],
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 // Rate limiting
@@ -79,6 +90,8 @@ app.use('/api/courses', courseRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/enrollments', enrollmentRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/testimonials', testimonialRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Error handling middleware
 app.use(notFound);

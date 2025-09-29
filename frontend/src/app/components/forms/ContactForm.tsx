@@ -9,8 +9,7 @@ import { Textarea } from '../ui/textarea';
 import { Button } from '../ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { contactFormSchema, ContactFormData } from '../../../lib/validations';
-// EmailJS integration for production
-import { sendContactEmail, sendAutoReplyEmail } from '../../../lib/emailjs';
+import { api } from '../../../lib/api';
 import { Loader2, CheckCircle, XCircle, Send } from 'lucide-react';
 
 export default function ContactForm() {
@@ -41,32 +40,21 @@ export default function ContactForm() {
     setSubmitMessage('');
 
     try {
-      // Send email to admin
-      const emailSent = await sendContactEmail({
-        from_name: data.name,
-        from_email: data.email,
+      // Submit to backend API
+      const response = await api.submitContactForm({
+        name: data.name,
+        email: data.email,
         phone: data.phone,
         interest: data.interest,
-        message: data.message,
-        to_name: 'Effort Education Team'
+        message: data.message
       });
 
-      if (emailSent) {
-        // Send auto-reply to user
-        await sendAutoReplyEmail({
-          from_name: data.name,
-          from_email: data.email,
-          phone: data.phone,
-          interest: data.interest,
-          message: data.message,
-          to_name: 'Effort Education Team'
-        });
-
+      if (response.success) {
         setSubmitStatus('success');
         setSubmitMessage('Thank you for your message! We will get back to you within 24 hours.');
         reset();
       } else {
-        throw new Error('Failed to send email');
+        throw new Error(response.error || 'Failed to submit form');
       }
     } catch (error) {
       console.error('Form submission error:', error);
