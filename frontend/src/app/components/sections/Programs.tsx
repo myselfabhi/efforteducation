@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { BookOpen, Users, TrendingUp, Megaphone, Brain, Loader2 } from 'lucide-react';
+import { BookOpen, Users, TrendingUp, Megaphone, Brain, Loader2, AlertCircle } from 'lucide-react';
 import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { api, Course } from '../../../lib/api';
@@ -15,6 +15,7 @@ export default function Programs() {
     const fetchCourses = async () => {
       try {
         setLoading(true);
+        setError(null);
         const response = await api.getCourses({ featured: true });
         setCourses(response.data.courses);
       } catch (err) {
@@ -27,6 +28,23 @@ export default function Programs() {
 
     fetchCourses();
   }, []);
+
+  const refetch = () => {
+    const fetchCourses = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await api.getCourses({ featured: true });
+        setCourses(response.data.courses);
+      } catch (err) {
+        console.error('Failed to fetch courses:', err);
+        setError('Failed to load courses. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourses();
+  };
 
   const scrollToContact = () => {
     const element = document.getElementById('contact');
@@ -84,9 +102,13 @@ export default function Programs() {
         {/* Error State */}
         {error && (
           <div className="text-center py-20">
+            <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
             <p className="text-red-600 mb-4">{error}</p>
-            <Button onClick={() => window.location.reload()} variant="outline">
+            <Button onClick={refetch} variant="outline" className="mr-2">
               Try Again
+            </Button>
+            <Button onClick={() => window.location.reload()} variant="outline">
+              Reload Page
             </Button>
           </div>
         )}

@@ -24,7 +24,7 @@ export default function Hero() {
           <div className="text-center lg:text-left">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight animate-fade-in">
               Transform Your Future with 
-              <span className="text-red-500 bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent"> Effort Education</span>
+              <span className="bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent"> Effort Education</span>
             </h1>
             
             <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-6 sm:mb-8 max-w-2xl mx-auto lg:mx-0 animate-fade-in-delay leading-relaxed">

@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Quote, Loader2 } from 'lucide-react';
+import { Quote, Loader2, AlertCircle } from 'lucide-react';
 import { Card, CardContent } from '../ui/card';
 import { Avatar, AvatarFallback } from '../ui/avatar';
+import { Button } from '../ui/button';
 import { api, Testimonial } from '../../../lib/api';
 
 export default function Testimonials() {
@@ -15,35 +16,12 @@ export default function Testimonials() {
     const fetchTestimonials = async () => {
       try {
         setLoading(true);
+        setError(null);
         const response = await api.getTestimonials();
         setTestimonials(response.data.testimonials);
       } catch (err) {
         console.error('Failed to fetch testimonials:', err);
         setError('Failed to load testimonials. Please try again later.');
-        // Fallback to static testimonials
-        setTestimonials([
-          {
-            id: 1,
-            quote: "I cleared SBI PO in my first attempt with AIR 45! The mock test series and personalized doubt sessions at Effort Education were game-changers. The faculty's expertise in banking exams is unmatched.",
-            name: "Priya Sharma",
-            role: "SBI PO, AIR 45",
-            initials: "PS"
-          },
-          {
-            id: 2,
-            quote: "From being extremely shy to winning the district debate competition - Effort Education's public speaking program transformed me completely. The confidence I gained here helped me get selected for college leadership roles.",
-            name: "Rajesh Kumar",
-            role: "College Student Leader",
-            initials: "RK"
-          },
-          {
-            id: 3,
-            quote: "My son cleared SSC CGL with rank 127! The comprehensive study plan and regular assessments at Effort Education made all the difference. The teachers are not just educators but mentors who truly care.",
-            name: "Mrs. Anjali Patel",
-            role: "Parent of SSC CGL Success",
-            initials: "AP"
-          }
-        ]);
       } finally {
         setLoading(false);
       }
@@ -51,6 +29,48 @@ export default function Testimonials() {
 
     fetchTestimonials();
   }, []);
+
+  const refetch = () => {
+    const fetchTestimonials = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await api.getTestimonials();
+        setTestimonials(response.data.testimonials);
+      } catch (err) {
+        console.error('Failed to fetch testimonials:', err);
+        setError('Failed to load testimonials. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTestimonials();
+  };
+
+  // Use fallback testimonials if API fails
+  const displayTestimonials = testimonials.length > 0 ? testimonials : [
+    {
+      id: 1,
+      quote: "I cleared SBI PO in my first attempt with AIR 45! The mock test series and personalized doubt sessions at Effort Education were game-changers. The faculty's expertise in banking exams is unmatched.",
+      name: "Priya Sharma",
+      role: "SBI PO, AIR 45",
+      initials: "PS"
+    },
+    {
+      id: 2,
+      quote: "From being extremely shy to winning the district debate competition - Effort Education's public speaking program transformed me completely. The confidence I gained here helped me get selected for college leadership roles.",
+      name: "Rajesh Kumar",
+      role: "College Student Leader",
+      initials: "RK"
+    },
+    {
+      id: 3,
+      quote: "My son cleared SSC CGL with rank 127! The comprehensive study plan and regular assessments at Effort Education made all the difference. The teachers are not just educators but mentors who truly care.",
+      name: "Mrs. Anjali Patel",
+      role: "Parent of SSC CGL Success",
+      initials: "AP"
+    }
+  ];
 
   return (
     <section className="py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
@@ -76,16 +96,20 @@ export default function Testimonials() {
 
         {/* Error State */}
         {error && !loading && (
-          <div className="text-center py-20">
-            <p className="text-red-400 mb-4">{error}</p>
-            <p className="text-gray-300">Showing fallback testimonials...</p>
+          <div className="text-center py-8">
+            <AlertCircle className="w-8 h-8 text-red-400 mx-auto mb-2" />
+            <p className="text-red-400 mb-2">{error}</p>
+            <p className="text-gray-300 text-sm">Showing fallback testimonials...</p>
+            <Button onClick={refetch} variant="outline" size="sm" className="mt-4">
+              Try Again
+            </Button>
           </div>
         )}
 
         {/* Testimonials Grid */}
         {!loading && (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {testimonials.map((testimonial) => (
+            {displayTestimonials.map((testimonial) => (
               <Card key={testimonial.id} className="bg-gray-800 border border-gray-700 hover:bg-gray-750 hover:border-red-500/30 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl hover:shadow-red-500/10">
                 <CardContent className="p-8">
                   <div className="mb-8">

@@ -1,5 +1,5 @@
 // API configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
 
 // Types
 export interface Course {
@@ -8,8 +8,8 @@ export interface Course {
   description: string;
   shortDescription?: string;
   category: 'government_exam' | 'school_enrichment' | 'leadership' | 'public_speaking';
-  level: 'beginner' | 'intermediate' | 'advanced';
-  duration: number;
+  level: 'Beginner' | 'Intermediate' | 'Advanced';
+  duration: string;
   price: number;
   originalPrice?: number;
   image?: string;
@@ -47,12 +47,7 @@ export interface ApiResponse<T> {
 
 export interface CoursesResponse {
   courses: Course[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    pages: number;
-  };
+  count: number;
 }
 
 // API utility functions
@@ -109,16 +104,6 @@ export const api = {
     const endpoint = `/courses${queryString ? `?${queryString}` : ''}`;
     
     return apiRequest<CoursesResponse>(endpoint);
-  },
-
-  // Get featured courses
-  getFeaturedCourses: async (): Promise<ApiResponse<{ courses: Course[] }>> => {
-    return apiRequest<{ courses: Course[] }>('/courses/featured');
-  },
-
-  // Get courses by category
-  getCoursesByCategory: async (category: string): Promise<ApiResponse<{ courses: Course[] }>> => {
-    return apiRequest<{ courses: Course[] }>(`/courses/category/${category}`);
   },
 
   // Get single course
