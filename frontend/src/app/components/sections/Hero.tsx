@@ -2,6 +2,7 @@
 
 import { ImageWithFallback } from '../common/ImageWithFallback';
 import { Button } from '../ui/button';
+import Link from 'next/link';
 
 export default function Hero() {
   const scrollToSection = (sectionId: string) => {
@@ -32,12 +33,11 @@ export default function Hero() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center lg:justify-start animate-fade-in-delay-2">
-              <Button
-                onClick={() => scrollToSection('programs')}
-                className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-red-500 shadow-lg hover:shadow-red-500/25 w-full sm:w-auto"
-              >
-                Start Your Journey
-              </Button>
+              <Link href="/programs">
+                <Button className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-red-500 shadow-lg hover:shadow-red-500/25 w-full sm:w-auto">
+                  Explore Programs
+                </Button>
+              </Link>
               <Button
                 onClick={() => scrollToSection('contact')}
                 variant="outline"
