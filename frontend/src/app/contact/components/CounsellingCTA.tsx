@@ -9,10 +9,13 @@ export default function CounsellingCTA() {
   };
 
   return (
-    <Card className="border border-gray-200 shadow-lg">
+    <Card className="border-0 shadow-2xl bg-white overflow-hidden">
+      {/* Top accent bar */}
+      <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-600 to-red-700"></div>
+      
       <CardContent className="p-8">
         <div className="text-center">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="w-16 h-16 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
             <Calendar className="w-8 h-8 text-red-600" />
           </div>
           
@@ -25,23 +28,23 @@ export default function CounsellingCTA() {
           </p>
 
           <div className="space-y-3 mb-6">
-            <div className="flex items-center space-x-3 text-gray-700">
+            <div className="flex items-center justify-center space-x-3 text-gray-700">
               <Users className="w-5 h-5 text-red-600" />
-              <span>One-on-one guidance</span>
+              <span className="font-medium">One-on-one guidance</span>
             </div>
-            <div className="flex items-center space-x-3 text-gray-700">
+            <div className="flex items-center justify-center space-x-3 text-gray-700">
               <Clock className="w-5 h-5 text-red-600" />
-              <span>30-minute session</span>
+              <span className="font-medium">30-minute session</span>
             </div>
-            <div className="flex items-center space-x-3 text-gray-700">
+            <div className="flex items-center justify-center space-x-3 text-gray-700">
               <Calendar className="w-5 h-5 text-red-600" />
-              <span>Flexible scheduling</span>
+              <span className="font-medium">Flexible scheduling</span>
             </div>
           </div>
 
           <Button
             onClick={handleCounsellingClick}
-            className="w-full bg-red-600 hover:bg-red-700 text-white text-lg py-3 rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-red-500"
+            className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-lg py-3 rounded-lg transition-all duration-300 transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-red-500 shadow-lg hover:shadow-red-500/25"
           >
             Book Free Counselling
           </Button>
