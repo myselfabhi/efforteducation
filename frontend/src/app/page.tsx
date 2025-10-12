@@ -17,14 +17,14 @@ export default function Home() {
         <Programs />
         <WhyChoose />
         <Testimonials />
-        <div className="py-20 bg-gradient-to-b from-white to-gray-50">
-          <div className="container mx-auto max-w-6xl px-4 lg:px-8">
-            <div className="text-center mb-20">
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+        <div className="py-12 bg-gradient-to-b from-white to-gray-50">
+          <div className="container mx-auto max-w-5xl px-4 lg:px-6">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                 Start Your <span className="text-red-600">Success Journey</span>
               </h2>
-              <p className="text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
-                Ready to achieve your dreams? Get a free consultation and personalized study plan. Join thousands of successful students who chose Effort Education for their competitive exam preparation.
+              <p className="text-base md:text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed">
+                Ready to achieve your dreams? Get a free consultation and personalized study plan.
               </p>
             </div>
             <div className="max-w-3xl mx-auto">

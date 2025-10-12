@@ -17,31 +17,31 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-r from-red-600/30 via-transparent to-red-800/20"></div>
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/40"></div>
       
-      <div className="relative container mx-auto max-w-7xl px-4 lg:px-8 pt-20 sm:pt-24 md:pt-28 lg:pt-32 pb-12 sm:pb-16">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[calc(100vh-6rem)] sm:min-h-[calc(100vh-8rem)]">
+      <div className="relative container mx-auto max-w-6xl px-4 lg:px-6 pt-16 sm:pt-20 md:pt-24 pb-8 sm:pb-12">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-center min-h-[calc(100vh-5rem)]">
           
           {/* Left Column - Content */}
           <div className="text-center lg:text-left">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight animate-fade-in">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 sm:mb-4 leading-tight animate-fade-in">
               Transform Your Future with 
               <span className="bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent"> Effort Education</span>
             </h1>
             
-            <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-6 sm:mb-8 max-w-2xl mx-auto lg:mx-0 animate-fade-in-delay leading-relaxed">
-              Master Government Exams, Excel in School Studies, and Develop Leadership Skills. Join thousands of successful students who achieved their dreams with our proven teaching methods and comprehensive programs.
+            <p className="text-sm sm:text-base md:text-lg text-gray-300 mb-4 sm:mb-6 max-w-2xl mx-auto lg:mx-0 animate-fade-in-delay leading-relaxed">
+              Master Government Exams, Excel in School Studies, and Develop Leadership Skills. Join thousands of successful students who achieved their dreams with our proven teaching methods.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start animate-fade-in-delay-2">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center lg:justify-start animate-fade-in-delay-2">
               <Button
                 onClick={() => scrollToSection('programs')}
-                className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-lg transition-all duration-300 transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-red-500 shadow-lg hover:shadow-red-500/25 w-full sm:w-auto"
+                className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-red-500 shadow-lg hover:shadow-red-500/25 w-full sm:w-auto"
               >
                 Start Your Journey
               </Button>
               <Button
                 onClick={() => scrollToSection('contact')}
                 variant="outline"
-                className="border-2 border-white text-white hover:bg-white hover:text-gray-900 text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 rounded-lg transition-all duration-300 transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-white backdrop-blur-sm w-full sm:w-auto"
+                className="border-2 border-white text-white hover:bg-white hover:text-gray-900 text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-white backdrop-blur-sm w-full sm:w-auto"
               >
                 Get Free Consultation
               </Button>

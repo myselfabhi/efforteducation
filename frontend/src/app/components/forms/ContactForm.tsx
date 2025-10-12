@@ -67,83 +67,83 @@ export default function ContactForm() {
 
   return (
     <Card className="border border-gray-200 shadow-xl bg-white">
-      <CardContent className="p-10">
-        <h3 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+      <CardContent className="p-6">
+        <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
           Send us a Message
         </h3>
 
         {/* Status Messages */}
         {submitStatus === 'success' && (
-          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center space-x-3">
-            <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0" />
-            <p className="text-green-800 font-medium">{submitMessage}</p>
+          <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-center space-x-2">
+            <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+            <p className="text-green-800 text-sm">{submitMessage}</p>
           </div>
         )}
 
         {submitStatus === 'error' && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center space-x-3">
-            <XCircle className="w-6 h-6 text-red-600 flex-shrink-0" />
-            <p className="text-red-800 font-medium">{submitMessage}</p>
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center space-x-2">
+            <XCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+            <p className="text-red-800 text-sm">{submitMessage}</p>
           </div>
         )}
               
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div>
-            <label htmlFor="name" className="block text-gray-700 mb-3 font-semibold text-lg">
+            <label htmlFor="name" className="block text-gray-700 mb-2 font-semibold text-sm">
               Full Name *
             </label>
             <Input
               id="name"
               type="text"
               {...register('name')}
-              className={`w-full border-gray-300 focus:border-red-500 focus:ring-red-500 h-12 text-lg ${
+              className={`w-full border-gray-300 focus:border-red-500 focus:ring-red-500 h-10 text-sm ${
                 errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
               }`}
               disabled={isSubmitting}
             />
             {errors.name && (
-              <p className="mt-2 text-sm text-red-600">{errors.name.message}</p>
+              <p className="mt-1 text-xs text-red-600">{errors.name.message}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-gray-700 mb-3 font-semibold text-lg">
+            <label htmlFor="email" className="block text-gray-700 mb-2 font-semibold text-sm">
               Email Address *
             </label>
             <Input
               id="email"
               type="email"
               {...register('email')}
-              className={`w-full border-gray-300 focus:border-red-500 focus:ring-red-500 h-12 text-lg ${
+              className={`w-full border-gray-300 focus:border-red-500 focus:ring-red-500 h-10 text-sm ${
                 errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
               }`}
               disabled={isSubmitting}
             />
             {errors.email && (
-              <p className="mt-2 text-sm text-red-600">{errors.email.message}</p>
+              <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="phone" className="block text-gray-700 mb-3 font-semibold text-lg">
+            <label htmlFor="phone" className="block text-gray-700 mb-2 font-semibold text-sm">
               Phone Number
             </label>
             <Input
               id="phone"
               type="tel"
               {...register('phone')}
-              className={`w-full border-gray-300 focus:border-red-500 focus:ring-red-500 h-12 text-lg ${
+              className={`w-full border-gray-300 focus:border-red-500 focus:ring-red-500 h-10 text-sm ${
                 errors.phone ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
               }`}
               disabled={isSubmitting}
             />
             {errors.phone && (
-              <p className="mt-2 text-sm text-red-600">{errors.phone.message}</p>
+              <p className="mt-1 text-xs text-red-600">{errors.phone.message}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="interest" className="block text-gray-700 mb-3 font-semibold text-lg">
+            <label htmlFor="interest" className="block text-gray-700 mb-2 font-semibold text-sm">
               Interested Course/Program *
             </label>
             <Select 
@@ -151,7 +151,7 @@ export default function ContactForm() {
               onValueChange={(value) => register('interest').onChange({ target: { value } })}
               disabled={isSubmitting}
             >
-              <SelectTrigger className={`w-full border-gray-300 focus:border-red-500 focus:ring-red-500 h-12 text-lg ${
+              <SelectTrigger className={`w-full border-gray-300 focus:border-red-500 focus:ring-red-500 h-10 text-sm ${
                 errors.interest ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
               }`}>
                 <SelectValue placeholder="Select a program" />
@@ -167,41 +167,41 @@ export default function ContactForm() {
               </SelectContent>
             </Select>
             {errors.interest && (
-              <p className="mt-2 text-sm text-red-600">{errors.interest.message}</p>
+              <p className="mt-1 text-xs text-red-600">{errors.interest.message}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="message" className="block text-gray-700 mb-3 font-semibold text-lg">
+            <label htmlFor="message" className="block text-gray-700 mb-2 font-semibold text-sm">
               Message *
             </label>
             <Textarea
               id="message"
               {...register('message')}
-              className={`w-full border-gray-300 focus:border-red-500 focus:ring-red-500 min-h-[140px] text-lg ${
+              className={`w-full border-gray-300 focus:border-red-500 focus:ring-red-500 min-h-[100px] text-sm ${
                 errors.message ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''
               }`}
               placeholder="Tell us about your learning goals or any questions you have..."
               disabled={isSubmitting}
             />
             {errors.message && (
-              <p className="mt-2 text-sm text-red-600">{errors.message.message}</p>
+              <p className="mt-1 text-xs text-red-600">{errors.message.message}</p>
             )}
           </div>
 
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-xl py-4 rounded-lg transition-all duration-300 transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-red-500 shadow-lg hover:shadow-red-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+            className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-base py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-red-500 shadow-lg hover:shadow-red-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 Sending Message...
               </>
             ) : (
               <>
-                <Send className="w-5 h-5 mr-2" />
+                <Send className="w-4 h-4 mr-2" />
                 Send Message
               </>
             )}

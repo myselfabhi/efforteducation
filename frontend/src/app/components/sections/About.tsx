@@ -24,35 +24,35 @@ export default function About() {
   ];
 
   return (
-    <section id="about" className="py-16 sm:py-20 bg-gradient-to-b from-gray-50 to-white">
-      <div className="container mx-auto max-w-6xl px-4 lg:px-8">
+    <section id="about" className="py-10 sm:py-12 bg-gradient-to-b from-gray-50 to-white">
+      <div className="container mx-auto max-w-5xl px-4 lg:px-6">
         {/* Section Header */}
-        <div className="text-center mb-16 sm:mb-20">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
+        <div className="text-center mb-10 sm:mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
             About <span className="text-red-600">Effort Education</span>
           </h2>
-          <p className="text-lg sm:text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
-            With over 5 years of excellence in education, Effort Education has successfully guided more than 2,000 students to achieve their dreams. We specialize in Government Exam preparation, school studies enhancement, and leadership development programs that build confident, capable leaders of tomorrow.
+          <p className="text-sm sm:text-base md:text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed">
+            With over 5 years of excellence in education, Effort Education has successfully guided more than 2,000 students to achieve their dreams.
           </p>
         </div>
 
         {/* About Cards */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {aboutCards.map((card, index) => (
             <Card
               key={index}
-              className="border border-gray-200 hover:shadow-xl transition-all duration-300 bg-white transform hover:-translate-y-2 hover:border-red-200"
+              className="border border-gray-200 hover:shadow-xl transition-all duration-300 bg-white transform hover:-translate-y-1 hover:border-red-200"
             >
-              <CardContent className="p-6 sm:p-8 text-center">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-lg">
-                  <card.icon className="w-8 h-8 sm:w-10 sm:h-10 text-red-600" />
+              <CardContent className="p-5 text-center">
+                <div className="w-14 h-14 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
+                  <card.icon className="w-7 h-7 text-red-600" />
                 </div>
 
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">
                   {card.title}
                 </h3>
 
-                <p className="text-gray-700 leading-relaxed text-base sm:text-lg">
+                <p className="text-gray-700 leading-relaxed text-sm">
                   {card.content}
                 </p>
               </CardContent>
