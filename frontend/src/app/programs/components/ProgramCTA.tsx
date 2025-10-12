@@ -1,5 +1,6 @@
 import { Button } from '../../components/ui/button';
 import { ArrowRight, Phone, Mail } from 'lucide-react';
+import Link from 'next/link';
 
 export default function ProgramCTA() {
   return (
@@ -21,12 +22,12 @@ export default function ProgramCTA() {
                 Get Free Consultation
               </Button>
             </a>
-            <a href="/courses">
+            <Link href="/courses">
               <Button variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-gray-900 text-lg px-8 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-white backdrop-blur-sm">
                 <ArrowRight className="w-5 h-5 mr-2" />
                 Browse All Courses
               </Button>
-            </a>
+            </Link>
           </div>
 
           {/* Contact Info */}

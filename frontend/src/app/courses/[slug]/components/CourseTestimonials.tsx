@@ -2,11 +2,7 @@ import { Quote } from 'lucide-react';
 import { Card, CardContent } from '../../../components/ui/card';
 import { Avatar, AvatarFallback } from '../../../components/ui/avatar';
 
-interface CourseTestimonialsProps {
-  slug: string;
-}
-
-export default function CourseTestimonials({ slug: _slug }: CourseTestimonialsProps) {
+export default function CourseTestimonials() {
   const testimonials = [
     {
       quote: "The Bank PO preparation course at Effort Education was exceptional. The structured approach and expert guidance helped me clear the exam in my first attempt. The faculty's dedication and comprehensive study material made all the difference.",

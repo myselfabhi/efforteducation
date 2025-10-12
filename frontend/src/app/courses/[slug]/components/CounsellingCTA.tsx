@@ -2,11 +2,7 @@ import { Calendar, Users, Clock } from 'lucide-react';
 import { Card, CardContent } from '../../../components/ui/card';
 import { Button } from '../../../components/ui/button';
 
-interface CounsellingCTAProps {
-  slug: string;
-}
-
-export default function CounsellingCTA({ slug: _slug }: CounsellingCTAProps) {
+export default function CounsellingCTA() {
   const handleCounsellingClick = () => {
     // TODO: Integrate with Calendly
     alert('Counselling booking will be integrated with Calendly soon!');

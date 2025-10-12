@@ -5,6 +5,7 @@ import { BookOpen, Users, TrendingUp, Megaphone, Brain, Loader2, AlertCircle } f
 import { Card, CardContent } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { api, Course } from '../../../lib/api';
+import Link from 'next/link';
 
 export default function ProgramCategories() {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -161,13 +162,13 @@ export default function ProgramCategories() {
                         )}
                         
                         <div className="mt-6">
-                          <a 
+                          <Link 
                             href="/courses"
                             className="inline-flex items-center text-red-600 hover:text-red-700 hover:bg-red-50 px-4 py-2 rounded-lg transition-colors font-semibold group"
                           >
                             View All Courses 
                             <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
-                          </a>
+                          </Link>
                         </div>
                       </div>
                     </div>

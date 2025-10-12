@@ -6,23 +6,16 @@ import FacultyList from "./components/FacultyList";
 import CounsellingCTA from "./components/CounsellingCTA";
 import CourseTestimonials from "./components/CourseTestimonials";
 
-interface CoursePageProps {
-  params: Promise<{
-    slug: string;
-  }>;
-}
-
-export default async function CourseDetailPage({ params }: CoursePageProps) {
-  const { slug } = await params;
+export default function CourseDetailPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <CourseHero slug={slug} />
-        <CourseDetails slug={slug} />
-        <FacultyList slug={slug} />
-        <CounsellingCTA slug={slug} />
-        <CourseTestimonials slug={slug} />
+        <CourseHero />
+        <CourseDetails />
+        <FacultyList />
+        <CounsellingCTA />
+        <CourseTestimonials />
       </main>
       <Footer />
     </div>

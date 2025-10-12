@@ -1,10 +1,6 @@
 import { ImageWithFallback } from '../../../components/common/ImageWithFallback';
 
-interface CourseHeroProps {
-  slug: string;
-}
-
-export default function CourseHero({ slug: _slug }: CourseHeroProps) {
+export default function CourseHero() {
   // This would typically fetch course data based on slug
   const courseData = {
     title: "Bank PO & Clerk Preparation",

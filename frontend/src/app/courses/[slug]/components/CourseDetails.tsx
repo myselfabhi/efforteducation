@@ -1,8 +1,4 @@
-interface CourseDetailsProps {
-  slug: string;
-}
-
-export default function CourseDetails({ slug: _slug }: CourseDetailsProps) {
+export default function CourseDetails() {
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto max-w-6xl px-4 lg:px-8">

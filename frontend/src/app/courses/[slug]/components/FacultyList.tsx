@@ -1,11 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "../../../components/ui/avatar";
 import { Card, CardContent } from "../../../components/ui/card";
 
-interface FacultyListProps {
-  slug: string;
-}
-
-export default function FacultyList({ slug: _slug }: FacultyListProps) {
+export default function FacultyList() {
   const faculty = [
     {
       name: "Dr. Priya Sharma",
