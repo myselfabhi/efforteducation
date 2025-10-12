@@ -106,37 +106,70 @@ export default function Testimonials() {
           </div>
         )}
 
-        {/* Testimonials Grid */}
+        {/* Testimonials Continuous Scrolling Animation */}
         {!loading && (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {displayTestimonials.map((testimonial) => (
-              <Card key={testimonial.id} className="bg-gray-800 border border-gray-700 hover:bg-gray-750 hover:border-red-500/30 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl hover:shadow-red-500/10">
-                <CardContent className="p-5">
-                  <div className="mb-4">
-                    <Quote className="w-8 h-8 text-red-500 mb-3" />
-                    <p className="text-gray-300 leading-relaxed italic text-sm">
-                      &quot;{testimonial.quote}&quot;
-                    </p>
-                  </div>
-                  
-                  <div className="flex items-center space-x-3">
-                    <Avatar className="w-12 h-12">
-                      <AvatarFallback className="bg-gradient-to-br from-red-600 to-red-700 text-white font-bold text-sm">
-                        {testimonial.initials}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <h4 className="font-bold text-white text-sm">
-                        {testimonial.name}
-                      </h4>
-                      <p className="text-red-400 font-semibold text-xs">
-                        {testimonial.role}
+          <div className="overflow-hidden">
+            <div className="flex animate-scroll-right-to-left">
+              {/* First set of testimonials */}
+              {displayTestimonials.map((testimonial) => (
+                <Card key={testimonial.id} className="bg-gray-800 border border-gray-700 hover:bg-gray-750 hover:border-red-500/30 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl hover:shadow-red-500/10 w-80 md:w-96 flex-shrink-0 mx-2">
+                  <CardContent className="p-5">
+                    <div className="mb-4">
+                      <Quote className="w-8 h-8 text-red-500 mb-3" />
+                      <p className="text-gray-300 leading-relaxed italic text-sm">
+                        &quot;{testimonial.quote}&quot;
                       </p>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                    
+                    <div className="flex items-center space-x-3">
+                      <Avatar className="w-12 h-12">
+                        <AvatarFallback className="bg-gradient-to-br from-red-600 to-red-700 text-white font-bold text-sm">
+                          {testimonial.initials}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <h4 className="font-bold text-white text-sm">
+                          {testimonial.name}
+                        </h4>
+                        <p className="text-red-400 font-semibold text-xs">
+                          {testimonial.role}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+              
+              {/* Duplicate set for seamless continuous loop */}
+              {displayTestimonials.map((testimonial) => (
+                <Card key={`duplicate-${testimonial.id}`} className="bg-gray-800 border border-gray-700 hover:bg-gray-750 hover:border-red-500/30 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl hover:shadow-red-500/10 w-80 md:w-96 flex-shrink-0 mx-2">
+                  <CardContent className="p-5">
+                    <div className="mb-4">
+                      <Quote className="w-8 h-8 text-red-500 mb-3" />
+                      <p className="text-gray-300 leading-relaxed italic text-sm">
+                        &quot;{testimonial.quote}&quot;
+                      </p>
+                    </div>
+                    
+                    <div className="flex items-center space-x-3">
+                      <Avatar className="w-12 h-12">
+                        <AvatarFallback className="bg-gradient-to-br from-red-600 to-red-700 text-white font-bold text-sm">
+                          {testimonial.initials}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <h4 className="font-bold text-white text-sm">
+                          {testimonial.name}
+                        </h4>
+                        <p className="text-red-400 font-semibold text-xs">
+                          {testimonial.role}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         )}
       </div>
