@@ -40,7 +40,7 @@ export default function ContactForm() {
     setSubmitMessage('');
 
     try {
-      // Submit to backend API
+      // Submit contact form
       const response = await api.submitContactForm({
         name: data.name,
         email: data.email,
