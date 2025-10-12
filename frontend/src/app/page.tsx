@@ -17,11 +17,11 @@ export default function Home() {
         <Programs />
         <WhyChoose />
         <Testimonials />
-        <div className="py-12 bg-gradient-to-b from-white to-gray-50">
+        <section id="contact" className="py-16 bg-gradient-to-b from-white via-gray-50 to-white">
           <div className="container mx-auto max-w-5xl px-4 lg:px-6">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Start Your <span className="text-red-600">Success Journey</span>
+                Start Your <span className="bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent">Success Journey</span>
               </h2>
               <p className="text-base md:text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed">
                 Ready to achieve your dreams? Get a free consultation and personalized study plan.
@@ -31,7 +31,7 @@ export default function Home() {
               <ContactForm />
             </div>
           </div>
-        </div>
+        </section>
       </main>
       <Footer />
     </div>
