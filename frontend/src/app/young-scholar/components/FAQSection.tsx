@@ -51,7 +51,7 @@ export default function FAQSection() {
             Frequently Asked Questions
           </h2>
           <p className="text-base md:text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed">
-            Got questions? We've got answers. Find everything you need to know about the Young Scholar Program.
+            Got questions? We&apos;ve got answers. Find everything you need to know about the Young Scholar Program.
           </p>
         </div>
 

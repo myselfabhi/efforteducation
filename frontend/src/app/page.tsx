@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import Header from "./components/layout/Header";
 import Hero from "./components/sections/Hero";
 import ProgramsScrollable from "./components/sections/ProgramsScrollable";
@@ -24,7 +25,9 @@ export default function Home() {
               </p>
             </div>
             <div className="max-w-3xl mx-auto">
-              <ContactForm />
+              <Suspense fallback={<div className="text-center py-8">Loading contact form...</div>}>
+                <ContactForm />
+              </Suspense>
             </div>
           </div>
         </section>

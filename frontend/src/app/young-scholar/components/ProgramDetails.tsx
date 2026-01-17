@@ -91,7 +91,7 @@ export default function ProgramDetails() {
                 </div>
 
                 <div className="pt-6 border-t border-red-500/30">
-                  <h3 className="text-lg font-semibold text-white mb-3">What's Included:</h3>
+                  <h3 className="text-lg font-semibold text-white mb-3">What&apos;s Included:</h3>
                   <ul className="space-y-2 text-sm text-gray-300">
                     <li className="flex items-start gap-2">
                       <span className="text-red-500 mt-1">✓</span>

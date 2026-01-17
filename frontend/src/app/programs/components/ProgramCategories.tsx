@@ -75,7 +75,8 @@ export default function ProgramCategories() {
     }
   };
 
-  const categories = ['government_exam', 'school_enrichment', 'leadership', 'public_speaking'];
+  // Only show Government Competitive Exams - Young Scholar has its own dedicated page
+  const categories = ['government_exam'];
   const categoryCourses = categories.map(category => ({
     category,
     courses: courses.filter(course => course.category === category)
@@ -116,62 +117,88 @@ export default function ProgramCategories() {
 
         {/* Program Categories */}
         {!loading && !error && (
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid lg:grid-cols-1 gap-8 max-w-4xl mx-auto">
             {categoryCourses.map(({ category, courses: categoryCoursesList }) => {
               const IconComponent = getCategoryIcon(category);
               const hasCourses = categoryCoursesList.length > 0;
               
               return (
-                <Card key={category} className="border border-gray-200 hover:shadow-xl transition-all duration-300 bg-white transform hover:-translate-y-2 hover:border-red-200">
-                  <CardContent className="p-8">
-                    <div className="flex items-start space-x-6">
-                      <div className="w-16 h-16 bg-gradient-to-br from-red-100 to-red-200 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                        <IconComponent className="w-8 h-8 text-red-600" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                          {getCategoryTitle(category)}
-                        </h3>
-                        <p className="text-gray-700 mb-6 text-lg leading-relaxed">
-                          {getCategoryDescription(category)}
-                        </p>
-                        
-                        {hasCourses && (
-                          <div className="space-y-3">
-                            <h4 className="font-semibold text-gray-900 text-lg">Available Courses:</h4>
-                            {categoryCoursesList.slice(0, 3).map((course) => (
-                              <div key={course.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                <div>
-                                  <h5 className="font-semibold text-gray-900">{course.title}</h5>
-                                  <p className="text-sm text-gray-600">{course.duration}</p>
-                                </div>
-                                <div className="text-right">
-                                  <span className="font-bold text-red-600">₹{course.price.toLocaleString()}</span>
-                                  {course.originalPrice && course.originalPrice > course.price && (
-                                    <p className="text-xs line-through text-gray-400">₹{course.originalPrice.toLocaleString()}</p>
-                                  )}
-                                </div>
-                              </div>
-                            ))}
-                            {categoryCoursesList.length > 3 && (
-                              <p className="text-sm text-gray-600 font-medium">
-                                +{categoryCoursesList.length - 3} more courses available
-                              </p>
-                            )}
-                          </div>
-                        )}
-                        
-                        <div className="mt-6">
-                          <Link 
-                            href="/courses"
-                            className="inline-flex items-center text-red-600 hover:text-red-700 hover:bg-red-50 px-4 py-2 rounded-lg transition-colors font-semibold group"
-                          >
-                            View All Courses 
-                            <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
-                          </Link>
+                <Card key={category} className="border border-gray-200 hover:shadow-2xl transition-all duration-300 bg-white transform hover:-translate-y-3 hover:border-red-300 overflow-hidden group">
+                  <CardContent className="p-0">
+                    {/* Category Header with Gradient Background */}
+                    <div className="bg-gradient-to-br from-red-50 via-red-50/50 to-white p-8 pb-6 border-b border-gray-100">
+                      <div className="flex items-start space-x-6">
+                        <div className="w-20 h-20 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                          <IconComponent className="w-10 h-10 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                            {getCategoryTitle(category)}
+                          </h3>
+                          <p className="text-gray-700 text-base leading-relaxed">
+                            {getCategoryDescription(category)}
+                          </p>
                         </div>
                       </div>
                     </div>
+
+                    {/* Course List */}
+                    {hasCourses && (
+                      <div className="p-6 pt-4 space-y-3">
+                        <div className="flex items-center justify-between mb-4">
+                          <h4 className="font-semibold text-gray-900 text-lg">Available Courses</h4>
+                          <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium">
+                            {categoryCoursesList.length} {categoryCoursesList.length === 1 ? 'Course' : 'Courses'}
+                          </span>
+                        </div>
+                        {categoryCoursesList.map((course) => (
+                          <Link 
+                            key={course.id}
+                            href={`/courses/${course.id}`}
+                            className="block"
+                          >
+                            <div 
+                              className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-50/50 rounded-xl hover:from-red-50 hover:to-red-50/30 border border-gray-100 hover:border-red-200 transition-all duration-300 group/course cursor-pointer"
+                            >
+                              <div className="flex-1">
+                                <h5 className="font-semibold text-gray-900 mb-1 group-hover/course:text-red-700 transition-colors">
+                                  {course.title}
+                                </h5>
+                                <div className="flex items-center gap-3 text-sm text-gray-600">
+                                  <span className="flex items-center gap-1">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    {course.duration}
+                                  </span>
+                                  <span className="flex items-center gap-1 text-red-600">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                    Online (Live Classes)
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="ml-4">
+                                {course.price === 0 ? (
+                                  <span className="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-sm font-semibold">
+                                    Contact for Pricing
+                                  </span>
+                                ) : (
+                                  <div className="text-right">
+                                    <span className="font-bold text-red-600">₹{course.price.toLocaleString()}</span>
+                                    {course.originalPrice && course.originalPrice > course.price && (
+                                      <p className="text-xs line-through text-gray-400">₹{course.originalPrice.toLocaleString()}</p>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+
                   </CardContent>
                 </Card>
               );

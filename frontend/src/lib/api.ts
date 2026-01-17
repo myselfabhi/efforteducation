@@ -49,16 +49,16 @@ export interface CoursesResponse {
 
 // Mock Data
 const MOCK_COURSES: Course[] = [
+  // Banking Coaching
   {
     id: 1,
-    title: "SSC CGL Complete Preparation",
-    description: "Comprehensive preparation course for SSC CGL examination with expert guidance, study materials, and regular mock tests.",
-    shortDescription: "Complete preparation for SSC CGL exam",
+    title: "IBPS PO Preparation",
+    description: "Comprehensive preparation course for IBPS Probationary Officer examination with expert guidance, study materials, and regular mock tests.",
+    shortDescription: "Complete preparation for IBPS PO exam",
     category: "government_exam",
     level: "Intermediate",
-    duration: "6 months",
-    price: 15000,
-    originalPrice: 20000,
+    duration: "3 months",
+    price: 0, // Contact for Pricing
     isActive: true,
     isFeatured: true,
     maxStudents: 50,
@@ -68,71 +68,153 @@ const MOCK_COURSES: Course[] = [
   },
   {
     id: 2,
-    title: "Banking Exam Masterclass",
-    description: "Expert coaching for IBPS, SBI PO, and other banking examinations with personalized attention and doubt clearing sessions.",
-    shortDescription: "Banking exam preparation course",
+    title: "IBPS Clerk Preparation",
+    description: "Expert coaching for IBPS Clerk examination with personalized attention, doubt clearing sessions, and comprehensive study materials.",
+    shortDescription: "Banking clerk exam preparation course",
     category: "government_exam",
-    level: "Advanced",
-    duration: "8 months",
-    price: 18000,
-    originalPrice: 25000,
+    level: "Intermediate",
+    duration: "3 months",
+    price: 0, // Contact for Pricing
     isActive: true,
     isFeatured: true,
-    maxStudents: 40,
+    maxStudents: 50,
     currentStudents: 28,
     rating: 4.9,
     totalRatings: 98
   },
   {
     id: 3,
-    title: "Public Speaking Excellence",
-    description: "Transform your communication skills with our comprehensive public speaking course. Build confidence and master the art of presentation.",
-    shortDescription: "Master public speaking skills",
-    category: "public_speaking",
-    level: "Beginner",
+    title: "SBI PO Preparation",
+    description: "Master the SBI Probationary Officer examination with our structured program covering all sections: Quantitative Aptitude, Reasoning, English, and General Awareness.",
+    shortDescription: "SBI PO exam preparation course",
+    category: "government_exam",
+    level: "Advanced",
     duration: "3 months",
-    price: 8000,
-    originalPrice: 12000,
+    price: 0, // Contact for Pricing
     isActive: true,
     isFeatured: true,
-    maxStudents: 30,
-    currentStudents: 22,
-    rating: 4.7,
-    totalRatings: 65
+    maxStudents: 40,
+    currentStudents: 32,
+    rating: 4.9,
+    totalRatings: 115
   },
+  // SSC Coaching
   {
     id: 4,
-    title: "Leadership Development Program",
-    description: "Develop essential leadership qualities and learn to inspire and lead teams effectively in various situations.",
-    shortDescription: "Build leadership skills",
-    category: "leadership",
+    title: "SSC CGL Preparation",
+    description: "Complete coverage of Staff Selection Commission Combined Graduate Level exam including tier-wise preparation, mock test series, and personalized guidance.",
+    shortDescription: "Complete preparation for SSC CGL exam",
+    category: "government_exam",
     level: "Intermediate",
-    duration: "4 months",
-    price: 10000,
-    originalPrice: 15000,
+    duration: "3 months",
+    price: 0, // Contact for Pricing
     isActive: true,
-    isFeatured: false,
-    maxStudents: 25,
-    currentStudents: 18,
-    rating: 4.6,
-    totalRatings: 52
+    isFeatured: true,
+    maxStudents: 50,
+    currentStudents: 45,
+    rating: 4.8,
+    totalRatings: 180
   },
   {
     id: 5,
-    title: "School Enrichment Program",
-    description: "Enhance academic performance and develop critical thinking skills with our comprehensive school enrichment program.",
-    shortDescription: "Academic enrichment for students",
-    category: "school_enrichment",
+    title: "SSC CHSL Preparation",
+    description: "Expert coaching for Staff Selection Commission Combined Higher Secondary Level examination with comprehensive syllabus coverage and practice tests.",
+    shortDescription: "SSC CHSL exam preparation course",
+    category: "government_exam",
     level: "Beginner",
-    duration: "6 months",
-    price: 12000,
-    originalPrice: 16000,
+    duration: "3 months",
+    price: 0, // Contact for Pricing
     isActive: true,
     isFeatured: false,
-    maxStudents: 60,
-    currentStudents: 45,
-    rating: 4.5,
-    totalRatings: 78
+    maxStudents: 50,
+    currentStudents: 38,
+    rating: 4.7,
+    totalRatings: 95
+  },
+  // Railway Exams
+  {
+    id: 6,
+    title: "Railway Exams Preparation",
+    description: "Comprehensive preparation for Railway Recruitment Board (RRB) examinations including NTPC, Group D, and other railway job exams.",
+    shortDescription: "Railway exam preparation course",
+    category: "government_exam",
+    level: "Intermediate",
+    duration: "3 months",
+    price: 0, // Contact for Pricing
+    isActive: true,
+    isFeatured: false,
+    maxStudents: 50,
+    currentStudents: 42,
+    rating: 4.6,
+    totalRatings: 125
+  },
+  // Police Exams
+  {
+    id: 7,
+    title: "Police Exams Preparation",
+    description: "Expert coaching for various police examinations including constable, sub-inspector, and other police recruitment exams with comprehensive syllabus coverage.",
+    shortDescription: "Police exam preparation course",
+    category: "government_exam",
+    level: "Intermediate",
+    duration: "3 months",
+    price: 0, // Contact for Pricing
+    isActive: true,
+    isFeatured: false,
+    maxStudents: 50,
+    currentStudents: 35,
+    rating: 4.7,
+    totalRatings: 88
+  },
+  // UPPSC
+  {
+    id: 8,
+    title: "UPPSC Preparation",
+    description: "Complete preparation for Uttar Pradesh Public Service Commission examinations including prelims, mains, and interview guidance.",
+    shortDescription: "UPPSC exam preparation course",
+    category: "government_exam",
+    level: "Advanced",
+    duration: "3 months",
+    price: 0, // Contact for Pricing
+    isActive: true,
+    isFeatured: false,
+    maxStudents: 40,
+    currentStudents: 30,
+    rating: 4.8,
+    totalRatings: 72
+  },
+  // NET
+  {
+    id: 9,
+    title: "NET Preparation",
+    description: "Expert coaching for National Eligibility Test (NET) for Assistant Professor and Junior Research Fellowship with comprehensive subject coverage.",
+    shortDescription: "NET exam preparation course",
+    category: "government_exam",
+    level: "Advanced",
+    duration: "3 months",
+    price: 0, // Contact for Pricing
+    isActive: true,
+    isFeatured: false,
+    maxStudents: 35,
+    currentStudents: 25,
+    rating: 4.7,
+    totalRatings: 56
+  },
+  // PCS
+  {
+    id: 10,
+    title: "PCS Preparation",
+    description: "Complete preparation for Provincial Civil Service examinations with structured curriculum covering all subjects and comprehensive test series.",
+    shortDescription: "PCS exam preparation course",
+    category: "government_exam",
+    level: "Advanced",
+    duration: "3 months",
+    price: 0, // Contact for Pricing
+    isActive: true,
+    isFeatured: false,
+    maxStudents: 40,
+    currentStudents: 28,
+    rating: 4.8,
+    totalRatings: 64
   }
 ];
 

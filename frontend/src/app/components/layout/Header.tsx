@@ -43,12 +43,6 @@ export default function Header() {
               About
             </Link>
             <Link
-              href="/courses"
-              className={`transition-colors ${isActive('/courses') ? 'text-red-400' : 'text-gray-300 hover:text-white'}`}
-            >
-              Courses
-            </Link>
-            <Link
               href="/programs"
               className={`transition-colors ${isActive('/programs') ? 'text-red-400' : 'text-gray-300 hover:text-white'}`}
             >
@@ -104,13 +98,6 @@ export default function Header() {
                 className={`block transition-colors w-full text-left ${isActive('/about') ? 'text-red-400' : 'text-gray-300 hover:text-white'}`}
               >
                 About
-              </Link>
-              <Link
-                href="/courses"
-                onClick={() => setIsMenuOpen(false)}
-                className={`block transition-colors w-full text-left ${isActive('/courses') ? 'text-red-400' : 'text-gray-300 hover:text-white'}`}
-              >
-                Courses
               </Link>
               <Link
                 href="/programs"

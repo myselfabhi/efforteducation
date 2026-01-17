@@ -89,7 +89,7 @@ export default function ProgramOverview() {
               <ul className="space-y-2 text-sm">
                 <li className="flex items-start gap-2">
                   <span className="text-red-600 mt-1">✓</span>
-                  <span>Affordable investment in your child's future</span>
+                  <span>Affordable investment in your child&apos;s future</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-red-600 mt-1">✓</span>

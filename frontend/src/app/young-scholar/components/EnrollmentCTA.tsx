@@ -2,7 +2,7 @@
 
 import { Button } from '@/app/components/ui/button';
 import { Card, CardContent } from '@/app/components/ui/card';
-import { Phone, Mail, MessageCircle } from 'lucide-react';
+import { Phone, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 
 export default function EnrollmentCTA() {
