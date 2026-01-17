@@ -1,6 +1,7 @@
 
 'use client';
 
+import { Suspense } from 'react';
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import ContactHero from "./components/ContactHero";
@@ -17,7 +18,9 @@ export default function ContactPage() {
         <div className="py-16 bg-white">
           <div className="container mx-auto max-w-6xl px-4 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-12">
-              <ContactForm />
+              <Suspense fallback={<div>Loading form...</div>}>
+                <ContactForm />
+              </Suspense>
               <div className="space-y-8">
                 <ContactInfo />
                 <CounsellingCTA />

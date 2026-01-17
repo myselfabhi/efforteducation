@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Card, CardContent } from '../ui/card';
@@ -13,6 +14,7 @@ import { api } from '../../../lib/api';
 import { Loader2, CheckCircle2, Mail, Phone, User, MessageSquare, BookOpen, Send, Sparkles } from 'lucide-react';
 
 export default function ContactForm() {
+  const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [submitMessage, setSubmitMessage] = useState('');
@@ -34,6 +36,20 @@ export default function ContactForm() {
       message: ''
     }
   });
+
+  // Pre-fill interest from URL query parameter
+  useEffect(() => {
+    const interestParam = searchParams?.get('interest');
+    if (interestParam) {
+      // Map query param values to form values
+      const interestMap: Record<string, string> = {
+        'young_scholar': 'young-scholar',
+        'young-scholar': 'young-scholar',
+      };
+      const formValue = interestMap[interestParam] || interestParam;
+      setValue('interest', formValue);
+    }
+  }, [searchParams, setValue]);
 
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
@@ -233,6 +249,7 @@ export default function ContactForm() {
                       <SelectValue placeholder="Choose a program" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="young-scholar">⭐ Young Scholar Program (Class 4-8)</SelectItem>
                       <SelectItem value="bank-po">🏦 Bank PO & Clerk</SelectItem>
                       <SelectItem value="ssc-cgl">📚 SSC & CGL</SelectItem>
                       <SelectItem value="other-exams">📝 Other Competitive Exams</SelectItem>

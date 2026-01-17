@@ -55,6 +55,12 @@ export default function Header() {
               Programs
             </Link>
             <Link
+              href="/young-scholar"
+              className={`transition-colors ${isActive('/young-scholar') ? 'text-red-400' : 'text-gray-300 hover:text-white'}`}
+            >
+              Young Scholar
+            </Link>
+            <Link
               href="/contact"
               className={`transition-colors ${isActive('/contact') ? 'text-red-400' : 'text-gray-300 hover:text-white'}`}
             >
@@ -112,6 +118,13 @@ export default function Header() {
                 className={`block transition-colors w-full text-left ${isActive('/programs') ? 'text-red-400' : 'text-gray-300 hover:text-white'}`}
               >
                 Programs
+              </Link>
+              <Link
+                href="/young-scholar"
+                onClick={() => setIsMenuOpen(false)}
+                className={`block transition-colors w-full text-left ${isActive('/young-scholar') ? 'text-red-400' : 'text-gray-300 hover:text-white'}`}
+              >
+                Young Scholar
               </Link>
               <Link
                 href="/contact"
