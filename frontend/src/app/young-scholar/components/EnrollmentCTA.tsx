@@ -12,10 +12,10 @@ export default function EnrollmentCTA() {
   };
 
   return (
-    <section id="enrollment-cta" className="py-16 sm:py-20 bg-gradient-to-br from-red-600 via-red-700 to-red-800">
+    <section id="enrollment-cta" className="py-16 sm:py-20 bg-gradient-to-b from-white via-gray-50 to-white">
       <div className="container mx-auto max-w-4xl px-4 lg:px-6">
-        <Card className="border-0 shadow-2xl bg-white overflow-hidden">
-          <div className="h-2 bg-gradient-to-r from-red-500 via-red-600 to-red-700"></div>
+        <Card className="border border-gray-200 shadow-2xl bg-white overflow-hidden">
+          <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-600 to-red-700"></div>
           <CardContent className="p-8 md:p-12">
             <div className="text-center mb-8">
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -66,7 +66,7 @@ export default function EnrollmentCTA() {
               <Link href="/contact">
                 <Button
                   variant="outline"
-                  className="border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white font-semibold px-8 py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
+                  className="border-2 border-gray-300 text-gray-700 hover:bg-gray-100 hover:text-gray-900 font-semibold px-8 py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
                 >
                   Schedule Demo Class
                 </Button>

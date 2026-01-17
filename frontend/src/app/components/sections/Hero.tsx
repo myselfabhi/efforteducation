@@ -18,7 +18,7 @@ export default function Hero() {
       
       <div className="relative container mx-auto max-w-6xl px-4 lg:px-6 py-16 sm:py-20 md:py-24 text-center">
         <div className="inline-block px-4 py-2 bg-red-600/20 border border-red-500/30 rounded-full mb-6">
-          <span className="text-red-400 text-sm font-semibold">Established Since 2000</span>
+          <span className="text-red-400 text-sm font-semibold">Established Since 1990</span>
         </div>
         
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight animate-fade-in">
@@ -30,7 +30,7 @@ export default function Hero() {
         </p>
 
         <p className="text-gray-400 text-sm mb-8 animate-fade-in-delay">
-          23+ Years of Excellence in Education
+          34+ Years of Excellence in Education
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center animate-fade-in-delay-2">

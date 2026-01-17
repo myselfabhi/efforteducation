@@ -27,14 +27,18 @@ export default function TeamSection() {
   ];
 
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="container mx-auto max-w-6xl px-4 lg:px-8">
+    <section className="py-16 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 bg-gradient-to-r from-red-600/20 via-transparent to-red-800/10"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/40"></div>
+      
+      <div className="relative container mx-auto max-w-6xl px-4 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
             Meet Our Team
           </h2>
-          <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+          <p className="text-lg text-gray-300 max-w-3xl mx-auto">
             Experienced educators dedicated to your success and growth.
           </p>
         </div>
@@ -44,7 +48,7 @@ export default function TeamSection() {
           {teamMembers.map((member, index) => (
             <Card
               key={index}
-              className="border border-gray-200 hover:shadow-lg transition-shadow duration-300 bg-white"
+              className="border border-gray-700 hover:border-red-500/30 hover:shadow-xl transition-all duration-300 bg-gray-800/50 backdrop-blur-sm"
             >
               <CardContent className="p-8 text-center">
                 <Avatar className="w-24 h-24 mx-auto mb-6">
@@ -54,15 +58,15 @@ export default function TeamSection() {
                   </AvatarFallback>
                 </Avatar>
                 
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                <h3 className="text-xl font-bold text-white mb-2">
                   {member.name}
                 </h3>
                 
-                <p className="text-red-600 font-semibold mb-4">
+                <p className="text-red-400 font-semibold mb-4">
                   {member.role}
                 </p>
                 
-                <p className="text-gray-700 leading-relaxed">
+                <p className="text-gray-300 leading-relaxed">
                   {member.description}
                 </p>
               </CardContent>

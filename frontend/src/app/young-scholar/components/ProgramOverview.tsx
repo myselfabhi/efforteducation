@@ -58,7 +58,7 @@ export default function ProgramOverview() {
           ))}
         </div>
 
-        <div className="mt-12 p-8 bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl border border-red-100">
+        <div className="mt-12 p-8 bg-gradient-to-b from-gray-50 to-white rounded-2xl border border-gray-200">
           <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">
             Why Choose Young Scholar Program?
           </h3>

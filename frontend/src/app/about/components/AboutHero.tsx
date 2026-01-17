@@ -22,7 +22,7 @@ export default function AboutHero() {
 
           {/* Right Column - Hero Image */}
           <div className="flex justify-center lg:justify-end">
-            <div className="relative">
+            <div className="relative z-10">
               <div className="w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl">
                 <ImageWithFallback
                   src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlZHVjYXRpb24lMjB0ZWFtJTIwdGVhY2hlcnN8ZW58MXx8fHwxNzU1NjIwMDEzfA%3D%3D&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
@@ -31,8 +31,8 @@ export default function AboutHero() {
                 />
               </div>
               {/* Decorative Elements */}
-              <div className="absolute -top-4 -right-4 w-24 h-24 bg-red-600/30 rounded-full blur-xl"></div>
-              <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-red-800/20 rounded-full blur-xl"></div>
+              <div className="absolute -top-4 -right-4 w-24 h-24 bg-red-600/30 rounded-full blur-xl z-0"></div>
+              <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-red-800/20 rounded-full blur-xl z-0"></div>
             </div>
           </div>
         </div>

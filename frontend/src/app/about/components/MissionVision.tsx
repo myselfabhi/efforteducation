@@ -24,7 +24,7 @@ export default function MissionVision() {
   ];
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="relative py-16 bg-gray-50 z-10">
       <div className="container mx-auto max-w-6xl px-4 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
