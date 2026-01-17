@@ -1,5 +1,6 @@
 import Header from "./components/layout/Header";
 import Hero from "./components/sections/Hero";
+import ProgramsScrollable from "./components/sections/ProgramsScrollable";
 import Testimonials from "./components/sections/Testimonials";
 import ContactForm from "./components/forms/ContactForm";
 import Footer from "./components/layout/Footer";
@@ -10,6 +11,7 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         <Hero />
+        <ProgramsScrollable />
         <Testimonials />
         <section id="contact" className="py-16 bg-gradient-to-b from-white via-gray-50 to-white">
           <div className="container mx-auto max-w-5xl px-4 lg:px-6">
