@@ -25,11 +25,13 @@ export default async function ContactPage() {
         <ContactHero />
         <div className="py-16 bg-white">
           <div className="container mx-auto max-w-6xl px-4 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-12">
-              <Suspense fallback={<div>Loading form...</div>}>
-                <ContactForm />
-              </Suspense>
-              <div className="space-y-8">
+            <div className="grid lg:grid-cols-2 gap-12 items-start">
+              <div className="h-full">
+                <Suspense fallback={<div>Loading form...</div>}>
+                  <ContactForm />
+                </Suspense>
+              </div>
+              <div className="flex flex-col gap-8 h-full">
                 <ContactInfo />
                 <CounsellingCTA />
               </div>

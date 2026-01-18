@@ -82,16 +82,16 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="relative">
+    <div className="relative h-full">
       {/* Decorative background elements */}
       <div className="absolute -top-4 -left-4 w-24 h-24 bg-red-500/10 rounded-full blur-2xl"></div>
       <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-red-600/10 rounded-full blur-2xl"></div>
       
-      <Card className="relative border-0 shadow-2xl bg-white/80 backdrop-blur-sm overflow-hidden">
+      <Card className="relative border-0 shadow-2xl bg-white/80 backdrop-blur-sm overflow-hidden h-full flex flex-col">
         {/* Top accent bar */}
         <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-600 to-red-700"></div>
         
-        <CardContent className="p-6 sm:p-8">
+        <CardContent className="p-6 sm:p-8 flex-1 flex flex-col">
           {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl mb-4 shadow-lg shadow-red-500/30">
@@ -131,7 +131,7 @@ export default function ContactForm() {
             </div>
           )}
               
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 flex-1 flex flex-col">
             {/* Name & Email Row */}
             <div className="grid sm:grid-cols-2 gap-5">
               {/* Name Field */}
@@ -270,20 +270,19 @@ export default function ContactForm() {
             </div>
 
             {/* Message Field */}
-            <div className="group">
+            <div className="group flex-1 flex flex-col">
               <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
                 Your Message <span className="text-red-500">*</span>
               </label>
-              <div className="relative">
-                <div className="absolute top-3 left-3 pointer-events-none">
+              <div className="relative flex-1 flex flex-col">
+                <div className="absolute top-3 left-3 pointer-events-none z-10">
                   <MessageSquare className={`w-5 h-5 transition-colors ${errors.message ? 'text-red-500' : 'text-gray-400 group-focus-within:text-red-500'}`} />
                 </div>
                 <Textarea
                   id="message"
                   {...register('message')}
-                  rows={5}
                   placeholder="Tell us about your learning goals, questions, or how we can help you succeed..."
-                  className={`pl-11 pt-3 text-sm !bg-white border-2 transition-all duration-200 resize-none ${
+                  className={`pl-11 pt-3 text-sm !bg-white border-2 transition-all duration-200 resize-none flex-1 min-h-[120px] ${
                     errors.message 
                       ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' 
                       : 'border-gray-200 focus:border-red-400 focus:ring-red-400/20 hover:border-gray-300'
@@ -300,11 +299,12 @@ export default function ContactForm() {
             </div>
 
             {/* Submit Button */}
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full h-12 bg-gradient-to-r from-red-600 via-red-600 to-red-700 hover:from-red-700 hover:via-red-700 hover:to-red-800 text-white text-base font-semibold rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none group"
-            >
+            <div className="pt-2">
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full h-12 bg-gradient-to-r from-red-600 via-red-600 to-red-700 hover:from-red-700 hover:via-red-700 hover:to-red-800 text-white text-base font-semibold rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none group"
+              >
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-5 h-5 mr-2 animate-spin" />
@@ -316,12 +316,13 @@ export default function ContactForm() {
                   <span>Send Message</span>
                 </>
               )}
-            </Button>
+              </Button>
 
-            {/* Privacy Note */}
-            <p className="text-xs text-center text-gray-500 mt-4">
-              🔒 Your information is secure and will never be shared with third parties.
-            </p>
+              {/* Privacy Note */}
+              <p className="text-xs text-center text-gray-500 mt-4">
+                🔒 Your information is secure and will never be shared with third parties.
+              </p>
+            </div>
           </form>
         </CardContent>
       </Card>
