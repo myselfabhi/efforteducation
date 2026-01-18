@@ -75,7 +75,7 @@ export default function ProgramDetails() {
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-1">Program Fee</h3>
                     <p className="text-3xl font-bold text-red-600 mb-1">₹999</p>
-                    <p className="text-sm text-gray-300">Affordable education for everyone</p>
+                    <p className="text-sm text-gray-600">Affordable education for everyone</p>
                   </div>
                 </div>
 
@@ -86,32 +86,32 @@ export default function ProgramDetails() {
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-1">Duration</h3>
                     <p className="text-gray-700">Weekend program (extendable)</p>
-                    <p className="text-sm text-gray-400 mt-1">Continue learning based on progress</p>
+                    <p className="text-sm text-gray-600 mt-1">Continue learning based on progress</p>
                   </div>
                 </div>
 
-                <div className="pt-6 border-t border-red-500/30">
-                  <h3 className="text-lg font-semibold text-white mb-3">What&apos;s Included:</h3>
-                  <ul className="space-y-2 text-sm text-gray-300">
+                <div className="pt-6 border-t border-red-300">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3">What&apos;s Included:</h3>
+                  <ul className="space-y-2 text-sm text-gray-700">
                     <li className="flex items-start gap-2">
-                      <span className="text-red-500 mt-1">✓</span>
-                      <span>Live interactive classes on weekends</span>
+                      <span className="text-red-600 mt-1">✓</span>
+                      <span className="font-medium">Live interactive classes on weekends</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-red-500 mt-1">✓</span>
-                      <span>Study materials and resources</span>
+                      <span className="text-red-600 mt-1">✓</span>
+                      <span className="font-medium">Study materials and resources</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-red-500 mt-1">✓</span>
-                      <span>Practice quizzes and assessments</span>
+                      <span className="text-red-600 mt-1">✓</span>
+                      <span className="font-medium">Practice quizzes and assessments</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-red-500 mt-1">✓</span>
-                      <span>Regular progress tracking</span>
+                      <span className="text-red-600 mt-1">✓</span>
+                      <span className="font-medium">Regular progress tracking</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <span className="text-red-500 mt-1">✓</span>
-                      <span>Doubt clearing sessions</span>
+                      <span className="text-red-600 mt-1">✓</span>
+                      <span className="font-medium">Doubt clearing sessions</span>
                     </li>
                   </ul>
                 </div>
