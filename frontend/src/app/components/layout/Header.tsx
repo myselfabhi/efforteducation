@@ -16,8 +16,8 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
-      <nav className="container mx-auto max-w-7xl px-4 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+      <nav className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 sm:h-18">
           {/* Brand */}
           <div className="flex items-center">
             <Link
@@ -71,60 +71,63 @@ export default function Header() {
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button - 48x48px touch target */}
           <button
             onClick={toggleMenu}
-            className="md:hidden text-white p-2 rounded-md hover:bg-gray-800 transition-colors focus-visible:outline-2 focus-visible:outline-red-500"
+            className="md:hidden text-white p-3 rounded-md hover:bg-gray-800 transition-colors focus-visible:outline-2 focus-visible:outline-red-500 min-w-[48px] min-h-[48px] flex items-center justify-center"
             aria-label="Toggle navigation menu"
+            aria-expanded={isMenuOpen}
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu - Enhanced with proper touch targets and spacing */}
         {isMenuOpen && (
-          <div className="md:hidden absolute top-16 left-0 right-0 bg-gray-900/98 backdrop-blur-sm border-b border-gray-800">
-            <div className="px-4 py-4 space-y-4">
+          <div className="md:hidden absolute top-16 left-0 right-0 bg-gray-900/98 backdrop-blur-sm border-b border-gray-800 shadow-xl">
+            <div className="px-6 py-6 space-y-2">
               <Link
                 href="/"
                 onClick={() => setIsMenuOpen(false)}
-                className={`block transition-colors w-full text-left ${isActive('/') ? 'text-red-400' : 'text-gray-300 hover:text-white'}`}
+                className={`block transition-colors w-full text-left py-3 px-4 rounded-lg text-base font-medium min-h-[48px] flex items-center ${isActive('/') ? 'text-red-400 bg-red-500/10' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}
               >
                 Home
               </Link>
               <Link
                 href="/about"
                 onClick={() => setIsMenuOpen(false)}
-                className={`block transition-colors w-full text-left ${isActive('/about') ? 'text-red-400' : 'text-gray-300 hover:text-white'}`}
+                className={`block transition-colors w-full text-left py-3 px-4 rounded-lg text-base font-medium min-h-[48px] flex items-center ${isActive('/about') ? 'text-red-400 bg-red-500/10' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}
               >
                 About
               </Link>
               <Link
                 href="/programs"
                 onClick={() => setIsMenuOpen(false)}
-                className={`block transition-colors w-full text-left ${isActive('/programs') ? 'text-red-400' : 'text-gray-300 hover:text-white'}`}
+                className={`block transition-colors w-full text-left py-3 px-4 rounded-lg text-base font-medium min-h-[48px] flex items-center ${isActive('/programs') ? 'text-red-400 bg-red-500/10' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}
               >
                 Programs
               </Link>
               <Link
                 href="/young-scholar"
                 onClick={() => setIsMenuOpen(false)}
-                className={`block transition-colors w-full text-left ${isActive('/young-scholar') ? 'text-red-400' : 'text-gray-300 hover:text-white'}`}
+                className={`block transition-colors w-full text-left py-3 px-4 rounded-lg text-base font-medium min-h-[48px] flex items-center ${isActive('/young-scholar') ? 'text-red-400 bg-red-500/10' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}
               >
                 Young Scholar
               </Link>
               <Link
                 href="/contact"
                 onClick={() => setIsMenuOpen(false)}
-                className={`block transition-colors w-full text-left ${isActive('/contact') ? 'text-red-400' : 'text-gray-300 hover:text-white'}`}
+                className={`block transition-colors w-full text-left py-3 px-4 rounded-lg text-base font-medium min-h-[48px] flex items-center ${isActive('/contact') ? 'text-red-400 bg-red-500/10' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}
               >
                 Contact
               </Link>
-              <Link href="/contact" onClick={() => setIsMenuOpen(false)}>
-                <Button className="bg-red-600 hover:bg-red-700 text-white rounded-md px-6 py-2 w-full transition-colors focus-visible:outline-2 focus-visible:outline-red-500">
-                  Get in Touch
-                </Button>
-              </Link>
+              <div className="pt-4 mt-2 border-t border-gray-800">
+                <Link href="/contact" onClick={() => setIsMenuOpen(false)}>
+                  <Button className="bg-red-600 hover:bg-red-700 text-white rounded-lg px-6 py-3 w-full transition-colors focus-visible:outline-2 focus-visible:outline-red-500 min-h-[48px] text-base font-semibold">
+                    Get in Touch
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         )}

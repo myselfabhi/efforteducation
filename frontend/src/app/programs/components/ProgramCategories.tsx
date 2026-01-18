@@ -91,15 +91,15 @@ export default function ProgramCategories() {
   }));
 
   return (
-    <section id="programs" className="py-16 bg-gradient-to-b from-white to-gray-50">
-      <div className="container mx-auto max-w-6xl px-4 lg:px-6">
+    <section id="programs" className="py-16 sm:py-20 bg-gradient-to-b from-white to-gray-50">
+      <div className="container mx-auto max-w-6xl px-6 sm:px-8 lg:px-6">
         
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+        <div className="text-center mb-12 sm:mb-16">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6 px-4">
             Program <span className="text-red-600">Categories</span>
           </h2>
-          <p className="text-lg sm:text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-700 max-w-4xl mx-auto leading-relaxed px-4">
             Explore our comprehensive range of programs designed to meet diverse learning needs and career aspirations.
           </p>
         </div>
@@ -134,16 +134,16 @@ export default function ProgramCategories() {
                 <Card key={category} className="border border-gray-200 hover:shadow-2xl transition-all duration-300 bg-white transform hover:-translate-y-3 hover:border-red-300 overflow-hidden group">
                   <CardContent className="p-0">
                     {/* Category Header with Gradient Background */}
-                    <div className="bg-gradient-to-br from-red-50 via-red-50/50 to-white p-8 pb-6 border-b border-gray-100">
-                      <div className="flex items-start space-x-6">
-                        <div className="w-20 h-20 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                          <IconComponent className="w-10 h-10 text-white" />
+                    <div className="bg-gradient-to-br from-red-50 via-red-50/50 to-white p-6 sm:p-8 pb-6 border-b border-gray-100">
+                      <div className="flex flex-col sm:flex-row items-start gap-6">
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                          <IconComponent className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                         </div>
                         <div className="flex-1">
-                          <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                          <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
                             {getCategoryTitle(category)}
                           </h3>
-                          <p className="text-gray-700 text-base leading-relaxed">
+                          <p className="text-gray-700 text-base sm:text-lg leading-relaxed">
                             {getCategoryDescription(category)}
                           </p>
                         </div>
@@ -163,13 +163,13 @@ export default function ProgramCategories() {
                           <div 
                             key={course.id}
                             onClick={() => handleCourseClick(course)}
-                            className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-50/50 rounded-xl hover:from-red-50 hover:to-red-50/30 border border-gray-100 hover:border-red-200 transition-all duration-300 group/course cursor-pointer"
+                            className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-5 sm:p-4 bg-gradient-to-r from-gray-50 to-gray-50/50 rounded-xl hover:from-red-50 hover:to-red-50/30 border border-gray-100 hover:border-red-200 transition-all duration-300 group/course cursor-pointer min-h-[80px]"
                           >
-                            <div className="flex-1">
-                              <h5 className="font-semibold text-gray-900 mb-1 group-hover/course:text-red-700 transition-colors">
+                            <div className="flex-1 w-full">
+                              <h5 className="font-semibold text-gray-900 mb-2 group-hover/course:text-red-700 transition-colors text-base sm:text-lg">
                                 {course.title}
                               </h5>
-                              <div className="flex items-center gap-3 text-sm text-gray-600">
+                              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-sm text-gray-600">
                                 <span className="flex items-center gap-1">
                                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -184,8 +184,8 @@ export default function ProgramCategories() {
                                 </span>
                               </div>
                             </div>
-                            <div className="ml-4">
-                              <span className="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-sm font-semibold hover:bg-red-200 transition-colors">
+                            <div className="w-full sm:w-auto sm:ml-4">
+                              <span className="inline-flex items-center justify-center w-full sm:w-auto px-4 py-2.5 bg-red-100 text-red-700 rounded-lg text-sm font-semibold hover:bg-red-200 transition-colors min-h-[44px]">
                                 View Details →
                               </span>
                             </div>
@@ -201,26 +201,26 @@ export default function ProgramCategories() {
           </div>
         )}
 
-        {/* Course Details Modal */}
+        {/* Course Details Modal - Mobile Optimized */}
         <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-white">
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-white w-[95vw] sm:w-full">
             {selectedCourse && (
               <>
                 <DialogHeader>
-                  <DialogTitle className="text-2xl font-bold text-gray-900 pr-8">
+                  <DialogTitle className="text-xl sm:text-2xl font-bold text-gray-900 pr-8">
                     {selectedCourse.title}
                   </DialogTitle>
                 </DialogHeader>
                 
-                <div className="space-y-6 mt-4">
+                <div className="space-y-6 mt-4 px-1">
                   {/* Course Description */}
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">About This Course</h3>
-                    <p className="text-gray-700 leading-relaxed">{selectedCourse.description}</p>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">About This Course</h3>
+                    <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{selectedCourse.description}</p>
                   </div>
 
                   {/* Course Details Grid */}
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div className="p-4 bg-gradient-to-br from-red-50 to-red-50/30 rounded-lg border border-red-100">
                       <div className="flex items-center gap-2 text-red-700 mb-1">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -264,8 +264,8 @@ export default function ProgramCategories() {
 
                   {/* What You'll Learn */}
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">What You&apos;ll Learn</h3>
-                    <ul className="space-y-2">
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">What You&apos;ll Learn</h3>
+                    <ul className="space-y-3">
                       <li className="flex items-start gap-2 text-gray-700">
                         <svg className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -306,12 +306,12 @@ export default function ProgramCategories() {
                   </div>
 
                   {/* CTA Section */}
-                  <div className="bg-gradient-to-br from-red-100 to-red-50 p-6 rounded-xl border-2 border-red-200">
+                  <div className="bg-gradient-to-br from-red-100 to-red-50 p-5 sm:p-6 rounded-xl border-2 border-red-200">
                     <div className="text-center">
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">Interested in this course?</h3>
-                      <p className="text-gray-700 mb-4 font-medium">Contact us to get detailed information about pricing, batch timings, and enrollment.</p>
+                      <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">Interested in this course?</h3>
+                      <p className="text-gray-700 mb-4 font-medium text-sm sm:text-base">Contact us to get detailed information about pricing, batch timings, and enrollment.</p>
                       <Link href="/contact">
-                        <Button className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-3 text-base font-semibold shadow-lg hover:shadow-xl transition-all">
+                        <Button className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl transition-all w-full sm:w-auto min-h-[52px]">
                           Contact for Pricing & Details →
                         </Button>
                       </Link>

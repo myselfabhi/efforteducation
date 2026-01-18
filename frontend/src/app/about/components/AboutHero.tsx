@@ -6,16 +6,16 @@ export default function AboutHero() {
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-red-600/20 via-black/40 to-red-800/20"></div>
       
-      <div className="relative container mx-auto max-w-7xl px-4 lg:px-8 pt-32 pb-16">
+      <div className="relative container mx-auto max-w-7xl px-6 sm:px-8 lg:px-8 pt-32 pb-16">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           
           {/* Left Column - Content */}
           <div className="text-center lg:text-left">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
               About <span className="text-red-500">Effort Education</span>
             </h1>
             
-            <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto lg:mx-0">
+            <p className="text-lg sm:text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
               Founded on the principle of student-first education, we are dedicated to providing comprehensive learning solutions that prepare students not just for examinations, but for success in life.
             </p>
           </div>

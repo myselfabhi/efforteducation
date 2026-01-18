@@ -148,7 +148,7 @@ export default function ContactForm() {
                     type="text"
                     placeholder="John Doe"
                     {...register('name')}
-                    className={`pl-10 h-12 text-sm !bg-white border-2 transition-all duration-200 ${
+                    className={`pl-10 h-12 sm:h-14 text-base !bg-white border-2 transition-all duration-200 ${
                       errors.name 
                         ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' 
                         : 'border-gray-200 focus:border-red-400 focus:ring-red-400/20 hover:border-gray-300'
@@ -178,7 +178,7 @@ export default function ContactForm() {
                     type="email"
                     placeholder="john@example.com"
                     {...register('email')}
-                    className={`pl-10 h-12 text-sm !bg-white border-2 transition-all duration-200 ${
+                    className={`pl-10 h-12 sm:h-14 text-base !bg-white border-2 transition-all duration-200 ${
                       errors.email 
                         ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' 
                         : 'border-gray-200 focus:border-red-400 focus:ring-red-400/20 hover:border-gray-300'
@@ -211,7 +211,7 @@ export default function ContactForm() {
                     type="tel"
                     placeholder="+91 98765 43210"
                     {...register('phone')}
-                    className={`pl-10 h-12 text-sm !bg-white border-2 transition-all duration-200 ${
+                    className={`pl-10 h-12 sm:h-14 text-base !bg-white border-2 transition-all duration-200 ${
                       errors.phone 
                         ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' 
                         : 'border-gray-200 focus:border-red-400 focus:ring-red-400/20 hover:border-gray-300'
@@ -241,7 +241,7 @@ export default function ContactForm() {
                     onValueChange={(value) => setValue('interest', value)}
                     disabled={isSubmitting}
                   >
-                    <SelectTrigger className={`pl-10 h-12 text-sm !bg-white border-2 transition-all duration-200 w-full ${
+                    <SelectTrigger className={`pl-10 h-12 sm:h-14 text-base !bg-white border-2 transition-all duration-200 w-full ${
                       errors.interest 
                         ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' 
                         : 'border-gray-200 focus:border-red-400 focus:ring-red-400/20 hover:border-gray-300'
@@ -282,7 +282,7 @@ export default function ContactForm() {
                   id="message"
                   {...register('message')}
                   placeholder="Tell us about your learning goals, questions, or how we can help you succeed..."
-                  className={`pl-11 pt-3 text-sm !bg-white border-2 transition-all duration-200 resize-none flex-1 min-h-[120px] ${
+                  className={`pl-11 pt-3 text-base !bg-white border-2 transition-all duration-200 resize-none flex-1 min-h-[120px] ${
                     errors.message 
                       ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' 
                       : 'border-gray-200 focus:border-red-400 focus:ring-red-400/20 hover:border-gray-300'
@@ -303,7 +303,7 @@ export default function ContactForm() {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full h-12 bg-gradient-to-r from-red-600 via-red-600 to-red-700 hover:from-red-700 hover:via-red-700 hover:to-red-800 text-white text-base font-semibold rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none group"
+                className="w-full h-14 sm:h-16 bg-gradient-to-r from-red-600 via-red-600 to-red-700 hover:from-red-700 hover:via-red-700 hover:to-red-800 text-white text-base sm:text-lg font-semibold rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none group"
               >
               {isSubmitting ? (
                 <>

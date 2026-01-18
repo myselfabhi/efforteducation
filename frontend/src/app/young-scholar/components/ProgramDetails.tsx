@@ -6,17 +6,17 @@ import { Calendar, Users, Laptop, IndianRupee, Clock } from 'lucide-react';
 export default function ProgramDetails() {
   return (
     <section className="py-16 sm:py-20 bg-gradient-to-b from-white via-gray-50 to-white">
-      <div className="container mx-auto max-w-6xl px-4 lg:px-6">
+      <div className="container mx-auto max-w-6xl px-6 sm:px-8 lg:px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6 px-4">
             Program Details
           </h2>
-          <p className="text-base md:text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed px-4">
             Everything you need to know about the Young Scholar Program
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card className="border border-gray-200 bg-white shadow-lg">
             <CardContent className="p-8">
               <div className="space-y-6">
