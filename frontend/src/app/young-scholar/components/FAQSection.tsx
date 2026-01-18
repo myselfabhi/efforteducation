@@ -44,13 +44,13 @@ const faqs = [
 
 export default function FAQSection() {
   return (
-    <section className="py-16 sm:py-20 bg-gradient-to-b from-gray-50 to-white">
+    <section className="py-16 sm:py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       <div className="container mx-auto max-w-4xl px-4 lg:px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
             Frequently Asked Questions
           </h2>
-          <p className="text-base md:text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed">
             Got questions? We&apos;ve got answers. Find everything you need to know about the Young Scholar Program.
           </p>
         </div>
@@ -60,12 +60,12 @@ export default function FAQSection() {
             <AccordionItem
               key={index}
               value={`item-${index}`}
-              className="border border-gray-200 rounded-lg px-4 bg-white hover:shadow-md transition-shadow"
+              className="border border-gray-700 rounded-lg px-4 bg-gray-800/50 backdrop-blur-sm hover:shadow-xl hover:border-red-500/30 transition-all"
             >
-              <AccordionTrigger className="text-left font-semibold text-gray-900 hover:text-red-600 py-4">
+              <AccordionTrigger className="text-left font-semibold text-white hover:text-red-400 py-4">
                 {faq.question}
               </AccordionTrigger>
-              <AccordionContent className="text-gray-700 leading-relaxed pb-4">
+              <AccordionContent className="text-gray-300 leading-relaxed pb-4">
                 {faq.answer}
               </AccordionContent>
             </AccordionItem>

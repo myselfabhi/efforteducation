@@ -83,13 +83,13 @@ const skills = [
 
 export default function SkillsBreakdown() {
   return (
-    <section className="py-16 sm:py-20 bg-gradient-to-b from-gray-50 to-white">
+    <section className="py-16 sm:py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       <div className="container mx-auto max-w-6xl px-4 lg:px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
             Skills Your Child Will Learn
           </h2>
-          <p className="text-base md:text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base md:text-lg text-gray-300 max-w-3xl mx-auto leading-relaxed">
             Our comprehensive program covers five essential skill areas designed to prepare your child for success in academics and life.
           </p>
         </div>
@@ -99,26 +99,26 @@ export default function SkillsBreakdown() {
           <div className="flex animate-scroll-right-to-left">
             {/* First set of skills */}
             {skills.map((skill) => (
-              <Card key={skill.id} className="border border-gray-200 hover:shadow-xl transition-all duration-300 bg-white transform hover:-translate-y-1 overflow-hidden w-80 md:w-96 flex-shrink-0 mx-2">
+              <Card key={skill.id} className="border border-gray-700 hover:shadow-xl hover:border-red-500/30 transition-all duration-300 bg-gray-800/50 backdrop-blur-sm transform hover:-translate-y-1 overflow-hidden w-80 md:w-96 flex-shrink-0 mx-2">
                 <div className={`h-2 bg-gradient-to-r ${skill.color}`}></div>
                 <CardContent className="p-6">
                   <div className={`w-14 h-14 bg-gradient-to-br ${skill.bgColor} rounded-full flex items-center justify-center mb-4 shadow-lg`}>
                     <skill.icon className={`w-7 h-7 ${skill.iconColor}`} />
                   </div>
                   
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  <h3 className="text-xl font-bold text-white mb-2">
                     {skill.title}
                   </h3>
                   
-                  <p className="text-gray-700 mb-4 leading-relaxed">
+                  <p className="text-gray-300 mb-4 leading-relaxed">
                     {skill.description}
                   </p>
                   
                   <div className="space-y-2">
-                    <h4 className="text-sm font-semibold text-gray-900">Learning Outcomes:</h4>
+                    <h4 className="text-sm font-semibold text-white">Learning Outcomes:</h4>
                     <ul className="space-y-1.5">
                       {skill.learningOutcomes.map((outcome, index) => (
-                        <li key={index} className="flex items-start gap-2 text-sm text-gray-700">
+                        <li key={index} className="flex items-start gap-2 text-sm text-gray-300">
                           <span className={`${skill.iconColor} mt-1 text-xs`}>•</span>
                           <span>{outcome}</span>
                         </li>
@@ -131,26 +131,26 @@ export default function SkillsBreakdown() {
             
             {/* Duplicate set for seamless continuous loop */}
             {skills.map((skill) => (
-              <Card key={`duplicate-${skill.id}`} className="border border-gray-200 hover:shadow-xl transition-all duration-300 bg-white transform hover:-translate-y-1 overflow-hidden w-80 md:w-96 flex-shrink-0 mx-2">
+              <Card key={`duplicate-${skill.id}`} className="border border-gray-700 hover:shadow-xl hover:border-red-500/30 transition-all duration-300 bg-gray-800/50 backdrop-blur-sm transform hover:-translate-y-1 overflow-hidden w-80 md:w-96 flex-shrink-0 mx-2">
                 <div className={`h-2 bg-gradient-to-r ${skill.color}`}></div>
                 <CardContent className="p-6">
                   <div className={`w-14 h-14 bg-gradient-to-br ${skill.bgColor} rounded-full flex items-center justify-center mb-4 shadow-lg`}>
                     <skill.icon className={`w-7 h-7 ${skill.iconColor}`} />
                   </div>
                   
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  <h3 className="text-xl font-bold text-white mb-2">
                     {skill.title}
                   </h3>
                   
-                  <p className="text-gray-700 mb-4 leading-relaxed">
+                  <p className="text-gray-300 mb-4 leading-relaxed">
                     {skill.description}
                   </p>
                   
                   <div className="space-y-2">
-                    <h4 className="text-sm font-semibold text-gray-900">Learning Outcomes:</h4>
+                    <h4 className="text-sm font-semibold text-white">Learning Outcomes:</h4>
                     <ul className="space-y-1.5">
                       {skill.learningOutcomes.map((outcome, index) => (
-                        <li key={index} className="flex items-start gap-2 text-sm text-gray-700">
+                        <li key={index} className="flex items-start gap-2 text-sm text-gray-300">
                           <span className={`${skill.iconColor} mt-1 text-xs`}>•</span>
                           <span>{outcome}</span>
                         </li>
@@ -164,8 +164,8 @@ export default function SkillsBreakdown() {
         </div>
 
         <div className="mt-12 text-center">
-          <p className="text-base text-gray-600">
-            <span className="font-semibold text-gray-900">And more...</span> Additional learning activities, 
+          <p className="text-base text-gray-300">
+            <span className="font-semibold text-white">And more...</span> Additional learning activities, 
             practice sessions, and skill-building exercises to ensure comprehensive development.
           </p>
         </div>

@@ -1,6 +1,4 @@
-
-'use client';
-
+import type { Metadata } from "next";
 import { Suspense } from 'react';
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
@@ -9,7 +7,17 @@ import ContactForm from "../components/forms/ContactForm";
 import ContactInfo from "./components/ContactInfo";
 import CounsellingCTA from "./components/CounsellingCTA";
 
-export default function ContactPage() {
+export const metadata: Metadata = {
+  title: "Contact Us - Get Free Consultation & Enrollment",
+  description: "Contact Effort Education for free consultation, enrollment, or demo classes. Call 9910335093 or fill the form. Expert guidance for competitive exams and Young Scholar Program.",
+  openGraph: {
+    title: "Contact Effort Education - Get Free Consultation",
+    description: "Reach out for free consultation, enrollment, or demo classes. Expert guidance in competitive exams and skill development.",
+    url: "https://efforteducation.vercel.app/contact"
+  }
+};
+
+export default async function ContactPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />

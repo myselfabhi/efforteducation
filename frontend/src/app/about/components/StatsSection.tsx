@@ -47,14 +47,14 @@ export default function StatsSection() {
           {stats.map((stat, index) => (
             <Card
               key={index}
-              className="border border-gray-200 hover:shadow-lg transition-shadow duration-300 bg-white text-center"
+              className="border border-gray-200 hover:shadow-xl transition-all duration-300 bg-white text-center"
             >
               <CardContent className="p-8">
                 <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
                   <stat.icon className="w-8 h-8 text-red-600" />
                 </div>
                 
-                <div className="text-4xl font-bold text-gray-900 mb-2">
+                <div className="text-4xl font-bold text-red-600 mb-2">
                   {stat.number}
                 </div>
                 

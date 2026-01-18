@@ -13,9 +13,37 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Effort Education - Empowering Tomorrow's Leaders",
+  metadataBase: new URL('https://efforteducation.vercel.app'),
+  title: {
+    default: "Effort Education - Empowering Tomorrow's Leaders",
+    template: "%s | Effort Education"
+  },
   description:
-    "Comprehensive IAS coaching and competitive exam preparation platform. Join our Young Scholars program for expert guidance and proven success.",
+    "Online competitive exam coaching and Young Scholar Program for skill development. Expert guidance in Banking, SSC, Railway exams and essential life skills. Established since 1990.",
+  keywords: ["competitive exams", "banking coaching", "SSC coaching", "young scholar program", "skill development", "online classes", "live classes"],
+  authors: [{ name: "Effort Education" }],
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: "https://efforteducation.vercel.app",
+    siteName: "Effort Education",
+    title: "Effort Education - Empowering Tomorrow's Leaders",
+    description: "Online competitive exam coaching and Young Scholar Program for skill development. Expert guidance in Banking, SSC, Railway exams.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Effort Education"
+      }
+    ]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Effort Education - Empowering Tomorrow's Leaders",
+    description: "Online competitive exam coaching and Young Scholar Program for skill development.",
+    images: ["/og-image.png"]
+  }
 };
 
 export default function RootLayout({

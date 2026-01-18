@@ -1,4 +1,4 @@
-import { Phone, Mail, MapPin } from 'lucide-react';
+import { Phone, Mail, Globe } from 'lucide-react';
 import { Card, CardContent } from '../../components/ui/card';
 
 export default function ContactInfo() {
@@ -37,14 +37,13 @@ export default function ContactInfo() {
 
           <div className="flex items-start space-x-4">
             <div className="w-12 h-12 bg-gradient-to-br from-red-100 to-red-200 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md">
-              <MapPin className="w-6 h-6 text-red-600" />
+              <Globe className="w-6 h-6 text-red-600" />
             </div>
             <div>
-              <h4 className="font-bold text-gray-900 mb-1">Address</h4>
+              <h4 className="font-bold text-gray-900 mb-1">Location</h4>
               <p className="text-gray-700 font-medium leading-relaxed">
-                123 Education Hub<br />
-                Knowledge Park, Sector 15<br />
-                New Delhi - 110001
+                Online Classes (Live)<br />
+                Available across India
               </p>
             </div>
           </div>

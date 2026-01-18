@@ -33,7 +33,7 @@ export default function CourseDetails() {
                 </div>
                 <div>
                   <span className="font-semibold text-gray-900">Mode:</span>
-                  <span className="ml-2 text-gray-700">Online & Offline</span>
+                  <span className="ml-2 text-gray-700">Online (Live Classes)</span>
                 </div>
                 <div>
                   <span className="font-semibold text-gray-900">Batch Size:</span>
