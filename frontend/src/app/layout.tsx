@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import BottomNav from "./components/mobile/BottomNav";
+import FloatingActionButton from "./components/mobile/FloatingActionButton";
+import ProgressBar from "./components/mobile/ProgressBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -56,7 +59,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-900 text-white overflow-x-hidden`}
       >
+        {/* Scroll Progress Bar */}
+        <ProgressBar />
+        
+        {/* Main Content */}
         {children}
+        
+        {/* Mobile Bottom Navigation */}
+        <BottomNav />
+        
+        {/* Floating Action Button */}
+        <FloatingActionButton />
       </body>
     </html>
   );
