@@ -5,6 +5,7 @@ import AboutHero from "./components/AboutHero";
 import StatsSection from "./components/StatsSection";
 import TeamSection from "./components/TeamSection";
 import ProgramFeatures from "../programs/components/ProgramFeatures";
+import ScrollReveal from "../components/mobile/ScrollReveal";
 
 export const metadata: Metadata = {
   title: "About Us - Our Story & Team",
@@ -20,11 +21,20 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1">
+      <main className="flex-1 pb-24 sm:pb-28 md:pb-16">
         <AboutHero />
-        <StatsSection />
-        <TeamSection />
-        <ProgramFeatures />
+        
+        <ScrollReveal direction="up" delay={0}>
+          <StatsSection />
+        </ScrollReveal>
+        
+        <ScrollReveal direction="up" delay={100}>
+          <TeamSection />
+        </ScrollReveal>
+        
+        <ScrollReveal direction="up" delay={200}>
+          <ProgramFeatures />
+        </ScrollReveal>
       </main>
       <Footer />
     </div>

@@ -2,6 +2,7 @@
 
 import { Card, CardContent } from '@/app/components/ui/card';
 import { Target, Users, Award, Clock } from 'lucide-react';
+import SwipeCarousel from '@/app/components/mobile/SwipeCarousel';
 
 export default function ProgramOverview() {
   const features = [
@@ -40,9 +41,31 @@ export default function ProgramOverview() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-full">
+        {/* Mobile: Swipe Carousel */}
+        <div className="lg:hidden">
+          <SwipeCarousel
+            items={features.map((feature, index) => (
+              <Card key={index} className="border-2 border-gray-200 shadow-lg bg-white h-full">
+                <CardContent className="p-6 text-center flex flex-col items-center justify-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
+                    <feature.icon className="w-8 h-8 text-red-600" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-700 text-sm leading-snug">
+                    {feature.description}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          />
+        </div>
+
+        {/* Desktop: Grid */}
+        <div className="hidden lg:grid grid-cols-4 gap-6">
           {features.map((feature, index) => (
-            <Card key={index} className="border border-gray-200 hover:shadow-xl transition-all duration-300 bg-white transform hover:-translate-y-1 min-w-0">
+            <Card key={index} className="border border-gray-200 hover:shadow-xl transition-all duration-300 bg-white transform hover:-translate-y-1">
               <CardContent className="p-6 text-center">
                 <div className="w-14 h-14 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                   <feature.icon className="w-7 h-7 text-red-600" />

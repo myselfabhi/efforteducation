@@ -38,7 +38,7 @@ export default function FloatingActionButton({
     }
   };
 
-  const defaultIcon = <Phone className="w-6 h-6" />;
+  const defaultIcon = <Phone className="w-6 h-6" strokeWidth={2} />;
 
   return (
     <>
@@ -55,17 +55,17 @@ export default function FloatingActionButton({
           onMouseEnter={() => setIsExpanded(true)}
           onMouseLeave={() => setIsExpanded(false)}
           className={`
-            flex items-center gap-3 px-5 py-4 rounded-full
+            inline-flex items-center justify-center gap-3 rounded-full
             bg-gradient-to-r from-red-600 to-red-700
             hover:from-red-700 hover:to-red-800
             text-white font-semibold shadow-2xl
             transition-all duration-300
             btn-press fab-pulse
-            ${isExpanded ? 'pr-6' : 'pr-5'}
+            ${isExpanded ? 'pl-5 pr-6 py-4' : 'w-14 h-14'}
           `}
         >
-          {/* Icon */}
-          <div className="relative">
+          {/* Icon - Centered */}
+          <div className="relative inline-flex items-center justify-center flex-shrink-0">
             {icon || defaultIcon}
             {/* Pulsing ring */}
             <div className="absolute inset-0 rounded-full bg-white/30 animate-ping" />
@@ -94,7 +94,7 @@ export default function FloatingActionButton({
           href={href}
           onClick={handleClick}
           className="
-            group flex items-center gap-3 px-6 py-4 rounded-full
+            group inline-flex items-center justify-center gap-3 px-6 py-4 rounded-full
             bg-gradient-to-r from-red-600 to-red-700
             hover:from-red-700 hover:to-red-800
             text-white font-semibold shadow-2xl
@@ -102,7 +102,7 @@ export default function FloatingActionButton({
             hover:shadow-red-500/50 hover:scale-105
           "
         >
-          <div className="relative">
+          <div className="relative inline-flex items-center justify-center flex-shrink-0">
             {icon || defaultIcon}
           </div>
           <span className="text-base">{label}</span>

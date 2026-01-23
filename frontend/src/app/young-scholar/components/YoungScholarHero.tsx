@@ -12,13 +12,13 @@ export default function YoungScholarHero() {
   };
 
   return (
-    <section className="relative min-h-[60vh] bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-hidden flex items-center justify-center py-16 sm:py-20 md:py-24">
+    <section className="relative min-h-[60vh] bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-hidden flex items-center justify-center pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20">
       {/* Background Elements */}
-      <div className="absolute inset-0 bg-gradient-to-r from-red-600/20 via-transparent to-red-800/10"></div>
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/40"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-red-600/20 via-transparent to-red-800/10 -z-10"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/40 -z-10"></div>
       
-      <div className="relative container mx-auto max-w-6xl px-6 sm:px-8 lg:px-6 text-center z-10">
-        <div className="inline-block px-5 py-2.5 bg-gradient-to-r from-red-600/20 to-red-700/20 border border-red-500/40 rounded-full mb-6 backdrop-blur-sm shadow-lg shadow-red-500/20">
+      <div className="relative container mx-auto max-w-6xl px-6 sm:px-8 lg:px-6 text-center">
+        <div className="inline-block px-5 py-2.5 bg-gradient-to-r from-red-600/20 to-red-700/20 border border-red-500/40 rounded-full mb-6 backdrop-blur-sm shadow-lg shadow-red-500/20 relative z-0">
           <span className="text-red-300 text-sm sm:text-base font-semibold tracking-wide">Hero Product</span>
         </div>
         

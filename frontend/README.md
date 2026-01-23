@@ -1,36 +1,136 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Effort Education - Frontend
 
-## Getting Started
+Modern, responsive frontend for Effort Education platform built with Next.js 15, React 19, and TypeScript.
 
-First, run the development server:
+## 🚀 Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Framework:** Next.js 15 (App Router)
+- **UI Library:** React 19
+- **Language:** TypeScript 5
+- **Styling:** Tailwind CSS 4
+- **UI Components:** shadcn/ui (Radix UI primitives)
+- **Animations:** Custom CSS keyframes, IntersectionObserver
+- **Form Handling:** React Hook Form with Zod validation
+
+## ✨ Features
+
+### Mobile-First Design
+- Premium mobile UX with bottom navigation bar
+- Swipe carousels for one-card-at-a-time navigation
+- Touch-optimized interactions (44px+ touch targets)
+- Responsive layouts across all breakpoints (320px - 1920px+)
+
+### Performance Optimizations
+- Static page generation for fast load times
+- Image optimization with fallback support
+- Code splitting and lazy loading
+- Scroll-triggered animations (ScrollReveal)
+
+### User Experience
+- Smooth micro-interactions and hover effects
+- Glassmorphism design elements
+- Gradient animations and transitions
+- Toast notifications for user feedback
+
+## 📁 Project Structure
+
+```
+src/
+├── app/
+│   ├── about/          # About Us page
+│   ├── contact/        # Contact page
+│   ├── courses/        # Course listing and details
+│   ├── programs/       # Programs page
+│   ├── young-scholar/  # Young Scholar Program (Hero Product)
+│   ├── components/
+│   │   ├── common/     # Shared components
+│   │   ├── forms/      # Form components
+│   │   ├── layout/     # Header, Footer
+│   │   ├── mobile/     # Mobile-specific components
+│   │   ├── sections/   # Page sections
+│   │   └── ui/         # shadcn/ui components
+│   └── globals.css     # Global styles and animations
+└── lib/
+    ├── api.ts          # API utilities
+    ├── utils.ts        # Helper functions
+    └── validations.ts  # Zod schemas
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛠️ Getting Started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file
+### Prerequisites
+- Node.js 18+ 
+- npm, yarn, pnpm, or bun
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Installation
 
-## Learn More
+```bash
+# Install dependencies
+npm install
 
-To learn more about Next.js, take a look at the following resources:
+# Run development server
+npm run dev
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Build for production
+npm run build
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Start production server
+npm start
+```
 
-## Deploy on Vercel
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🎨 Key Components
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Mobile Components
+- **BottomNavigation:** Mobile-only navigation bar
+- **FloatingActionButton:** Quick contact access
+- **SwipeCarousel:** One-card-at-a-time swipe carousel
+- **ScrollReveal:** Scroll-triggered animations
+
+### Layout Components
+- **Header:** Responsive navigation with mobile/desktop variants
+- **Footer:** Compact mobile layout, full desktop layout
+
+### Page Sections
+- **Hero:** Animated hero sections with gradient text
+- **ProgramsScrollable:** Horizontal scrolling program cards
+- **Testimonials:** Student testimonials carousel
+- **WannaConnect:** Animated CTA section
+
+## 📱 Responsive Breakpoints
+
+- **Mobile:** < 640px (sm)
+- **Tablet:** 640px - 1024px (sm - lg)
+- **Desktop:** ≥ 1024px (lg+)
+
+## 🎯 Key Pages
+
+- **Home (`/`):** Hero, Programs, Testimonials, CTA
+- **About (`/about`):** Mission, Vision, Stats, Team, Features
+- **Programs (`/programs`):** Program categories and listings
+- **Young Scholar (`/young-scholar`):** Hero product program details
+- **Contact (`/contact`):** Contact form and information
+- **Courses (`/courses/[slug]`):** Individual course details
+
+## 🔧 Development
+
+### Code Style
+- ESLint for code quality
+- TypeScript strict mode enabled
+- Consistent component structure
+
+### Build Process
+- Static generation for most pages
+- Dynamic routes for course details
+- Optimized bundle sizes
+
+## 📝 Notes
+
+- Established since 1990
+- Focus on competitive exam preparation and life skills
+- Young Scholar Program is the hero product (Class 4-8)
+
+## 📄 License
+
+All rights reserved. Effort Education © 2025
