@@ -96,7 +96,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 - **Hero:** Animated hero sections with gradient text
 - **ProgramsScrollable:** Horizontal scrolling program cards
 - **Testimonials:** Student testimonials carousel
-- **WannaConnect:** Animated CTA section
+- **WantToConnect:** Animated CTA section
 
 ## 📱 Responsive Breakpoints
 
