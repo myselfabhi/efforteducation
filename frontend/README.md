@@ -78,7 +78,7 @@ npm run build
 npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the application.
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
 ## 🎨 Key Components
 
