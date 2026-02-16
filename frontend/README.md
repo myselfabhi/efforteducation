@@ -117,6 +117,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 
 ### Code Style
 - ESLint for code quality
+- Prettier for formatting
 - TypeScript strict mode enabled
 - Consistent component structure
 
