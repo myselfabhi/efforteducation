@@ -1,6 +1,6 @@
 # Effort Education - Frontend
 
-Modern, responsive frontend for Effort Education platform built with Next.js 15, React 19, and TypeScript.
+A modern, responsive frontend for the Effort Education platform built with Next.js 15, React 19, and TypeScript.
 
 ## 🚀 Tech Stack
 
