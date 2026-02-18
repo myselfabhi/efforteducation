@@ -134,4 +134,4 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 
 ## 📄 License
 
-All rights reserved. Effort Education © 2025
+All rights reserved. Effort Education © 2025–2026
