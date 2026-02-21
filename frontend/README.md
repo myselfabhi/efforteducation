@@ -100,8 +100,8 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 
 ## 📱 Responsive Breakpoints
 
-- **Mobile:** < 640px (sm)
-- **Tablet:** 640px - 1024px (sm - lg)
+- **Mobile:** &lt; 640px (sm)
+- **Tablet:** 640px – 1024px (sm – lg)
 - **Desktop:** ≥ 1024px (lg+)
 
 ## 🎯 Key Pages
