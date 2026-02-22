@@ -18,7 +18,7 @@ A modern, responsive frontend for the Effort Education platform built with Next.
 - Premium mobile UX with bottom navigation bar
 - Swipe carousels for one-card-at-a-time navigation
 - Touch-optimized interactions (44px+ touch targets)
-- Responsive layouts across all breakpoints (320px - 1920px+)
+- Responsive layouts across all breakpoints (320px – 1920px+)
 
 ### Performance Optimizations
 - Static page generation for fast load times
