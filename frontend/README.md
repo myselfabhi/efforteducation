@@ -128,7 +128,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to view the 
 
 ## 📝 Notes
 
-- Established since 1990
+- Established in 1990
 - Focus on competitive exam preparation and life skills
 - Young Scholar Program is the hero product (Class 4-8)
 
