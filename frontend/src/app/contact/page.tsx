@@ -20,13 +20,13 @@ export const metadata: Metadata = {
 
 export default async function ContactPage() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-950">
       <Header />
       <main className="flex-1">
         <ContactHero />
         
         {/* Mobile-optimized: Responsive padding, gap, bottom nav spacing */}
-        <div className="py-12 sm:py-16 lg:py-20 bg-white pb-24 sm:pb-28 md:pb-16">
+        <div className="py-12 sm:py-16 lg:py-20 bg-gray-950 pb-24 sm:pb-28 md:pb-16">
           <div className="container mx-auto max-w-6xl px-6 sm:px-8 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-start">
               
@@ -35,7 +35,7 @@ export default async function ContactPage() {
                 <div className="h-full">
                   <Suspense fallback={
                     <div className="flex items-center justify-center py-12">
-                      <div className="skeleton h-96 w-full rounded-xl"></div>
+                      <div className="w-full h-96 bg-gray-900 animate-pulse rounded-xl"></div>
                     </div>
                   }>
                     <ContactForm />

@@ -1,34 +1,61 @@
+'use client';
+
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { Button } from '../../components/ui/button';
+
 export default function ProgramsHero() {
   return (
-    <section className="relative py-16 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-gradient-to-r from-red-600/20 via-transparent to-red-800/10"></div>
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/40"></div>
+    <section className="relative min-h-[40vh] bg-gray-950 overflow-hidden flex items-center pt-20">
+      {/* Background Animated Orbs */}
+      <div className="absolute inset-0 z-0 opacity-20">
+        <div className="absolute top-1/4 -left-10 w-64 h-64 bg-red-600/20 rounded-full blur-[80px]" />
+        <div className="absolute bottom-1/4 -right-10 w-80 h-80 bg-yellow-500/10 rounded-full blur-[100px]" />
+      </div>
       
-      <div className="relative container mx-auto max-w-6xl px-6 sm:px-8 lg:px-6 pt-16 pb-12">
-        <div className="text-center">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6">
-            Our <span className="bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent">Programs</span>
-          </h1>
-          <p className="text-lg sm:text-xl md:text-2xl text-gray-300 mb-10 max-w-4xl mx-auto leading-relaxed px-4">
-            Comprehensive learning solutions designed to help you achieve your academic and career goals. 
-            From competitive exams to skill development, we have everything you need to succeed.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
-            <a 
-              href="#programs"
-              className="inline-flex items-center justify-center bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-base sm:text-lg font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-red-500 shadow-lg hover:shadow-red-500/25 min-h-[52px]"
+      <div className="relative container mx-auto max-w-6xl px-6 py-12 text-center">
+        <motion.h1 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-4xl sm:text-5xl md:text-6xl font-black text-white mb-6 tracking-tight uppercase"
+        >
+          Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-yellow-500">Programs</span>
+        </motion.h1>
+        
+        <motion.p 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-base sm:text-lg text-gray-400 mb-10 max-w-3xl mx-auto leading-relaxed font-medium"
+        >
+          Comprehensive learning solutions designed to help you achieve your career goals. 
+          From competitive exams to foundational skills, we empower your journey to success.
+        </motion.p>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="flex flex-col sm:flex-row gap-4 justify-center"
+        >
+          <Link href="/contact">
+            <Button
+              className="bg-red-600 hover:bg-red-700 text-white text-xs font-black uppercase tracking-widest px-8 py-6 rounded-xl transition-all duration-300 shadow-xl shadow-red-600/20"
             >
-              Explore Programs
-            </a>
-            <a 
-              href="/contact"
-              className="inline-flex items-center justify-center border-2 border-white text-white hover:bg-white hover:text-gray-900 text-base sm:text-lg font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-white backdrop-blur-sm min-h-[52px]"
-            >
-              Get Free Consultation
-            </a>
-          </div>
-        </div>
+              Get Consultation
+            </Button>
+          </Link>
+          <Button
+            variant="outline"
+            className="border-2 border-gray-800 bg-transparent text-white hover:border-yellow-500 text-xs font-black uppercase tracking-widest px-8 py-6 rounded-xl transition-all duration-300"
+            onClick={() => {
+              const el = document.getElementById('programs');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
+            Explore More
+          </Button>
+        </motion.div>
       </div>
     </section>
   );

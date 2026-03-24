@@ -2,46 +2,57 @@
 
 import { Button } from '@/app/components/ui/button';
 import { Card, CardContent } from '@/app/components/ui/card';
+import { motion } from 'framer-motion';
 
 export default function EnrollmentCTA() {
   const scrollToContact = () => {
-    // Pre-fill contact form with Young Scholar Program interest
     window.location.href = '/contact?interest=young-scholar';
   };
 
   return (
-    <section id="enrollment-cta" className="py-16 sm:py-20 bg-gradient-to-b from-white via-gray-50 to-white">
-      <div className="container mx-auto max-w-4xl px-4 lg:px-6">
-        <Card className="border border-gray-200 shadow-2xl bg-white overflow-hidden">
-          <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-600 to-red-700"></div>
-          <CardContent className="p-8 md:p-12">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Ready to Get Started?
+    <section id="enrollment-cta" className="py-16 bg-gray-950">
+      <div className="container mx-auto max-w-4xl px-6">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+        >
+          <Card className="border border-gray-800 bg-gray-900/40 backdrop-blur-xl overflow-hidden rounded-[2.5rem] shadow-2xl">
+            <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-600 to-red-700"></div>
+            <CardContent className="p-10 md:p-16 text-center">
+              <h2 className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tighter uppercase">
+                Ready to <span className="text-red-500">Transform</span>?
               </h2>
-              <p className="text-base md:text-lg text-gray-700 leading-relaxed max-w-2xl mx-auto">
-                Join the Young Scholar Program today and give your child the skills they need for future success.
+              <p className="text-base sm:text-lg text-gray-400 mb-10 max-w-xl mx-auto font-medium">
+                Join the Young Scholar Program today and give your child the tools they need for future success.
               </p>
-            </div>
 
-            <div className="flex justify-center">
-              <Button
-                onClick={scrollToContact}
-                className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold px-10 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl hover:shadow-red-500/30 min-h-[56px] text-lg"
-              >
-                Enroll Now
-              </Button>
-            </div>
+              <div className="flex justify-center">
+                <Button
+                  onClick={scrollToContact}
+                  className="bg-red-600 hover:bg-red-700 text-white font-black uppercase tracking-widest px-10 py-7 rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-xl shadow-red-600/20 text-lg"
+                >
+                  Enroll Now
+                </Button>
+              </div>
 
-            <div className="mt-8 pt-8 border-t border-gray-200 text-center">
-              <p className="text-sm text-gray-600">
-                <span className="font-semibold">Program Fee:</span> ₹999 | 
-                <span className="font-semibold ml-2">Schedule:</span> Weekend Classes | 
-                <span className="font-semibold ml-2">Mode:</span> Online (Live Classes)
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+              <div className="mt-12 pt-8 border-t border-gray-800">
+                <div className="flex flex-wrap justify-center gap-6 sm:gap-10">
+                  {[
+                    { label: "Fee", value: "₹999" },
+                    { label: "Schedule", value: "Weekends" },
+                    { label: "Mode", value: "Online Live" }
+                  ].map((item, i) => (
+                    <div key={i} className="flex flex-col items-center">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-gray-600 mb-1">{item.label}</span>
+                      <span className="text-xs font-bold text-gray-300 uppercase">{item.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     </section>
   );

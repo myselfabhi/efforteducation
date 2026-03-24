@@ -3,9 +3,7 @@ import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import CourseHero from "./components/CourseHero";
 import CourseDetails from "./components/CourseDetails";
-import FacultyList from "./components/FacultyList";
 import CounsellingCTA from "./components/CounsellingCTA";
-import CourseTestimonials from "./components/CourseTestimonials";
 
 export const metadata: Metadata = {
   title: "Course Details - Competitive Exam Preparation",
@@ -19,14 +17,14 @@ export const metadata: Metadata = {
 
 export default function CourseDetailPage() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-950">
       <Header />
       <main className="flex-1">
         <CourseHero />
         <CourseDetails />
-        <FacultyList />
-        <CounsellingCTA />
-        <CourseTestimonials />
+        <div className="pb-24 sm:pb-28 md:pb-16">
+          <CounsellingCTA />
+        </div>
       </main>
       <Footer />
     </div>

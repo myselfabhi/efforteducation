@@ -3,6 +3,7 @@
 import { Button } from '../ui/button';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import Logo from '../common/Logo';
 
 export default function Header() {
   const pathname = usePathname();
@@ -10,16 +11,17 @@ export default function Header() {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-gray-950/80 backdrop-blur-md border-b border-gray-900">
       <nav className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-18">
+        <div className="flex items-center justify-between h-16">
           {/* Brand - Centered on mobile, left on desktop */}
           <div className="flex items-center md:flex-none flex-1 md:flex-initial justify-center md:justify-start">
             <Link
               href="/"
-              className="text-xl sm:text-2xl font-bold text-white hover:text-red-400 transition-colors"
+              className="flex items-center gap-3 sm:gap-4 hover:opacity-80 transition-opacity"
             >
-              Effort Education
+              <Logo className="text-2xl sm:text-3xl pl-2" />
+              <span className="text-lg sm:text-xl font-black text-white tracking-tighter">EFFORT <span className="text-red-600">EDUCATION</span></span>
             </Link>
           </div>
 
@@ -27,41 +29,35 @@ export default function Header() {
           <div className="hidden md:flex items-center space-x-8">
             <Link
               href="/"
-              className={`transition-colors ${isActive('/') ? 'text-red-400' : 'text-gray-300 hover:text-white'}`}
+              className={`text-xs font-bold uppercase tracking-widest transition-colors ${isActive('/') ? 'text-red-500' : 'text-gray-400 hover:text-white'}`}
             >
               Home
             </Link>
             <Link
               href="/about"
-              className={`transition-colors ${isActive('/about') ? 'text-red-400' : 'text-gray-300 hover:text-white'}`}
+              className={`text-xs font-bold uppercase tracking-widest transition-colors ${isActive('/about') ? 'text-red-500' : 'text-gray-400 hover:text-white'}`}
             >
               About
             </Link>
             <Link
               href="/programs"
-              className={`transition-colors ${isActive('/programs') ? 'text-red-400' : 'text-gray-300 hover:text-white'}`}
+              className={`text-xs font-bold uppercase tracking-widest transition-colors ${isActive('/programs') ? 'text-red-500' : 'text-gray-400 hover:text-white'}`}
             >
               Programs
             </Link>
             <Link
               href="/young-scholar"
-              className={`transition-colors ${isActive('/young-scholar') ? 'text-red-400' : 'text-gray-300 hover:text-white'}`}
+              className={`text-xs font-bold uppercase tracking-widest transition-colors ${isActive('/young-scholar') ? 'text-red-500' : 'text-gray-400 hover:text-white'}`}
             >
               Young Scholar
-            </Link>
-            <Link
-              href="/contact"
-              className={`transition-colors ${isActive('/contact') ? 'text-red-400' : 'text-gray-300 hover:text-white'}`}
-            >
-              Contact
             </Link>
           </div>
 
           {/* Desktop CTA Button */}
           <div className="hidden md:flex">
             <Link href="/contact">
-              <Button className="bg-red-600 hover:bg-red-700 text-white rounded-md px-6 py-2 transition-colors focus-visible:outline-2 focus-visible:outline-red-500">
-                Get in Touch
+              <Button className="bg-red-600 hover:bg-red-700 text-white font-black rounded-lg px-6 py-4 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg shadow-red-600/10 text-sm">
+                Enroll Now
               </Button>
             </Link>
           </div>

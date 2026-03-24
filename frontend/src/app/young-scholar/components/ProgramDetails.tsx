@@ -1,123 +1,102 @@
 'use client';
 
 import { Card, CardContent } from '@/app/components/ui/card';
-import { Calendar, Users, Laptop, IndianRupee, Clock } from 'lucide-react';
+import { Calendar, Users, Laptop, IndianRupee, CheckCircle2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function ProgramDetails() {
   return (
-    <section className="py-16 sm:py-20 bg-gradient-to-b from-white via-gray-50 to-white">
-      <div className="container mx-auto max-w-6xl px-6 sm:px-8 lg:px-6">
+    <section className="py-16 bg-gray-950">
+      <div className="container mx-auto max-w-6xl px-6">
         <div className="text-center mb-12">
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6 px-4">
-            Program Details
-          </h2>
-          <p className="text-lg sm:text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto leading-relaxed px-4">
-            Everything you need to know about the Young Scholar Program
-          </p>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-3xl md:text-4xl font-black text-white mb-4 tracking-tight uppercase"
+          >
+            Program <span className="text-red-500">Logistics</span>
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-base text-gray-400 max-w-2xl mx-auto leading-relaxed font-medium"
+          >
+            Everything you need to know about the Young Scholar Program infrastructure and costs.
+          </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="border border-gray-200 bg-white shadow-lg">
-            <CardContent className="p-8">
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Users className="w-6 h-6 text-red-600" />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            <Card className="border border-gray-800 bg-gray-900/40 backdrop-blur-sm rounded-2xl h-full shadow-xl">
+              <CardContent className="p-8">
+                <div className="space-y-8">
+                  {[
+                    { icon: Users, title: "Age Group", text: "Class 4-8 Students" },
+                    { icon: Calendar, title: "Schedule", text: "Weekend program", sub: "Flexible timing available" },
+                    { icon: Laptop, title: "Mode", text: "Online (Live Classes)", sub: "Learn from home comfort" },
+                    { icon: Users, title: "Class Size", text: "Small, Interactive Batches" }
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-start gap-5 group">
+                      <div className="w-12 h-12 bg-gray-800 border border-gray-700 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:border-red-500/50 transition-colors">
+                        <item.icon className="w-5 h-5 text-red-500" />
+                      </div>
+                      <div>
+                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-1">{item.title}</h3>
+                        <p className="text-gray-200 font-bold text-base">{item.text}</p>
+                        {item.sub && <p className="text-[10px] font-bold text-gray-600 uppercase tracking-tighter mt-0.5">{item.sub}</p>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            <Card className="border border-gray-800 bg-gray-900/40 backdrop-blur-sm rounded-2xl h-full shadow-xl overflow-hidden relative group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+              <CardContent className="p-8">
+                <div className="flex items-center gap-5 mb-8">
+                  <div className="w-14 h-14 bg-yellow-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-yellow-500/20">
+                    <IndianRupee className="w-7 h-7 text-gray-950" strokeWidth={3} />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Age Group</h3>
-                    <p className="text-gray-700">Class 4-8 Students</p>
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-1">Investment</h3>
+                    <p className="text-4xl font-black text-white tracking-tighter">₹999</p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Calendar className="w-6 h-6 text-red-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Schedule</h3>
-                    <p className="text-gray-700">Weekend program - Few hours on weekends</p>
-                    <p className="text-sm text-gray-600 mt-1">Flexible timing to fit your schedule</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Laptop className="w-6 h-6 text-red-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Mode</h3>
-                    <p className="text-gray-700">Online (Live Classes)</p>
-                    <p className="text-sm text-gray-400 mt-1">Learn from the comfort of your home</p>
+                <div className="pt-8 border-t border-gray-800">
+                  <h3 className="text-xs font-black uppercase tracking-widest text-red-500 mb-6">What&apos;s Included</h3>
+                  <div className="space-y-4">
+                    {[
+                      "Live interactive classes on weekends",
+                      "Digital study materials & resources",
+                      "Practice quizzes and assessments",
+                      "Regular student progress tracking",
+                      "Dedicated doubt clearing sessions"
+                    ].map((item, i) => (
+                      <div key={i} className="flex items-center gap-3">
+                        <CheckCircle2 className="w-4 h-4 text-yellow-500 flex-shrink-0" />
+                        <span className="text-sm font-medium text-gray-300">{item}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Users className="w-6 h-6 text-red-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Class Size</h3>
-                    <p className="text-gray-700">Small batches for personalized attention</p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border border-red-200 shadow-lg bg-gradient-to-br from-red-50 to-white">
-            <CardContent className="p-8">
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <IndianRupee className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Program Fee</h3>
-                    <p className="text-3xl font-bold text-red-600 mb-1">₹999</p>
-                    <p className="text-sm text-gray-600">Affordable education for everyone</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Clock className="w-6 h-6 text-red-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Duration</h3>
-                    <p className="text-gray-700">Weekend program (extendable)</p>
-                    <p className="text-sm text-gray-600 mt-1">Continue learning based on progress</p>
-                  </div>
-                </div>
-
-                <div className="pt-6 border-t border-red-300">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">What&apos;s Included:</h3>
-                  <ul className="space-y-2 text-sm text-gray-700">
-                    <li className="flex items-start gap-2">
-                      <span className="text-red-600 mt-1">✓</span>
-                      <span className="font-medium">Live interactive classes on weekends</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-red-600 mt-1">✓</span>
-                      <span className="font-medium">Study materials and resources</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-red-600 mt-1">✓</span>
-                      <span className="font-medium">Practice quizzes and assessments</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-red-600 mt-1">✓</span>
-                      <span className="font-medium">Regular progress tracking</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-red-600 mt-1">✓</span>
-                      <span className="font-medium">Doubt clearing sessions</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </motion.div>
         </div>
       </div>
     </section>

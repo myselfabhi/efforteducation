@@ -2,61 +2,62 @@ import { Phone, Mail, Globe } from 'lucide-react';
 import { Card, CardContent } from '../../components/ui/card';
 
 export default function ContactInfo() {
+  const contactDetails = [
+    {
+      icon: Phone,
+      title: "Phone",
+      lines: ["+91 98765 43210", "+91 87654 32109"],
+      href: "tel:+919876543210"
+    },
+    {
+      icon: Mail,
+      title: "Email",
+      lines: ["info@efforteducation.com", "admissions@efforteducation.com"],
+      href: "mailto:info@efforteducation.com"
+    },
+    {
+      icon: Globe,
+      title: "Location",
+      lines: ["Online Classes (Live)", "Available across India"],
+      href: null
+    }
+  ];
+
   return (
-    <Card className="border-0 shadow-2xl hover:shadow-3xl bg-white overflow-hidden transform hover:-translate-y-1 transition-all duration-300 card-lift h-full">
-      {/* Top accent bar with gradient animation */}
-      <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-600 to-red-700 gradient-shift"></div>
+    <Card className="border border-gray-800 bg-gray-900/40 backdrop-blur-xl overflow-hidden rounded-2xl h-full shadow-2xl">
+      <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-600 to-red-700"></div>
       
-      {/* Mobile-optimized padding */}
-      <CardContent className="p-6 sm:p-8">
-        <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-5 sm:mb-6">
-          Contact Information
+      <CardContent className="p-8">
+        <h3 className="text-xl font-black text-white mb-8 tracking-tight uppercase">
+          Contact Details
         </h3>
         
-        <div className="space-y-5 sm:space-y-6">
-          {/* Phone - Enhanced touch target */}
-          <a 
-            href="tel:+919876543210"
-            className="flex items-start space-x-4 group touch-glow rounded-lg p-3 -m-3 transition-colors hover:bg-red-50/50"
-          >
-            <div className="w-14 h-14 sm:w-12 sm:h-12 bg-gradient-to-br from-red-100 to-red-200 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md group-hover:shadow-lg group-hover:scale-110 transition-all duration-300">
-              <Phone className="w-7 h-7 sm:w-6 sm:h-6 text-red-600" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h4 className="font-bold text-gray-900 mb-1.5 text-base sm:text-base">Phone</h4>
-              <p className="text-gray-700 font-medium text-base sm:text-sm break-words">+91 98765 43210</p>
-              <p className="text-gray-700 font-medium text-base sm:text-sm break-words">+91 87654 32109</p>
-            </div>
-          </a>
+        <div className="space-y-8">
+          {contactDetails.map((detail, index) => {
+            const Content = (
+              <div className="flex items-start space-x-5 group">
+                <div className="w-12 h-12 bg-gray-800 border border-gray-700 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:border-red-500/50 group-hover:bg-red-600/10">
+                  <detail.icon className="w-5 h-5 text-red-500" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-1.5">{detail.title}</h4>
+                  {detail.lines.map((line, i) => (
+                    <p key={i} className="text-gray-300 font-bold text-sm leading-relaxed">{line}</p>
+                  ))}
+                </div>
+              </div>
+            );
 
-          {/* Email - Enhanced touch target */}
-          <a 
-            href="mailto:info@efforteducation.com"
-            className="flex items-start space-x-4 group touch-glow rounded-lg p-3 -m-3 transition-colors hover:bg-red-50/50"
-          >
-            <div className="w-14 h-14 sm:w-12 sm:h-12 bg-gradient-to-br from-red-100 to-red-200 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md group-hover:shadow-lg group-hover:scale-110 transition-all duration-300">
-              <Mail className="w-7 h-7 sm:w-6 sm:h-6 text-red-600" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h4 className="font-bold text-gray-900 mb-1.5 text-base sm:text-base">Email</h4>
-              <p className="text-gray-700 font-medium text-base sm:text-sm break-words">info@efforteducation.com</p>
-              <p className="text-gray-700 font-medium text-base sm:text-sm break-words">admissions@efforteducation.com</p>
-            </div>
-          </a>
+            if (detail.href) {
+              return (
+                <a key={index} href={detail.href} className="block transition-transform hover:translate-x-1">
+                  {Content}
+                </a>
+              );
+            }
 
-          {/* Location */}
-          <div className="flex items-start space-x-4 p-3 -m-3 rounded-lg">
-            <div className="w-14 h-14 sm:w-12 sm:h-12 bg-gradient-to-br from-red-100 to-red-200 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
-              <Globe className="w-7 h-7 sm:w-6 sm:h-6 text-red-600" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h4 className="font-bold text-gray-900 mb-1.5 text-base sm:text-base">Location</h4>
-              <p className="text-gray-700 font-medium leading-relaxed text-base sm:text-sm">
-                Online Classes (Live)<br />
-                Available across India
-              </p>
-            </div>
-          </div>
+            return <div key={index}>{Content}</div>;
+          })}
         </div>
       </CardContent>
     </Card>

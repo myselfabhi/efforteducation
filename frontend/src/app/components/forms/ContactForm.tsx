@@ -11,7 +11,7 @@ import { Button } from '../ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { contactFormSchema, ContactFormData } from '../../../lib/validations';
 import { api } from '../../../lib/api';
-import { Loader2, CheckCircle2, Mail, Phone, User, MessageSquare, BookOpen, Send, Sparkles } from 'lucide-react';
+import { Loader2, CheckCircle2, Mail, Phone, User, MessageSquare, BookOpen, Sparkles } from 'lucide-react';
 
 export default function ContactForm() {
   const searchParams = useSearchParams();
@@ -41,7 +41,6 @@ export default function ContactForm() {
   useEffect(() => {
     const interestParam = searchParams?.get('interest');
     if (interestParam) {
-      // Map query param values to form values
       const interestMap: Record<string, string> = {
         'young_scholar': 'young-scholar',
         'young-scholar': 'young-scholar',
@@ -83,244 +82,181 @@ export default function ContactForm() {
 
   return (
     <div className="relative h-full">
-      {/* Decorative background elements */}
-      <div className="absolute -top-4 -left-4 w-24 h-24 bg-red-500/10 rounded-full blur-2xl"></div>
-      <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-red-600/10 rounded-full blur-2xl"></div>
-      
-      <Card className="relative border-0 shadow-2xl bg-white/80 backdrop-blur-sm overflow-hidden h-full flex flex-col">
+      <Card className="relative border border-gray-800 shadow-2xl bg-gray-900/40 backdrop-blur-xl overflow-hidden h-full flex flex-col rounded-2xl">
         {/* Top accent bar */}
         <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-600 to-red-700"></div>
         
         <CardContent className="p-6 sm:p-8 flex-1 flex flex-col">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl mb-4 shadow-lg shadow-red-500/30">
-              <Sparkles className="w-8 h-8 text-white" />
+            <div className="inline-flex items-center justify-center w-14 h-14 bg-gray-800 rounded-xl mb-4 border border-gray-700 shadow-xl">
+              <Sparkles className="w-7 h-7 text-red-500" />
             </div>
-            <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+            <h3 className="text-2xl font-black text-white mb-2 tracking-tight">
               Let&apos;s Connect
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-xs font-medium text-gray-400">
               Fill out the form below and we&apos;ll get back to you shortly
             </p>
           </div>
 
           {/* Success Message */}
           {submitStatus === 'success' && (
-            <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl flex items-start space-x-3 animate-fade-in">
-              <div className="flex-shrink-0 w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                <CheckCircle2 className="w-6 h-6 text-white" />
+            <div className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-xl flex items-start space-x-3 animate-fade-in">
+              <div className="flex-shrink-0 w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+                <CheckCircle2 className="w-5 h-5 text-white" />
               </div>
-              <div className="flex-1 pt-1">
-                <p className="font-semibold text-green-900 mb-1">Success!</p>
-                <p className="text-sm text-green-800">{submitMessage}</p>
+              <div className="flex-1 pt-0.5">
+                <p className="font-bold text-green-400 text-sm mb-0.5">Success!</p>
+                <p className="text-xs text-green-300/80 leading-relaxed">{submitMessage}</p>
               </div>
             </div>
           )}
 
           {/* Error Message */}
           {submitStatus === 'error' && (
-            <div className="mb-6 p-4 bg-gradient-to-r from-red-50 to-rose-50 border border-red-200 rounded-xl flex items-start space-x-3 animate-fade-in">
-              <div className="flex-shrink-0 w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-lg">!</span>
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-start space-x-3 animate-fade-in">
+              <div className="flex-shrink-0 w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">!</span>
               </div>
-              <div className="flex-1 pt-1">
-                <p className="font-semibold text-red-900 mb-1">Error</p>
-                <p className="text-sm text-red-800">{submitMessage}</p>
+              <div className="flex-1 pt-0.5">
+                <p className="font-bold text-red-400 text-sm mb-0.5">Error</p>
+                <p className="text-xs text-red-300/80 leading-relaxed">{submitMessage}</p>
               </div>
             </div>
           )}
               
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 flex-1 flex flex-col">
-            {/* Name & Email Row */}
-            <div className="grid sm:grid-cols-2 gap-5">
-              {/* Name Field */}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 flex-1 flex flex-col">
+            <div className="grid sm:grid-cols-2 gap-4">
               <div className="group">
-                <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="name" className="block text-xs font-black uppercase tracking-widest text-gray-500 mb-2">
                   Full Name <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className={`w-5 h-5 transition-colors ${errors.name ? 'text-red-500' : 'text-gray-400 group-focus-within:text-red-500'}`} />
+                    <User className={`w-4 h-4 transition-colors ${errors.name ? 'text-red-500' : 'text-gray-500 group-focus-within:text-red-500'}`} />
                   </div>
                   <Input
                     id="name"
                     type="text"
                     placeholder="John Doe"
                     {...register('name')}
-                    className={`pl-10 h-12 sm:h-14 text-base !bg-white border-2 transition-all duration-200 ${
-                      errors.name 
-                        ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' 
-                        : 'border-gray-200 focus:border-red-400 focus:ring-red-400/20 hover:border-gray-300'
+                    className={`pl-10 h-12 text-sm bg-gray-800/50 border-gray-700 transition-all duration-200 focus:bg-gray-800 focus:border-red-500/50 ${
+                      errors.name ? 'border-red-500/50 focus:ring-red-500/10' : 'hover:border-gray-600'
                     }`}
                     disabled={isSubmitting}
                   />
                 </div>
-                {errors.name && (
-                  <p className="mt-1.5 text-xs text-red-600 flex items-center">
-                    <span className="w-1 h-1 bg-red-600 rounded-full mr-1.5"></span>
-                    {errors.name.message}
-                  </p>
-                )}
+                {errors.name && <p className="mt-1.5 text-[10px] font-bold text-red-500 uppercase tracking-tighter">{errors.name.message}</p>}
               </div>
 
-              {/* Email Field */}
               <div className="group">
-                <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="email" className="block text-xs font-black uppercase tracking-widest text-gray-500 mb-2">
                   Email Address <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Mail className={`w-5 h-5 transition-colors ${errors.email ? 'text-red-500' : 'text-gray-400 group-focus-within:text-red-500'}`} />
+                    <Mail className={`w-4 h-4 transition-colors ${errors.email ? 'text-red-500' : 'text-gray-500 group-focus-within:text-red-500'}`} />
                   </div>
                   <Input
                     id="email"
                     type="email"
                     placeholder="john@example.com"
                     {...register('email')}
-                    className={`pl-10 h-12 sm:h-14 text-base !bg-white border-2 transition-all duration-200 ${
-                      errors.email 
-                        ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' 
-                        : 'border-gray-200 focus:border-red-400 focus:ring-red-400/20 hover:border-gray-300'
+                    className={`pl-10 h-12 text-sm bg-gray-800/50 border-gray-700 transition-all duration-200 focus:bg-gray-800 focus:border-red-500/50 ${
+                      errors.email ? 'border-red-500/50 focus:ring-red-500/10' : 'hover:border-gray-600'
                     }`}
                     disabled={isSubmitting}
                   />
                 </div>
-                {errors.email && (
-                  <p className="mt-1.5 text-xs text-red-600 flex items-center">
-                    <span className="w-1 h-1 bg-red-600 rounded-full mr-1.5"></span>
-                    {errors.email.message}
-                  </p>
-                )}
+                {errors.email && <p className="mt-1.5 text-[10px] font-bold text-red-500 uppercase tracking-tighter">{errors.email.message}</p>}
               </div>
             </div>
 
-            {/* Phone & Interest Row */}
-            <div className="grid sm:grid-cols-2 gap-5">
-              {/* Phone Field */}
+            <div className="grid sm:grid-cols-2 gap-4">
               <div className="group">
-                <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
-                  Phone Number <span className="text-gray-400 text-xs">(optional)</span>
+                <label htmlFor="phone" className="block text-xs font-black uppercase tracking-widest text-gray-500 mb-2">
+                  Phone Number
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Phone className={`w-5 h-5 transition-colors ${errors.phone ? 'text-red-500' : 'text-gray-400 group-focus-within:text-red-500'}`} />
+                    <Phone className={`w-4 h-4 transition-colors ${errors.phone ? 'text-red-500' : 'text-gray-500 group-focus-within:text-red-500'}`} />
                   </div>
                   <Input
                     id="phone"
                     type="tel"
                     placeholder="+91 98765 43210"
                     {...register('phone')}
-                    className={`pl-10 h-12 sm:h-14 text-base !bg-white border-2 transition-all duration-200 ${
-                      errors.phone 
-                        ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' 
-                        : 'border-gray-200 focus:border-red-400 focus:ring-red-400/20 hover:border-gray-300'
-                    }`}
+                    className={`pl-10 h-12 text-sm bg-gray-800/50 border-gray-700 transition-all duration-200 focus:bg-gray-800 focus:border-red-500/50 hover:border-gray-600`}
                     disabled={isSubmitting}
                   />
                 </div>
-                {errors.phone && (
-                  <p className="mt-1.5 text-xs text-red-600 flex items-center">
-                    <span className="w-1 h-1 bg-red-600 rounded-full mr-1.5"></span>
-                    {errors.phone.message}
-                  </p>
-                )}
               </div>
 
-              {/* Interest Field */}
               <div className="group">
-                <label htmlFor="interest" className="block text-sm font-semibold text-gray-700 mb-2">
-                  Program of Interest <span className="text-red-500">*</span>
+                <label htmlFor="interest" className="block text-xs font-black uppercase tracking-widest text-gray-500 mb-2">
+                  Program <span className="text-red-500">*</span>
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
-                    <BookOpen className={`w-5 h-5 transition-colors ${errors.interest ? 'text-red-500' : 'text-gray-400 group-focus-within:text-red-500'}`} />
+                    <BookOpen className={`w-4 h-4 transition-colors ${errors.interest ? 'text-red-500' : 'text-gray-500 group-focus-within:text-red-500'}`} />
                   </div>
                   <Select 
                     value={watch('interest')} 
                     onValueChange={(value) => setValue('interest', value)}
                     disabled={isSubmitting}
                   >
-                    <SelectTrigger className={`pl-10 h-12 sm:h-14 text-base !bg-white border-2 transition-all duration-200 w-full ${
-                      errors.interest 
-                        ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' 
-                        : 'border-gray-200 focus:border-red-400 focus:ring-red-400/20 hover:border-gray-300'
+                    <SelectTrigger className={`pl-10 h-12 text-sm bg-gray-800/50 border-gray-700 transition-all duration-200 focus:bg-gray-800 focus:border-red-500/50 ${
+                      errors.interest ? 'border-red-500/50' : 'hover:border-gray-600'
                     }`}>
-                      <SelectValue placeholder="Choose a program" />
+                      <SelectValue placeholder="Choose program" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="young-scholar">⭐ Young Scholar Program (Class 4-8)</SelectItem>
-                      <SelectItem value="bank-po">🏦 Bank PO & Clerk</SelectItem>
-                      <SelectItem value="ssc-cgl">📚 SSC & CGL</SelectItem>
-                      <SelectItem value="other-exams">📝 Other Competitive Exams</SelectItem>
-                      <SelectItem value="public-speaking">🎤 Public Speaking</SelectItem>
-                      <SelectItem value="general-knowledge">🧠 General Knowledge</SelectItem>
-                      <SelectItem value="skill-development">💼 Leadership & Skills</SelectItem>
-                      <SelectItem value="other">✨ Other</SelectItem>
+                    <SelectContent className="bg-gray-900 border-gray-800 text-white">
+                      <SelectItem value="young-scholar">Young Scholar Program</SelectItem>
+                      <SelectItem value="bank-po-so">Bank PO / SO</SelectItem>
+                      <SelectItem value="interview-prep">Interview Preparation</SelectItem>
+                      <SelectItem value="ugc-net-jrf">UGC NET / JRF</SelectItem>
+                      <SelectItem value="ctet-tet">CTET / TET</SelectItem>
+                      <SelectItem value="prt-tgt-pgt">PRT / TGT / PGT</SelectItem>
+                      <SelectItem value="dsssb">DSSSB Coaching</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-                {errors.interest && (
-                  <p className="mt-1.5 text-xs text-red-600 flex items-center">
-                    <span className="w-1 h-1 bg-red-600 rounded-full mr-1.5"></span>
-                    {errors.interest.message}
-                  </p>
-                )}
               </div>
             </div>
 
-            {/* Message Field */}
             <div className="group flex-1 flex flex-col">
-              <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="message" className="block text-xs font-black uppercase tracking-widest text-gray-500 mb-2">
                 Your Message <span className="text-red-500">*</span>
               </label>
               <div className="relative flex-1 flex flex-col">
                 <div className="absolute top-3 left-3 pointer-events-none z-10">
-                  <MessageSquare className={`w-5 h-5 transition-colors ${errors.message ? 'text-red-500' : 'text-gray-400 group-focus-within:text-red-500'}`} />
+                  <MessageSquare className={`w-4 h-4 transition-colors ${errors.message ? 'text-red-500' : 'text-gray-500 group-focus-within:text-red-500'}`} />
                 </div>
                 <Textarea
                   id="message"
                   {...register('message')}
-                  placeholder="Tell us about your learning goals, questions, or how we can help you succeed..."
-                  className={`pl-11 pt-3 text-base !bg-white border-2 transition-all duration-200 resize-none flex-1 min-h-[120px] ${
-                    errors.message 
-                      ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20' 
-                      : 'border-gray-200 focus:border-red-400 focus:ring-red-400/20 hover:border-gray-300'
+                  placeholder="How can we help you succeed?"
+                  className={`pl-10 pt-3 text-sm bg-gray-800/50 border-gray-700 transition-all duration-200 resize-none flex-1 min-h-[100px] focus:bg-gray-800 focus:border-red-500/50 ${
+                    errors.message ? 'border-red-500/50' : 'hover:border-gray-600'
                   }`}
                   disabled={isSubmitting}
                 />
               </div>
-              {errors.message && (
-                <p className="mt-1.5 text-xs text-red-600 flex items-center">
-                  <span className="w-1 h-1 bg-red-600 rounded-full mr-1.5"></span>
-                  {errors.message.message}
-                </p>
-              )}
+              {errors.message && <p className="mt-1.5 text-[10px] font-bold text-red-500 uppercase tracking-tighter">{errors.message.message}</p>}
             </div>
 
-            {/* Submit Button */}
             <div className="pt-2">
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full h-14 sm:h-16 bg-gradient-to-r from-red-600 via-red-600 to-red-700 hover:from-red-700 hover:via-red-700 hover:to-red-800 text-white text-base sm:text-lg font-semibold rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 shadow-lg shadow-red-500/30 hover:shadow-xl hover:shadow-red-500/40 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none group"
+                className="w-full h-12 bg-red-600 hover:bg-red-700 text-white text-sm font-black uppercase tracking-widest rounded-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-red-600/20 disabled:opacity-60"
               >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  <span>Sending your message...</span>
-                </>
-              ) : (
-                <>
-                  <Send className="w-5 h-5 mr-2 transition-transform group-hover:translate-x-1" />
-                  <span>Send Message</span>
-                </>
-              )}
+              {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <span>Send Message</span>}
               </Button>
-
-              {/* Privacy Note */}
-              <p className="text-xs text-center text-gray-500 mt-4">
-                🔒 Your information is secure and will never be shared with third parties.
+              <p className="text-[10px] text-center text-gray-600 mt-4 font-bold uppercase tracking-widest">
+                🔒 Your information is secure
               </p>
             </div>
           </form>

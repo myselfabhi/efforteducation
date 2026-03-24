@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function YoungScholarPage() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-950">
       <Header />
       <main className="flex-1">
         <YoungScholarHero />
@@ -29,7 +29,9 @@ export default function YoungScholarPage() {
         <SkillsBreakdown />
         <ProgramDetails />
         <FAQSection />
-        <EnrollmentCTA />
+        <div className="pb-24 sm:pb-28 md:pb-16">
+          <EnrollmentCTA />
+        </div>
       </main>
       <Footer />
     </div>

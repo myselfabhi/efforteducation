@@ -1,6 +1,7 @@
 import Header from "./components/layout/Header";
 import Hero from "./components/sections/Hero";
-import ProgramsScrollable from "./components/sections/ProgramsScrollable";
+import CourseGrid from "./components/sections/CourseGrid";
+import YoungScholarBanner from "./components/sections/YoungScholarBanner";
 import Testimonials from "./components/sections/Testimonials";
 import WannaConnect from "./components/sections/WannaConnect";
 import Footer from "./components/layout/Footer";
@@ -8,20 +9,24 @@ import ScrollReveal from "./components/mobile/ScrollReveal";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-950">
       <Header />
       <main className="flex-1 pb-24 sm:pb-28 md:pb-16">
         <Hero />
         
         <ScrollReveal>
-          <ProgramsScrollable />
+          <CourseGrid />
         </ScrollReveal>
-        
+
         <ScrollReveal delay={100}>
-          <Testimonials />
+          <YoungScholarBanner />
         </ScrollReveal>
         
         <ScrollReveal delay={200}>
+          <Testimonials />
+        </ScrollReveal>
+        
+        <ScrollReveal delay={300}>
           <WannaConnect />
         </ScrollReveal>
       </main>

@@ -2,6 +2,7 @@
 
 import { Button } from '@/app/components/ui/button';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 export default function YoungScholarHero() {
   const scrollToContact = () => {
@@ -12,47 +13,74 @@ export default function YoungScholarHero() {
   };
 
   return (
-    <section className="relative min-h-[60vh] bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-hidden flex items-center justify-center pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20">
-      {/* Background Elements */}
-      <div className="absolute inset-0 bg-gradient-to-r from-red-600/20 via-transparent to-red-800/10 -z-10"></div>
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/40 -z-10"></div>
+    <section className="relative min-h-[50vh] bg-gray-950 overflow-hidden flex items-center justify-center pt-20">
+      {/* Background Animated Orbs */}
+      <div className="absolute inset-0 z-0 opacity-20">
+        <div className="absolute top-1/4 -left-10 w-64 h-64 bg-red-600/20 rounded-full blur-[80px]" />
+        <div className="absolute bottom-1/4 -right-10 w-80 h-80 bg-yellow-500/10 rounded-full blur-[100px]" />
+      </div>
       
-      <div className="relative container mx-auto max-w-6xl px-6 sm:px-8 lg:px-6 text-center">
-        <div className="inline-block px-5 py-2.5 bg-gradient-to-r from-red-600/20 to-red-700/20 border border-red-500/40 rounded-full mb-6 backdrop-blur-sm shadow-lg shadow-red-500/20 relative z-0">
-          <span className="text-red-300 text-sm sm:text-base font-semibold tracking-wide">Hero Product</span>
-        </div>
+      <div className="relative z-10 container mx-auto max-w-6xl px-6 text-center">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="inline-block px-4 py-1 bg-yellow-500/10 border border-yellow-500/20 rounded-full mb-6"
+        >
+          <span className="text-yellow-500 text-[10px] font-black uppercase tracking-[0.2em]">Hero Product</span>
+        </motion.div>
         
-        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 px-4">
-          Young Scholar <span className="bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent">Program</span>
-        </h1>
+        <motion.h1 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6 tracking-tight"
+        >
+          Young Scholar <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">Program</span>
+        </motion.h1>
         
-        <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-red-500/10 to-red-600/10 border border-red-400/30 rounded-lg mb-6 backdrop-blur-sm shadow-md shadow-red-500/10">
-          <svg className="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 border border-gray-800 rounded-lg mb-8"
+        >
+          <svg className="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
           </svg>
-          <span className="text-white text-base sm:text-lg font-semibold">For Class 4-8 Students</span>
-        </div>
+          <span className="text-white text-xs font-bold uppercase tracking-widest">For Class 4-8 Students</span>
+        </motion.div>
         
-        <p className="text-lg sm:text-xl md:text-2xl text-gray-300 mb-10 max-w-4xl mx-auto leading-relaxed px-4">
-          Weekend skill-building program to develop essential skills for future success. Invest a few hours on weekends to learn new skills!
-        </p>
+        <motion.p 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="text-base sm:text-lg text-gray-400 mb-10 max-w-3xl mx-auto leading-relaxed font-medium"
+        >
+          Weekend skill-building program to develop essential skills for future success. 
+          Holistic growth beyond textbooks through interactive sessions.
+        </motion.p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="flex flex-col sm:flex-row gap-4 justify-center"
+        >
           <Button
             onClick={scrollToContact}
-            className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-base sm:text-lg font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-red-500 shadow-lg hover:shadow-red-500/25 min-h-[52px]"
+            className="bg-red-600 hover:bg-red-700 text-white text-sm font-black uppercase tracking-widest px-8 py-6 rounded-xl transition-all duration-300 shadow-xl shadow-red-600/20"
           >
-            Contact for Enrollment
+            Enroll Now
           </Button>
           <Link href="/programs">
             <Button
               variant="outline"
-              className="border-2 border-white text-white hover:bg-white hover:text-gray-900 text-base sm:text-lg font-semibold px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-white backdrop-blur-sm min-h-[52px] w-full sm:w-auto"
+              className="border-2 border-gray-800 bg-transparent text-white hover:border-yellow-500 text-sm font-black uppercase tracking-widest px-8 py-6 rounded-xl transition-all duration-300"
             >
-              View All Programs
+              Other Programs
             </Button>
           </Link>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

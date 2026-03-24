@@ -19,20 +19,20 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-950">
       <Header />
       <main className="flex-1 pb-24 sm:pb-28 md:pb-16">
         <AboutHero />
         
-        <ScrollReveal direction="up" delay={0}>
+        <ScrollReveal>
           <StatsSection />
         </ScrollReveal>
         
-        <ScrollReveal direction="up" delay={100}>
+        <ScrollReveal delay={100}>
           <TeamSection />
         </ScrollReveal>
         
-        <ScrollReveal direction="up" delay={200}>
+        <ScrollReveal delay={200}>
           <ProgramFeatures />
         </ScrollReveal>
       </main>

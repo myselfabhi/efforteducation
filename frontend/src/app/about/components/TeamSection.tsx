@@ -2,7 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar";
 import { Card, CardContent } from "../../components/ui/card";
-import SwipeCarousel from "../../components/mobile/SwipeCarousel";
+import { motion } from "framer-motion";
 
 export default function TeamSection() {
   const teamMembers = [
@@ -30,91 +30,70 @@ export default function TeamSection() {
   ];
 
   return (
-    <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-hidden relative">
-      {/* Subtle background pattern */}
-      <div className="absolute inset-0 opacity-5 bg-[radial-gradient(circle_at_50%_50%,_rgba(255,255,255,0.1),transparent_50%)]"></div>
+    <section className="py-16 bg-gray-950 overflow-hidden relative">
+      {/* Background Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-red-600/5 rounded-full blur-[100px] pointer-events-none" />
       
-      <div className="relative container mx-auto max-w-6xl px-6 sm:px-8 lg:px-8">
+      <div className="relative container mx-auto max-w-6xl px-6">
         {/* Section Header */}
-        <div className="text-center mb-10 sm:mb-12 lg:mb-16">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 px-4">
-            Meet Our <span className="bg-gradient-to-r from-red-400 to-red-600 bg-clip-text text-transparent">Team</span>
-          </h2>
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-300 max-w-3xl mx-auto px-4 leading-relaxed">
+        <div className="text-center mb-12">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-3xl md:text-4xl font-black text-white mb-4 tracking-tight"
+          >
+            Meet Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-yellow-500">Team</span>
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-base text-gray-400 max-w-2xl mx-auto leading-relaxed px-4"
+          >
             Experienced educators dedicated to your success and growth.
-          </p>
+          </motion.p>
         </div>
 
-        {/* Mobile: Swipe Carousel */}
-        <div className="lg:hidden">
-          <SwipeCarousel
-            items={teamMembers.map((member, index) => (
+        {/* Team Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {teamMembers.map((member, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+            >
               <Card
-                key={index}
-                className="border-2 border-gray-700 shadow-lg bg-gray-800/60 backdrop-blur-md h-full"
+                className="border border-gray-800 bg-gray-900/40 backdrop-blur-sm hover:border-red-500/30 transition-all duration-500 transform hover:-translate-y-1.5 rounded-2xl overflow-hidden group"
               >
-                <CardContent className="p-6 text-center flex flex-col items-center justify-center">
+                <CardContent className="p-8 text-center">
                   {/* Avatar */}
-                  <div className="relative inline-block mb-4">
-                    <Avatar className="w-24 h-24 ring-4 ring-red-500/30">
-                      <AvatarImage src={member.image} alt={member.name} />
-                      <AvatarFallback className="bg-gradient-to-br from-red-600 to-red-700 text-white text-2xl font-bold">
+                  <div className="relative inline-block mb-6">
+                    <Avatar className="w-28 h-28 border-4 border-gray-800 transition-all duration-500 group-hover:border-red-500/30 group-hover:scale-105">
+                      <AvatarImage src={member.image} alt={member.name} className="object-cover" />
+                      <AvatarFallback className="bg-gradient-to-br from-red-600 to-red-700 text-white text-2xl font-black">
                         {member.initials}
                       </AvatarFallback>
                     </Avatar>
                   </div>
                   
-                  <h3 className="text-xl font-bold text-white mb-2">
+                  <h3 className="text-xl font-bold text-white mb-1 group-hover:text-red-400 transition-colors">
                     {member.name}
                   </h3>
                   
-                  <p className="text-red-400 font-semibold mb-3 text-base">
+                  <p className="text-yellow-500 font-bold text-xs uppercase tracking-widest mb-4">
                     {member.role}
                   </p>
                   
-                  <p className="text-gray-300 leading-snug text-sm">
+                  <p className="text-gray-400 text-sm leading-relaxed font-medium">
                     {member.description}
                   </p>
                 </CardContent>
               </Card>
-            ))}
-          />
-        </div>
-
-        {/* Desktop: Grid with stagger animation */}
-        <div className="hidden lg:grid grid-cols-3 gap-8 stagger-children">
-          {teamMembers.map((member, index) => (
-            <Card
-              key={index}
-              className="border-2 border-gray-700 hover:border-red-500/50 hover:shadow-2xl hover:shadow-red-500/10 transition-all duration-300 bg-gray-800/60 backdrop-blur-md transform hover:-translate-y-2 card-lift group"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <CardContent className="p-8 text-center">
-                {/* Avatar with ring and hover scale */}
-                <div className="relative inline-block mb-6">
-                  <Avatar className="w-32 h-32 ring-4 ring-red-500/20 group-hover:ring-red-500/50 transition-all duration-300 transform group-hover:scale-110">
-                    <AvatarImage src={member.image} alt={member.name} />
-                    <AvatarFallback className="bg-gradient-to-br from-red-600 to-red-700 text-white text-2xl font-bold">
-                      {member.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  {/* Pulse ring effect */}
-                  <div className="absolute inset-0 rounded-full bg-red-500/20 animate-ping opacity-0 group-hover:opacity-100"></div>
-                </div>
-                
-                <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-red-400 transition-colors duration-300">
-                  {member.name}
-                </h3>
-                
-                <p className="text-red-400 font-semibold mb-4 text-lg">
-                  {member.role}
-                </p>
-                
-                <p className="text-gray-300 leading-relaxed text-base">
-                  {member.description}
-                </p>
-              </CardContent>
-            </Card>
+            </motion.div>
           ))}
         </div>
       </div>
