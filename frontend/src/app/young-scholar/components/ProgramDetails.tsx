@@ -6,23 +6,23 @@ import { motion } from 'framer-motion';
 
 export default function ProgramDetails() {
   return (
-    <section className="py-16 bg-gray-950">
+    <section className="py-16 bg-white">
       <div className="container mx-auto max-w-6xl px-6">
         <div className="text-center mb-12">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-black text-white mb-4 tracking-tight uppercase"
+            className="text-3xl md:text-4xl font-black text-gray-900 mb-4 tracking-tight uppercase"
           >
-            Program <span className="text-red-500">Logistics</span>
+            Program <span className="text-red-600">Logistics</span>
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-base text-gray-400 max-w-2xl mx-auto leading-relaxed font-medium"
+            className="text-base text-gray-500 max-w-2xl mx-auto leading-relaxed font-medium"
           >
             Everything you need to know about the Young Scholar Program infrastructure and costs.
           </motion.p>
@@ -34,7 +34,7 @@ export default function ProgramDetails() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-            <Card className="border border-gray-800 bg-gray-900/40 backdrop-blur-sm rounded-2xl h-full shadow-xl">
+            <Card className="border border-gray-100 bg-white rounded-2xl h-full shadow-lg">
               <CardContent className="p-8">
                 <div className="space-y-8">
                   {[
@@ -44,13 +44,13 @@ export default function ProgramDetails() {
                     { icon: Users, title: "Class Size", text: "Small, Interactive Batches" }
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-5 group">
-                      <div className="w-12 h-12 bg-gray-800 border border-gray-700 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:border-red-500/50 transition-colors">
-                        <item.icon className="w-5 h-5 text-red-500" />
+                      <div className="w-12 h-12 bg-red-50 border border-red-100 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-red-600 transition-colors">
+                        <item.icon className="w-5 h-5 text-red-600 group-hover:text-white transition-colors" />
                       </div>
                       <div>
-                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-1">{item.title}</h3>
-                        <p className="text-gray-200 font-bold text-base">{item.text}</p>
-                        {item.sub && <p className="text-[10px] font-bold text-gray-600 uppercase tracking-tighter mt-0.5">{item.sub}</p>}
+                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">{item.title}</h3>
+                        <p className="text-gray-900 font-bold text-base">{item.text}</p>
+                        {item.sub && <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter mt-0.5">{item.sub}</p>}
                       </div>
                     </div>
                   ))}
@@ -64,21 +64,21 @@ export default function ProgramDetails() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-            <Card className="border border-gray-800 bg-gray-900/40 backdrop-blur-sm rounded-2xl h-full shadow-xl overflow-hidden relative group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+            <Card className="border border-gray-100 bg-slate-50 rounded-2xl h-full shadow-lg overflow-hidden relative group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
               <CardContent className="p-8">
                 <div className="flex items-center gap-5 mb-8">
-                  <div className="w-14 h-14 bg-yellow-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-yellow-500/20">
-                    <IndianRupee className="w-7 h-7 text-gray-950" strokeWidth={3} />
+                  <div className="w-14 h-14 bg-red-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-red-600/20">
+                    <IndianRupee className="w-7 h-7 text-white" strokeWidth={3} />
                   </div>
                   <div>
-                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-1">Investment</h3>
-                    <p className="text-4xl font-black text-white tracking-tighter">₹999</p>
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Investment</h3>
+                    <p className="text-4xl font-black text-gray-900 tracking-tighter">₹999</p>
                   </div>
                 </div>
 
-                <div className="pt-8 border-t border-gray-800">
-                  <h3 className="text-xs font-black uppercase tracking-widest text-red-500 mb-6">What&apos;s Included</h3>
+                <div className="pt-8 border-t border-gray-200">
+                  <h3 className="text-xs font-black uppercase tracking-widest text-red-600 mb-6">What&apos;s Included</h3>
                   <div className="space-y-4">
                     {[
                       "Live interactive classes on weekends",
@@ -88,8 +88,8 @@ export default function ProgramDetails() {
                       "Dedicated doubt clearing sessions"
                     ].map((item, i) => (
                       <div key={i} className="flex items-center gap-3">
-                        <CheckCircle2 className="w-4 h-4 text-yellow-500 flex-shrink-0" />
-                        <span className="text-sm font-medium text-gray-300">{item}</span>
+                        <CheckCircle2 className="w-4 h-4 text-red-600 flex-shrink-0" />
+                        <span className="text-sm font-medium text-gray-600">{item}</span>
                       </div>
                     ))}
                   </div>

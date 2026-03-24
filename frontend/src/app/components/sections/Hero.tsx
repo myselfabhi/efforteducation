@@ -13,9 +13,9 @@ export default function Hero() {
   };
 
   return (
-    <section id="home" className="relative min-h-screen bg-gray-950 overflow-hidden flex items-center justify-center pt-16">
+    <section id="home" className="relative min-h-screen bg-white overflow-hidden flex items-center justify-center pt-16">
       {/* Background Animated Orbs - Subtle & Modern */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 opacity-10">
         <motion.div
           animate={{
             x: [0, 50, 0],
@@ -26,7 +26,7 @@ export default function Hero() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute top-1/4 -left-10 w-[300px] h-[300px] bg-red-600/10 rounded-full blur-[100px]"
+          className="absolute top-1/4 -left-10 w-[300px] h-[300px] bg-red-600/30 rounded-full blur-[100px]"
         />
         <motion.div
           animate={{
@@ -38,7 +38,7 @@ export default function Hero() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute bottom-1/4 -right-10 w-[350px] h-[350px] bg-yellow-500/10 rounded-full blur-[120px]"
+          className="absolute bottom-1/4 -right-10 w-[350px] h-[350px] bg-red-400/20 rounded-full blur-[120px]"
         />
       </div>
 
@@ -48,10 +48,10 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="inline-block px-4 py-1.5 bg-gray-900 border border-gray-800 rounded-full mb-8"
+          className="inline-block px-4 py-1.5 bg-gray-50 border border-gray-100 rounded-full mb-8"
         >
-          <span className="text-gray-400 text-sm font-medium tracking-wide">
-            ESTABLISHED <span className="text-yellow-500">1990</span>
+          <span className="text-gray-500 text-xs font-bold tracking-widest uppercase">
+            ESTABLISHED <span className="text-red-600">1990</span>
           </span>
         </motion.div>
         
@@ -62,9 +62,9 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="flex flex-col items-center justify-center mb-6"
         >
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] tracking-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-gray-900 leading-[1.1] tracking-tight">
             EFFORT<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-yellow-500">EDUCATION</span>
+            <span className="text-red-600">EDUCATION</span>
           </h1>
         </motion.div>
         
@@ -73,7 +73,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-base sm:text-lg text-gray-400 mb-10 max-w-xl mx-auto leading-relaxed"
+          className="text-base sm:text-lg text-gray-500 mb-10 max-w-xl mx-auto leading-relaxed font-medium"
         >
           Precision coaching for banking, teaching, and government careers.
           Empowering leaders for over three decades.
@@ -88,7 +88,7 @@ export default function Hero() {
         >
           <Button
             onClick={() => scrollToSection('courses-grid')}
-            className="group relative overflow-hidden bg-red-600 hover:bg-red-700 text-white px-8 py-5 rounded-lg transition-all duration-300 transform hover:-translate-y-1 shadow-2xl shadow-red-600/20 text-base font-bold"
+            className="group relative overflow-hidden bg-red-600 hover:bg-red-700 text-white px-8 py-5 rounded-lg transition-all duration-300 transform hover:-translate-y-1 shadow-xl shadow-red-600/20 text-sm font-bold uppercase tracking-widest"
           >
             Explore Courses
             <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
@@ -97,7 +97,7 @@ export default function Hero() {
           <Button
             onClick={() => scrollToSection('contact')}
             variant="outline"
-            className="border-2 border-gray-700 bg-transparent text-white hover:bg-gray-900 hover:border-yellow-500 px-8 py-5 rounded-lg transition-all duration-300 transform hover:-translate-y-1 text-base font-bold backdrop-blur-sm"
+            className="border-2 border-gray-100 bg-white text-gray-900 hover:border-red-600 px-8 py-5 rounded-lg transition-all duration-300 transform hover:-translate-y-1 text-sm font-bold uppercase tracking-widest"
           >
             Get Counselling
           </Button>
@@ -108,9 +108,9 @@ export default function Hero() {
       <motion.div
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 text-gray-600"
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 text-gray-300"
       >
-        <div className="w-[1px] h-12 bg-gradient-to-b from-transparent via-gray-600 to-transparent mx-auto" />
+        <div className="w-[1px] h-12 bg-gradient-to-b from-transparent via-gray-300 to-transparent mx-auto" />
       </motion.div>
     </section>
   );

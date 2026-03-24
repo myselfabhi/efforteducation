@@ -29,23 +29,23 @@ export default function ProgramOverview() {
   ];
 
   return (
-    <section className="py-16 bg-gray-950 overflow-hidden">
+    <section className="py-16 bg-white overflow-hidden">
       <div className="container mx-auto max-w-6xl px-6">
         <div className="text-center mb-12">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-black text-white mb-6 tracking-tight"
+            className="text-3xl md:text-4xl font-black text-gray-900 mb-6 tracking-tight uppercase"
           >
-            What is <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-yellow-500">Young Scholar</span> Program?
+            What is <span className="text-red-600">Young Scholar</span> Program?
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-base sm:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed font-medium"
+            className="text-base sm:text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed font-medium"
           >
             A comprehensive weekend skill-building program designed specifically for students in Class 4-8. 
             We focus on developing essential life skills through interactive learning.
@@ -61,12 +61,12 @@ export default function ProgramOverview() {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="border border-gray-800 bg-gray-900/40 backdrop-blur-sm hover:border-yellow-500/30 transition-all duration-300 transform hover:-translate-y-1 rounded-2xl h-full group">
+              <Card className="border border-gray-100 bg-white hover:border-red-100 transition-all duration-300 transform hover:-translate-y-1 rounded-2xl h-full group shadow-sm hover:shadow-xl">
                 <CardContent className="p-6 text-center flex flex-col items-center">
-                  <div className="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center mb-4 border border-gray-700 group-hover:border-yellow-500/50 transition-colors">
-                    <feature.icon className="w-6 h-6 text-yellow-500" />
+                  <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center mb-4 border border-gray-100 group-hover:bg-red-600 transition-colors">
+                    <feature.icon className="w-6 h-6 text-red-600 group-hover:text-white transition-colors" />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-2 group-hover:text-yellow-400 transition-colors">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-red-600 transition-colors uppercase tracking-tight">
                     {feature.title}
                   </h3>
                   <p className="text-gray-500 text-xs leading-relaxed font-medium">
@@ -82,14 +82,14 @@ export default function ProgramOverview() {
           initial={{ opacity: 0, scale: 0.98 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="mt-16 p-8 bg-gray-900/40 backdrop-blur-xl rounded-[2rem] border border-gray-800"
+          className="mt-16 p-8 bg-slate-50 rounded-[2rem] border border-gray-100 shadow-sm"
         >
-          <h3 className="text-xl sm:text-2xl font-black text-white mb-8 text-center uppercase tracking-tighter">
-            Why Choose <span className="text-red-500">This Program</span>?
+          <h3 className="text-xl sm:text-2xl font-black text-gray-900 mb-8 text-center uppercase tracking-tighter">
+            Why Choose <span className="text-red-600">This Program</span>?
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div>
-              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-yellow-500 mb-4">For Students</h4>
+              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-red-600 mb-4">For Students</h4>
               <ul className="space-y-4">
                 {[
                   "Build confidence and communication skills",
@@ -97,15 +97,15 @@ export default function ProgramOverview() {
                   "Stay updated with world events",
                   "Improve mathematical speed & logic"
                 ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm text-gray-300 font-medium">
-                    <span className="text-red-500 font-black">✓</span>
+                  <li key={i} className="flex items-start gap-3 text-sm text-gray-600 font-medium">
+                    <span className="text-red-600 font-black">✓</span>
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
             <div>
-              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-yellow-500 mb-4">For Parents</h4>
+              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-red-600 mb-4">For Parents</h4>
               <ul className="space-y-4">
                 {[
                   "Affordable investment in child's future",
@@ -113,8 +113,8 @@ export default function ProgramOverview() {
                   "Online live classes - learn from home",
                   "Holistic development beyond academics"
                 ].map((item, i) => (
-                  <li key={i} className="flex items-start gap-3 text-sm text-gray-300 font-medium">
-                    <span className="text-red-500 font-black">✓</span>
+                  <li key={i} className="flex items-start gap-3 text-sm text-gray-600 font-medium">
+                    <span className="text-red-600 font-black">✓</span>
                     <span>{item}</span>
                   </li>
                 ))}

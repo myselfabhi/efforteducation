@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import AboutHero from "./components/AboutHero";
+import MissionVision from "./components/MissionVision";
 import StatsSection from "./components/StatsSection";
 import TeamSection from "./components/TeamSection";
 import ProgramFeatures from "../programs/components/ProgramFeatures";
@@ -19,20 +20,24 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-950">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
       <main className="flex-1 pb-24 sm:pb-28 md:pb-16">
         <AboutHero />
         
         <ScrollReveal>
+          <MissionVision />
+        </ScrollReveal>
+
+        <ScrollReveal delay={100}>
           <StatsSection />
         </ScrollReveal>
         
-        <ScrollReveal delay={100}>
+        <ScrollReveal delay={200}>
           <TeamSection />
         </ScrollReveal>
         
-        <ScrollReveal delay={200}>
+        <ScrollReveal delay={300}>
           <ProgramFeatures />
         </ScrollReveal>
       </main>

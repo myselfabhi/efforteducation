@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function ProgramsPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-950">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
       <main className="flex-1 pb-24 sm:pb-28 md:pb-16">
         <ProgramsHero />

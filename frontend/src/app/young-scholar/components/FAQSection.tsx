@@ -45,23 +45,23 @@ const faqs = [
 
 export default function FAQSection() {
   return (
-    <section className="py-16 bg-gray-950">
+    <section className="py-16 bg-slate-50">
       <div className="container mx-auto max-w-4xl px-6">
         <div className="text-center mb-12">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-black text-white mb-4 tracking-tight"
+            className="text-3xl md:text-4xl font-black text-gray-900 mb-4 tracking-tight uppercase"
           >
-            Common <span className="text-red-500">Queries</span>
+            Common <span className="text-red-600">Queries</span>
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-base text-gray-400 max-w-2xl mx-auto font-medium"
+            className="text-base text-gray-500 max-w-2xl mx-auto font-medium"
           >
             Find everything you need to know about the Young Scholar Program.
           </motion.p>
@@ -78,12 +78,12 @@ export default function FAQSection() {
             >
               <AccordionItem
                 value={`item-${index}`}
-                className="border border-gray-800 rounded-2xl px-6 bg-gray-900/40 backdrop-blur-sm hover:border-red-500/30 transition-all duration-300"
+                className="border border-gray-200 rounded-2xl px-6 bg-white hover:border-red-100 transition-all duration-300 shadow-sm"
               >
-                <AccordionTrigger className="text-left font-bold text-gray-200 hover:text-red-400 py-5 text-sm sm:text-base uppercase tracking-tight">
+                <AccordionTrigger className="text-left font-bold text-gray-700 hover:text-red-600 py-5 text-sm sm:text-base uppercase tracking-tight">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-gray-400 leading-relaxed pb-5 text-sm font-medium">
+                <AccordionContent className="text-gray-500 leading-relaxed pb-5 text-sm font-medium">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>

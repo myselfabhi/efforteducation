@@ -1,6 +1,37 @@
 @import "tailwindcss";
 
 :root {
+  --background: #ffffff;
+  --foreground: #171717;
+
+  --card: #ffffff;
+  --card-foreground: #171717;
+
+  --popover: #ffffff;
+  --popover-foreground: #171717;
+
+  --primary: #dc2626; /* red-600 */
+  --primary-foreground: #ffffff;
+
+  --secondary: #f3f4f6; /* gray-100 */
+  --secondary-foreground: #111827; /* gray-900 */
+
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+
+  --accent: #f3f4f6;
+  --accent-foreground: #111827;
+
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #ef4444;
+}
+
+/* Force dark mode variables if needed, but we are reverting to light */
+.dark {
   --background: #0b0b0b;
   --foreground: #f5f5f5;
 
@@ -69,38 +100,6 @@
   --color-sidebar-accent-foreground: var(--foreground);
   --color-sidebar-border: var(--border);
   --color-sidebar-ring: var(--ring);
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --background: #ffffff;
-    --foreground: #171717;
-
-    --card: #ffffff;
-    --card-foreground: #171717;
-
-    --popover: #ffffff;
-    --popover-foreground: #171717;
-
-    --primary: #dc2626; /* red-600 */
-    --primary-foreground: #ffffff;
-
-    --secondary: #f3f4f6; /* gray-100 */
-    --secondary-foreground: #111827; /* gray-900 */
-
-    --muted: #f3f4f6;
-    --muted-foreground: #6b7280;
-
-    --accent: #f3f4f6;
-    --accent-foreground: #111827;
-
-    --destructive: #ef4444;
-    --destructive-foreground: #ffffff;
-
-    --border: #e5e7eb;
-    --input: #e5e7eb;
-    --ring: #ef4444;
-  }
 }
 
 @layer base {

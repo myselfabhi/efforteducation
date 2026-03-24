@@ -33,7 +33,7 @@ export default function StatsSection() {
   ];
 
   return (
-    <section className="py-16 bg-gray-950 relative overflow-hidden">
+    <section className="py-16 bg-white relative overflow-hidden">
       <div className="container mx-auto max-w-6xl px-6">
         {/* Section Header */}
         <div className="text-center mb-12">
@@ -41,16 +41,16 @@ export default function StatsSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-black text-white mb-4 tracking-tight"
+            className="text-3xl md:text-4xl font-black text-gray-900 mb-4 tracking-tight uppercase"
           >
-            Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-yellow-500">Achievements</span>
+            Our <span className="text-red-600">Achievements</span>
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-base text-gray-400 max-w-2xl mx-auto leading-relaxed"
+            className="text-base text-gray-500 max-w-2xl mx-auto leading-relaxed font-medium"
           >
             Numbers that reflect our commitment to student success and educational excellence.
           </motion.p>
@@ -67,22 +67,22 @@ export default function StatsSection() {
               transition={{ delay: index * 0.1 }}
             >
               <Card
-                className="border border-gray-800 bg-gray-900/50 backdrop-blur-sm hover:border-red-500/30 transition-all duration-300 transform hover:-translate-y-1 rounded-2xl overflow-hidden group"
+                className="border border-gray-100 bg-white hover:border-red-100 transition-all duration-300 transform hover:-translate-y-1 rounded-2xl overflow-hidden group shadow-sm hover:shadow-xl"
               >
                 <CardContent className="p-8 text-center">
-                  <div className="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center mx-auto mb-6 border border-gray-700 group-hover:border-red-500/50 transition-colors">
-                    <stat.icon className="w-6 h-6 text-red-500" />
+                  <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center mx-auto mb-6 border border-red-100 group-hover:bg-red-600 transition-colors duration-300">
+                    <stat.icon className="w-6 h-6 text-red-600 group-hover:text-white transition-colors duration-300" />
                   </div>
                   
-                  <div className="text-4xl font-black text-white mb-2 tracking-tighter">
+                  <div className="text-4xl font-black text-gray-900 mb-2 tracking-tighter">
                     {stat.number}
                   </div>
                   
-                  <h3 className="text-sm font-bold text-yellow-500 uppercase tracking-widest mb-3">
+                  <h3 className="text-xs font-black text-red-600 uppercase tracking-widest mb-3">
                     {stat.label}
                   </h3>
                   
-                  <p className="text-gray-500 text-xs leading-relaxed font-medium">
+                  <p className="text-gray-400 text-[10px] leading-relaxed font-bold uppercase tracking-widest">
                     {stat.description}
                   </p>
                 </CardContent>

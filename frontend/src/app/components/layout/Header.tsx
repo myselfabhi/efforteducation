@@ -11,17 +11,17 @@ export default function Header() {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-gray-950/80 backdrop-blur-md border-b border-gray-900">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
       <nav className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Brand - Centered on mobile, left on desktop */}
           <div className="flex items-center md:flex-none flex-1 md:flex-initial justify-center md:justify-start">
             <Link
               href="/"
-              className="flex items-center gap-3 sm:gap-4 hover:opacity-80 transition-opacity"
+              className="flex items-center gap-3 hover:opacity-80 transition-opacity"
             >
-              <Logo className="text-2xl sm:text-3xl pl-2" />
-              <span className="text-lg sm:text-xl font-black text-white tracking-tighter">EFFORT <span className="text-red-600">EDUCATION</span></span>
+              <Logo className="text-2xl sm:text-3xl" />
+              <span className="text-lg sm:text-xl font-black text-gray-900 tracking-tighter uppercase">EFFORT <span className="text-red-600">EDUCATION</span></span>
             </Link>
           </div>
 
@@ -29,25 +29,25 @@ export default function Header() {
           <div className="hidden md:flex items-center space-x-8">
             <Link
               href="/"
-              className={`text-xs font-bold uppercase tracking-widest transition-colors ${isActive('/') ? 'text-red-500' : 'text-gray-400 hover:text-white'}`}
+              className={`text-xs font-bold uppercase tracking-widest transition-colors ${isActive('/') ? 'text-red-600' : 'text-gray-500 hover:text-red-600'}`}
             >
               Home
             </Link>
             <Link
               href="/about"
-              className={`text-xs font-bold uppercase tracking-widest transition-colors ${isActive('/about') ? 'text-red-500' : 'text-gray-400 hover:text-white'}`}
+              className={`text-xs font-bold uppercase tracking-widest transition-colors ${isActive('/about') ? 'text-red-600' : 'text-gray-500 hover:text-red-600'}`}
             >
               About
             </Link>
             <Link
               href="/programs"
-              className={`text-xs font-bold uppercase tracking-widest transition-colors ${isActive('/programs') ? 'text-red-500' : 'text-gray-400 hover:text-white'}`}
+              className={`text-xs font-bold uppercase tracking-widest transition-colors ${isActive('/programs') ? 'text-red-600' : 'text-gray-500 hover:text-red-600'}`}
             >
               Programs
             </Link>
             <Link
               href="/young-scholar"
-              className={`text-xs font-bold uppercase tracking-widest transition-colors ${isActive('/young-scholar') ? 'text-red-500' : 'text-gray-400 hover:text-white'}`}
+              className={`text-xs font-bold uppercase tracking-widest transition-colors ${isActive('/young-scholar') ? 'text-red-600' : 'text-gray-500 hover:text-red-600'}`}
             >
               Young Scholar
             </Link>

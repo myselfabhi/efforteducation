@@ -30,9 +30,9 @@ export default function TeamSection() {
   ];
 
   return (
-    <section className="py-16 bg-gray-950 overflow-hidden relative">
+    <section className="py-16 bg-slate-50 overflow-hidden relative">
       {/* Background Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-red-600/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-red-100 rounded-full blur-[100px] pointer-events-none" />
       
       <div className="relative container mx-auto max-w-6xl px-6">
         {/* Section Header */}
@@ -41,16 +41,16 @@ export default function TeamSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-black text-white mb-4 tracking-tight"
+            className="text-3xl md:text-4xl font-black text-gray-900 mb-4 tracking-tight uppercase"
           >
-            Meet Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-yellow-500">Team</span>
+            Meet Our <span className="text-red-600">Team</span>
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-base text-gray-400 max-w-2xl mx-auto leading-relaxed px-4"
+            className="text-base text-gray-500 max-w-2xl mx-auto leading-relaxed px-4"
           >
             Experienced educators dedicated to your success and growth.
           </motion.p>
@@ -67,12 +67,12 @@ export default function TeamSection() {
               transition={{ delay: index * 0.1 }}
             >
               <Card
-                className="border border-gray-800 bg-gray-900/40 backdrop-blur-sm hover:border-red-500/30 transition-all duration-500 transform hover:-translate-y-1.5 rounded-2xl overflow-hidden group"
+                className="border border-gray-100 bg-white hover:border-red-100 transition-all duration-500 transform hover:-translate-y-1.5 rounded-2xl overflow-hidden group shadow-sm hover:shadow-xl"
               >
                 <CardContent className="p-8 text-center">
                   {/* Avatar */}
                   <div className="relative inline-block mb-6">
-                    <Avatar className="w-28 h-28 border-4 border-gray-800 transition-all duration-500 group-hover:border-red-500/30 group-hover:scale-105">
+                    <Avatar className="w-28 h-28 border-4 border-gray-50 transition-all duration-500 group-hover:border-red-100 group-hover:scale-105">
                       <AvatarImage src={member.image} alt={member.name} className="object-cover" />
                       <AvatarFallback className="bg-gradient-to-br from-red-600 to-red-700 text-white text-2xl font-black">
                         {member.initials}
@@ -80,15 +80,15 @@ export default function TeamSection() {
                     </Avatar>
                   </div>
                   
-                  <h3 className="text-xl font-bold text-white mb-1 group-hover:text-red-400 transition-colors">
+                  <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-red-600 transition-colors">
                     {member.name}
                   </h3>
                   
-                  <p className="text-yellow-500 font-bold text-xs uppercase tracking-widest mb-4">
+                  <p className="text-red-600 font-black text-[10px] uppercase tracking-widest mb-4">
                     {member.role}
                   </p>
                   
-                  <p className="text-gray-400 text-sm leading-relaxed font-medium">
+                  <p className="text-gray-500 text-sm leading-relaxed font-medium">
                     {member.description}
                   </p>
                 </CardContent>
