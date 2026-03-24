@@ -6,8 +6,8 @@ export default function ContactInfo() {
     {
       icon: Phone,
       title: "Phone",
-      lines: ["+91 98765 43210", "+91 87654 32109"],
-      href: "tel:+919876543210"
+      lines: ["+91 99103 35093"],
+      href: "tel:+919910335093"
     },
     {
       icon: Mail,
@@ -50,7 +50,11 @@ export default function ContactInfo() {
 
             if (detail.href) {
               return (
-                <a key={index} href={detail.href} className="block transition-transform hover:translate-x-1">
+                <a 
+                  key={index} 
+                  href={detail.href} 
+                  className="block transition-transform hover:translate-x-1"
+                >
                   {Content}
                 </a>
               );

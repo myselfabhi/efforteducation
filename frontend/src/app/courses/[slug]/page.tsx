@@ -191,7 +191,7 @@ export default async function CoursePage({ params }: PageProps) {
         <CourseDetails course={course} />
         <CourseTestimonials course={course} />
         <div className="pb-24 sm:pb-28 md:pb-16">
-          <CounsellingCTA />
+          <CounsellingCTA courseName={course.title} />
         </div>
       </main>
       <Footer />

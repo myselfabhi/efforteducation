@@ -180,7 +180,7 @@ export default function ContactForm() {
                   <Input
                     id="phone"
                     type="tel"
-                    placeholder="+91 98765 43210"
+                    placeholder="+91 99103 35093"
                     {...register('phone')}
                     className="pl-10 h-12 text-sm border-gray-200 transition-all duration-200 focus:border-red-500 focus:ring-red-500/10"
                     disabled={isSubmitting}
