@@ -24,11 +24,11 @@ export default function ContactInfo() {
   ];
 
   return (
-    <Card className="border border-gray-800 bg-gray-900/40 backdrop-blur-xl overflow-hidden rounded-2xl h-full shadow-2xl">
+    <Card className="border border-gray-200 bg-white overflow-hidden rounded-2xl h-full shadow-sm hover:shadow-lg transition-shadow">
       <div className="h-1.5 bg-gradient-to-r from-red-500 via-red-600 to-red-700"></div>
       
       <CardContent className="p-8">
-        <h3 className="text-xl font-black text-white mb-8 tracking-tight uppercase">
+        <h3 className="text-xl font-bold text-gray-900 mb-8 tracking-tight">
           Contact Details
         </h3>
         
@@ -36,13 +36,13 @@ export default function ContactInfo() {
           {contactDetails.map((detail, index) => {
             const Content = (
               <div className="flex items-start space-x-5 group">
-                <div className="w-12 h-12 bg-gray-800 border border-gray-700 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:border-red-500/50 group-hover:bg-red-600/10">
-                  <detail.icon className="w-5 h-5 text-red-500" />
+                <div className="w-12 h-12 bg-red-50 border border-red-100 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:bg-red-100">
+                  <detail.icon className="w-5 h-5 text-red-600" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-1.5">{detail.title}</h4>
+                  <h4 className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1.5">{detail.title}</h4>
                   {detail.lines.map((line, i) => (
-                    <p key={i} className="text-gray-300 font-bold text-sm leading-relaxed">{line}</p>
+                    <p key={i} className="text-gray-700 font-medium text-sm leading-relaxed">{line}</p>
                   ))}
                 </div>
               </div>
