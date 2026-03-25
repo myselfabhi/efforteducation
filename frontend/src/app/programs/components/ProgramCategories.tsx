@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { BookOpen, Briefcase, MessageCircle, GraduationCap, Users, Building, Loader2 } from 'lucide-react';
+import { BookOpen, Briefcase, MessageCircle, GraduationCap, Users, Building, Loader2, Utensils } from 'lucide-react';
 import { Card, CardContent } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { COURSES } from '@/lib/courses';
@@ -15,6 +15,7 @@ const icons = {
   'ctet-tet': BookOpen,
   'prt-tgt-pgt': Users,
   'dsssb': Building,
+  'hotel-management': Utensils,
 };
 
 export default function ProgramCategories() {

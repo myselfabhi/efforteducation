@@ -214,6 +214,7 @@ export default function ContactForm() {
                       <SelectItem value="ctet-tet">CTET / TET</SelectItem>
                       <SelectItem value="prt-tgt-pgt">PRT / TGT / PGT</SelectItem>
                       <SelectItem value="dsssb">DSSSB Coaching</SelectItem>
+                      <SelectItem value="hotel-management">Hotel Management</SelectItem>
                       <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>

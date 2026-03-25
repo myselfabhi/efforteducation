@@ -55,5 +55,13 @@ export const COURSES: Course[] = [
     description: 'Focused preparation for Delhi Subordinate Services Selection Board examinations.',
     category: 'Delhi Govt',
     features: ['General Awareness', 'Mental Ability', 'Arithmetical Ability', 'Post Specific Content'],
+  },
+  {
+    id: 'hotel-management',
+    slug: 'hotel-management',
+    title: 'Hotel Management',
+    description: 'Expert coaching for NCHMCT JEE - the gateway to premier Institutes of Hotel Management.',
+    category: 'Hospitality',
+    features: ['NCHMCT JEE Focus', 'Service Sector Aptitude', 'English Mastery', 'Mock Tests'],
   }
 ];

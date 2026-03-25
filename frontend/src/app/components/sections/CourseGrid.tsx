@@ -10,7 +10,8 @@ import {
   BookOpen, 
   Users, 
   GraduationCap, 
-  Building 
+  Building,
+  Utensils 
 } from 'lucide-react';
 
 const icons = {
@@ -20,6 +21,7 @@ const icons = {
   'ctet-tet': BookOpen,
   'prt-tgt-pgt': Users,
   'dsssb': Building,
+  'hotel-management': Utensils,
 };
 
 export default function CourseGrid() {

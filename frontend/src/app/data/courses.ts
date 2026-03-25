@@ -728,6 +728,134 @@ export const courses: Record<string, Course> = {
         initials: 'MA'
       }
     ]
+  },
+
+  'hotel-management': {
+    slug: 'hotel-management',
+    title: 'Hotel Management (NCHMCT JEE)',
+    tagline: 'Launch your career in the glamorous hospitality industry with top IHMs across India',
+    heroImage: 'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=1080&q=80',
+    overview: 'Comprehensive coaching program for NCHMCT JEE - the national-level entrance exam for B.Sc. in Hospitality & Hotel Administration. Our program prepares you for admission to 75+ premier Institutes of Hotel Management across India, opening doors to careers in luxury hotels, airlines, cruise lines, and tourism.',
+    eligibility: '10+2 (Senior Secondary) from a recognized board with English as a compulsory subject',
+    duration: '5 Months',
+    mode: 'Online Live Classes',
+    batch: 'Limited Seats',
+    language: 'English',
+    highlights: [
+      'Complete NCHMCT JEE syllabus coverage',
+      'Focus on Aptitude for Service Sector (highest weightage)',
+      'Expert faculty with hospitality industry experience',
+      'Mock tests based on latest NTA pattern',
+      'Guest lectures from hospitality professionals',
+      'Study material designed by IHM alumni'
+    ],
+    examPattern: [
+      {
+        stage: 'NCHMCT JEE 2026 (Computer Based Test)',
+        sections: [
+          { name: 'English Language', questions: 45, marks: 180, duration: '2 Hours' },
+          { name: 'Aptitude for Service Sector', questions: 30, marks: 120, duration: '' },
+          { name: 'Numerical Ability & Analytical Aptitude', questions: 15, marks: 60, duration: '' },
+          { name: 'Reasoning & Logical Deduction', questions: 15, marks: 60, duration: '' },
+          { name: 'General Knowledge & Current Affairs', questions: 15, marks: 60, duration: '' }
+        ],
+        totalQuestions: 120,
+        totalMarks: 480,
+        negativeMarking: '+4 for correct, -1 for wrong answer'
+      }
+    ],
+    syllabus: [
+      {
+        title: 'English Language (Highest Weightage)',
+        topics: [
+          'Reading Comprehension',
+          'Vocabulary & Synonyms/Antonyms',
+          'Grammar & Sentence Correction',
+          'Idioms & Phrases',
+          'Fill in the Blanks',
+          'Para Jumbles',
+          'Sentence Completion',
+          'Spelling Correction',
+          'Analogies'
+        ]
+      },
+      {
+        title: 'Aptitude for Service Sector',
+        topics: [
+          'Hospitality Industry Overview',
+          'Customer Service Ethics & Etiquette',
+          'Situational Judgment Questions',
+          'Behavioral Scenarios',
+          'Teamwork & Leadership',
+          'Communication Skills',
+          'Problem Solving in Hospitality',
+          'Grooming & Presentation',
+          'Industry Awareness'
+        ]
+      },
+      {
+        title: 'Numerical Ability & Analytical Aptitude',
+        topics: [
+          'Percentages & Profit/Loss',
+          'Ratio & Proportion',
+          'Time & Work',
+          'Time, Speed & Distance',
+          'Simple & Compound Interest',
+          'Averages & Mixtures',
+          'Square Roots & Cube Roots',
+          'Logarithms',
+          'Data Interpretation'
+        ]
+      },
+      {
+        title: 'Reasoning & Logical Deduction',
+        topics: [
+          'Series (Number & Alphabet)',
+          'Coding-Decoding',
+          'Blood Relations',
+          'Syllogisms',
+          'Seating Arrangements',
+          'Puzzles',
+          'Analogies & Classifications',
+          'Logical Sequence',
+          'Direction Sense'
+        ]
+      },
+      {
+        title: 'General Knowledge & Current Affairs',
+        topics: [
+          'Current Affairs (Last 12 Months)',
+          'Tourism & Hospitality Industry',
+          'Indian Geography & Heritage',
+          'Sports & Awards',
+          'Important Days & Events',
+          'Economic Awareness',
+          'International Organizations',
+          'Environmental Issues',
+          'Static GK (History, Polity)'
+        ]
+      }
+    ],
+    testimonials: [
+      {
+        quote: 'Secured AIR 245 in NCHMCT JEE and got admission in IHM Mumbai! The service sector aptitude module was exceptionally well-designed. It really helped me understand what the hospitality industry expects.',
+        name: 'Arjun Mehta',
+        role: 'Selected, IHM Mumbai 2025',
+        initials: 'AM'
+      },
+      {
+        quote: 'From a non-English medium background, I was worried about the English section. The faculty made grammar accessible and fun. Scored 38/45 in English - couldn\'t have done it without this program!',
+        name: 'Priya Singh',
+        role: 'Selected, IHM Bangalore 2024',
+        initials: 'PS'
+      },
+      {
+        quote: 'The mock tests were exactly like the actual exam. Practicing under timed conditions helped me manage my time better. Now interning at a 5-star hotel in Dubai!',
+        name: 'Rahul Joshi',
+        role: 'Selected, IHM Chennai 2024',
+        initials: 'RJ'
+      }
+    ]
   }
 };
 
