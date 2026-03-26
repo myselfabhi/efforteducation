@@ -42,4 +42,6 @@ export const api = {
     leaderboard: (quizId: number) => apiFetch(`/api/quizzes/${quizId}/leaderboard`),
     results: (quizId: number) => apiFetch(`/api/quizzes/${quizId}/results`),
   },
+  submitContactForm: (body: any) =>
+    apiFetch('/api/contact', { method: 'POST', body: JSON.stringify(body) }),
 };
