@@ -12,7 +12,12 @@ A modern, responsive frontend for the Effort Education platform built with Next.
 - **Animations:** Custom CSS keyframes, IntersectionObserver
 - **Form Handling:** React Hook Form with Zod validation
 
-## ✨ Features
+### Real-Time Quiz Platform (New!)
+- **Socket.IO Engine:** Instant, server-authoritative timer synchronization
+- **Admin Dashboard:** Live control over quiz flow and question release
+- **Participant Experience:** Real-time answer submission and leaderboard updates
+- **Leaderboard:** Dynamic, real-time scoring with persistence in Redis
+- **Persistence:** PostgreSQL for quiz storage and Redis for real-time state
 
 ### Mobile-First Design
 - Premium mobile UX with bottom navigation bar
