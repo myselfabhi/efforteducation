@@ -34,7 +34,7 @@ export default function ResultsPage() {
   const router = useRouter();
   const params = useParams();
   const quizId = Number(params.id);
-  const { hydrate, isAuthenticated, user } = useAuthStore();
+  const { hydrate, isAuthenticated } = useAuthStore();
 
   const [score, setScore] = useState<ScoreData | null>(null);
   const [responses, setResponses] = useState<ResponseData[]>([]);

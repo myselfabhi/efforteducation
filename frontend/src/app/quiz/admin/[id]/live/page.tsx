@@ -31,7 +31,6 @@ export default function LiveQuizDashboard() {
     rank: number;
   }>>([]);
   const [phase, setPhase] = useState<'lobby' | 'question' | 'answer' | 'leaderboard' | 'completed'>('lobby');
-  const [correctOptionId, setCorrectOptionId] = useState<number | null>(null);
 
   useEffect(() => { hydrate(); }, [hydrate]);
 
@@ -64,7 +63,6 @@ export default function LiveQuizDashboard() {
       setCurrentQuestion(data);
       setPhase('question');
       setAnswerCount(0);
-      setCorrectOptionId(null);
     });
 
     socket.on('answer:count', (data) => {
@@ -72,7 +70,6 @@ export default function LiveQuizDashboard() {
     });
 
     socket.on('question:end', (data) => {
-      setCorrectOptionId(data.correctOptionId);
       setPhase('answer');
     });
 
