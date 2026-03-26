@@ -32,7 +32,7 @@ initSocket(server);
 
 // Start server
 const PORT = parseInt(process.env.PORT || '4000', 10);
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Quiz backend running on http://localhost:${PORT}`);
   console.log(`📡 Socket.IO ready`);
   console.log(`🗄️  Database: ${process.env.DATABASE_URL?.split('@')[1] || 'configured'}`);
