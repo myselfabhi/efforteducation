@@ -9,6 +9,15 @@ import QuestionCard from '@/app/quiz/components/QuestionCard';
 import TimerComponent from '@/app/quiz/components/TimerComponent';
 import LeaderboardScreen from '@/app/quiz/components/LeaderboardScreen';
 
+interface LeaderboardEntry {
+  userId: number;
+  username: string;
+  totalScore: number;
+  totalTimeMs: number;
+  correctCount: number;
+  rank: number;
+}
+
 type Phase = 'waiting' | 'question' | 'answer' | 'leaderboard' | 'completed';
 
 interface QuestionData {
@@ -33,7 +42,7 @@ export default function QuizPlayScreen() {
   const [selectedOptionId, setSelectedOptionId] = useState<number | null>(null);
   const [correctOptionId, setCorrectOptionId] = useState<number | null>(null);
   const [alreadyAnswered, setAlreadyAnswered] = useState(false);
-  const [leaderboard, setLeaderboard] = useState<any[]>([]);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [isLastQuestion, setIsLastQuestion] = useState(false);
 
   useEffect(() => { hydrate(); }, [hydrate]);
@@ -76,7 +85,7 @@ export default function QuizPlayScreen() {
     });
 
     // Leaderboard
-    socket.on('leaderboard:update', (data) => {
+    socket.on('leaderboard:update', (data: { leaderboard: LeaderboardEntry[]; isLastQuestion: boolean }) => {
       setLeaderboard(data.leaderboard);
       setIsLastQuestion(data.isLastQuestion);
       setPhase('leaderboard');
@@ -95,7 +104,9 @@ export default function QuizPlayScreen() {
         setAlreadyAnswered(data.alreadyAnswered || false);
         setPhase('question');
       }
-      if (data.leaderboard) setLeaderboard(data.leaderboard);
+      if (data.leaderboard) {
+        setLeaderboard(data.leaderboard);
+      }
       if (data.state?.status === 'SHOWING_LEADERBOARD') {
         setPhase('leaderboard');
       }

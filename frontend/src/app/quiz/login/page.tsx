@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { api } from '@/lib/api';
@@ -32,8 +32,8 @@ export default function LoginPage() {
       const data = await api.auth.login({ email, password });
       login(data.user, data.token);
       router.push(data.user.role === 'admin' ? '/quiz/admin/create' : '/quiz/dashboard');
-    } catch (err: any) {
-      setError(err.message || 'Login failed');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Login failed');
     } finally {
       setLoading(false);
     }

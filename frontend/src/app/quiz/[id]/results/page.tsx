@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { api } from '@/lib/api';
@@ -21,6 +21,15 @@ interface ResponseData {
   score: number;
 }
 
+interface LeaderboardEntry {
+  userId: number;
+  username: string;
+  totalScore: number;
+  totalTimeMs: number;
+  correctCount: number;
+  rank: number;
+}
+
 export default function ResultsPage() {
   const router = useRouter();
   const params = useParams();
@@ -29,20 +38,12 @@ export default function ResultsPage() {
 
   const [score, setScore] = useState<ScoreData | null>(null);
   const [responses, setResponses] = useState<ResponseData[]>([]);
-  const [leaderboard, setLeaderboard] = useState<any[]>([]);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => { hydrate(); }, [hydrate]);
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/quiz/login');
-      return;
-    }
-    loadResults();
-  }, [isAuthenticated, router]);
-
-  const loadResults = async () => {
+  const loadResults = useCallback(async () => {
     try {
       const [resultData, leaderboardData] = await Promise.all([
         api.quizzes.results(quizId),
@@ -50,9 +51,9 @@ export default function ResultsPage() {
       ]);
       setScore(resultData.score);
       setResponses(resultData.responses);
-      setLeaderboard(leaderboardData.map((entry: any, i: number) => ({
-        ...entry,
+      setLeaderboard(leaderboardData.map((entry: { user_id: number; total_score: number; total_time_ms: number; rank?: number; username: string }, i: number) => ({
         userId: entry.user_id,
+        username: entry.username,
         totalScore: entry.total_score,
         totalTimeMs: entry.total_time_ms,
         rank: entry.rank || i + 1,
@@ -63,7 +64,15 @@ export default function ResultsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [quizId]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push('/quiz/login');
+      return;
+    }
+    loadResults();
+  }, [isAuthenticated, router, loadResults]);
 
   if (loading) {
     return (

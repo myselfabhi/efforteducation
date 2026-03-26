@@ -16,9 +16,20 @@ export default function LiveQuizDashboard() {
   const [connected, setConnected] = useState(false);
   const [participantCount, setParticipantCount] = useState(0);
   const [quizStarted, setQuizStarted] = useState(false);
-  const [currentQuestion, setCurrentQuestion] = useState<any>(null);
+  const [currentQuestion, setCurrentQuestion] = useState<{
+    questionText: string;
+    questionIndex: number;
+    totalQuestions: number;
+  } | null>(null);
   const [answerCount, setAnswerCount] = useState(0);
-  const [leaderboard, setLeaderboard] = useState<any[]>([]);
+  const [leaderboard, setLeaderboard] = useState<Array<{
+    userId: number;
+    username: string;
+    totalScore: number;
+    totalTimeMs: number;
+    correctCount: number;
+    rank: number;
+  }>>([]);
   const [phase, setPhase] = useState<'lobby' | 'question' | 'answer' | 'leaderboard' | 'completed'>('lobby');
   const [correctOptionId, setCorrectOptionId] = useState<number | null>(null);
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { api } from '@/lib/api';
@@ -30,6 +30,15 @@ export default function PreviewPage() {
   const [launching, setLaunching] = useState(false);
   const [error, setError] = useState('');
 
+  const loadQuiz = useCallback(async () => {
+    try {
+      const data = await api.quizzes.get(quizId);
+      setQuiz(data);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    }
+  }, [quizId]);
+
   useEffect(() => { hydrate(); }, [hydrate]);
 
   useEffect(() => {
@@ -38,16 +47,7 @@ export default function PreviewPage() {
       return;
     }
     loadQuiz();
-  }, [isAuthenticated, user, router]);
-
-  const loadQuiz = async () => {
-    try {
-      const data = await api.quizzes.get(quizId);
-      setQuiz(data);
-    } catch (err: any) {
-      setError(err.message);
-    }
-  };
+  }, [isAuthenticated, user, router, loadQuiz]);
 
   const handleLaunch = async () => {
     setLaunching(true);
@@ -55,8 +55,8 @@ export default function PreviewPage() {
     try {
       await api.quizzes.launch(quizId);
       router.push(`/quiz/admin/${quizId}/live`);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLaunching(false);
     }

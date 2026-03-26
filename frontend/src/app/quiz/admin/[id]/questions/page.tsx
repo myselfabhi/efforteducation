@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { api } from '@/lib/api';
@@ -33,6 +33,15 @@ export default function AddQuestionsPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const loadExisting = useCallback(async () => {
+    try {
+      const quiz = await api.quizzes.get(quizId);
+      if (quiz.questions) setQuestions(quiz.questions);
+    } catch (err) {
+      console.error(err);
+    }
+  }, [quizId]);
+
   useEffect(() => { hydrate(); }, [hydrate]);
 
   useEffect(() => {
@@ -41,16 +50,7 @@ export default function AddQuestionsPage() {
       return;
     }
     loadExisting();
-  }, [isAuthenticated, user, router]);
-
-  const loadExisting = async () => {
-    try {
-      const quiz = await api.quizzes.get(quizId);
-      if (quiz.questions) setQuestions(quiz.questions);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  }, [isAuthenticated, user, router, loadExisting]);
 
   const setCorrectOption = (index: number) => {
     setForm({
@@ -86,8 +86,8 @@ export default function AddQuestionsPage() {
           { option_text: '', is_correct: false },
         ],
       });
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
