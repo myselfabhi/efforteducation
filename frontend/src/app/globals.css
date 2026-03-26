@@ -234,23 +234,7 @@
     scroll-behavior: smooth;
   }
 
-  /* Custom scrollbar */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: #dc2626;
-    border-radius: 4px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: #b91c1c;
-  }
+  /* Custom scrollbar (removed per user request) */
 
   /* ========================================
      PREMIUM MICRO-INTERACTIONS & ANIMATIONS
