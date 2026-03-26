@@ -20,6 +20,14 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
   return res.json();
 }
 
+export interface Testimonial {
+  id: number;
+  quote: string;
+  name: string;
+  role: string;
+  initials: string;
+}
+
 export const api = {
   auth: {
     register: (body: { username: string; email: string; password: string; role?: string }) =>
@@ -42,6 +50,7 @@ export const api = {
     leaderboard: (quizId: number) => apiFetch(`/api/quizzes/${quizId}/leaderboard`),
     results: (quizId: number) => apiFetch(`/api/quizzes/${quizId}/results`),
   },
-  submitContactForm: (body: Record<string, string>) =>
+  submitContactForm: (body: Record<string, string | undefined>) =>
     apiFetch('/api/contact', { method: 'POST', body: JSON.stringify(body) }),
+  getTestimonials: () => apiFetch('/api/testimonials'),
 };

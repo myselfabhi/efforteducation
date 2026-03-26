@@ -69,7 +69,7 @@ export default function LiveQuizDashboard() {
       setAnswerCount(data.answerCount);
     });
 
-    socket.on('question:end', (data) => {
+    socket.on('question:end', () => {
       setPhase('answer');
     });
 
