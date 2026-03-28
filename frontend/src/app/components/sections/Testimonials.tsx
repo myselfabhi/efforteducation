@@ -15,7 +15,9 @@ export default function Testimonials() {
       try {
         setLoading(true);
         const response = await api.getTestimonials();
-        setTestimonials(response.data.testimonials);
+        if (response && response.success !== false && response.data?.testimonials) {
+          setTestimonials(response.data.testimonials);
+        }
       } catch (err) {
         console.error('Failed to fetch testimonials:', err);
       } finally {

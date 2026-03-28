@@ -14,7 +14,15 @@ export const COURSES: Course[] = [
     title: 'Bank PO / SO',
     description: 'Comprehensive coaching for IBPS, SBI, and RBI Probationary and Specialist Officer exams.',
     category: 'Banking',
-    features: ['Quantitative Aptitude', 'Reasoning Ability', 'English Language', 'General Awareness'],
+    features: ['Quantitative Aptitude', 'Reasoning Ability', 'English Language', 'General Awareness', 'Current Affairs', 'Computer Awareness'],
+  },
+  {
+    id: 'lic-gic',
+    slug: 'lic-gic',
+    title: 'LIC / GIC Preparation',
+    description: 'Comprehensive coaching for Life Insurance Corporation and General Insurance Corporation of India recruitment exams.',
+    category: 'Insurance',
+    features: ['Quantitative Aptitude', 'Reasoning Ability', 'English Language', 'General Awareness', 'Insurance & Financial Market'],
   },
   {
     id: 'interview-prep',
@@ -54,7 +62,7 @@ export const COURSES: Course[] = [
     title: 'DSSSB',
     description: 'Focused preparation for Delhi Subordinate Services Selection Board examinations.',
     category: 'Delhi Govt',
-    features: ['General Awareness', 'Mental Ability', 'Arithmetical Ability', 'Post Specific Content'],
+    features: ['General Awareness', 'Reasoning', 'Quicker Maths', 'Post Specific Content'],
   },
   {
     id: 'hotel-management',

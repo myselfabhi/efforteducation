@@ -4,7 +4,6 @@ import Footer from "../components/layout/Footer";
 import AboutHero from "./components/AboutHero";
 import MissionVision from "./components/MissionVision";
 import StatsSection from "./components/StatsSection";
-import TeamSection from "./components/TeamSection";
 import ProgramFeatures from "../programs/components/ProgramFeatures";
 import ScrollReveal from "../components/mobile/ScrollReveal";
 
@@ -31,10 +30,6 @@ export default function AboutPage() {
 
         <ScrollReveal delay={100}>
           <StatsSection />
-        </ScrollReveal>
-        
-        <ScrollReveal delay={200}>
-          <TeamSection />
         </ScrollReveal>
         
         <ScrollReveal delay={300}>

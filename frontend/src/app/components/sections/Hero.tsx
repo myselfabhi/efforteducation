@@ -51,7 +51,7 @@ export default function Hero() {
           className="inline-block px-4 py-1.5 bg-gray-50 border border-gray-100 rounded-full mb-8"
         >
           <span className="text-gray-500 text-xs font-bold tracking-widest uppercase">
-            ESTABLISHED <span className="text-red-600">1990</span>
+            ESTABLISHED <span className="text-red-600">1991</span>
           </span>
         </motion.div>
         

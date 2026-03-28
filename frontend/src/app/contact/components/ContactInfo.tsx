@@ -18,7 +18,7 @@ export default function ContactInfo() {
     {
       icon: Globe,
       title: "Location",
-      lines: ["Online Classes (Live)", "Available across India"],
+      lines: ["Online Classes (Live)", "Available across India and abroad"],
       href: null
     }
   ];

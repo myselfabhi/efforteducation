@@ -69,14 +69,14 @@ export default function YoungScholarBanner() {
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Link href="/young-scholar">
-                  <Button className="bg-red-600 hover:bg-red-700 text-white font-black uppercase tracking-widest px-6 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-xl shadow-red-600/10 text-xs">
+              <div className="flex flex-col sm:flex-row gap-3 items-center">
+                <Link href="/young-scholar" className="w-full sm:w-auto">
+                  <Button className="w-full bg-red-600 hover:bg-red-700 text-white font-black uppercase tracking-widest px-8 h-12 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-xl shadow-red-600/10 text-xs">
                     Explore Program
                   </Button>
                 </Link>
-                <Link href="/contact">
-                  <Button variant="outline" className="border-2 border-gray-100 bg-white text-gray-900 hover:border-red-600 font-black uppercase tracking-widest px-6 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 text-xs">
+                <Link href="/contact" className="w-full sm:w-auto">
+                  <Button variant="outline" className="w-full border-2 border-gray-100 bg-white text-gray-900 hover:border-red-600 font-black uppercase tracking-widest px-8 h-12 rounded-lg transition-all duration-300 transform hover:scale-105 text-xs">
                     Enroll Now
                   </Button>
                 </Link>

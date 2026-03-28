@@ -41,7 +41,7 @@ export default function ContactHero() {
             <div className="relative z-10">
               <div className="w-full max-w-md rounded-2xl overflow-hidden shadow-2xl border border-gray-100">
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1521791136064-7986c2920216?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb250YWN0JTIwY29tbXVuaWNhdGlvbnxlbnwxfHx8fDE3NTU2MjAwMTN8&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+                  src="/contact-hero.png"
                   alt="Contact and communication"
                   className="w-full h-auto object-cover"
                 />

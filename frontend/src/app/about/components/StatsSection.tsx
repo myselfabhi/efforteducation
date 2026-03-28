@@ -8,9 +8,9 @@ export default function StatsSection() {
   const stats = [
     {
       icon: Users,
-      number: "500+",
+      number: "50,000+",
       label: "Students Taught",
-      description: "Successfully guided students through their educational journey"
+      description: "Successfully guided thousands of students through their educational journey"
     },
     {
       icon: Award,
@@ -20,13 +20,13 @@ export default function StatsSection() {
     },
     {
       icon: BookOpen,
-      number: "15+",
+      number: "25+",
       label: "Years Experience",
-      description: "Dedicated to providing quality education and guidance"
+      description: "Dedicated to providing quality education and guidance since 1991"
     },
     {
       icon: TrendingUp,
-      number: "200+",
+      number: "5,000+",
       label: "Success Stories",
       description: "Students who have excelled in competitive examinations"
     }

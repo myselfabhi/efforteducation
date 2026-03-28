@@ -38,13 +38,18 @@ export default function ProgramFeatures() {
     },
     {
       icon: Award,
-      title: "Certification",
-      description: "Recognized certificates upon completion to enhance your academic and professional profile."
+      title: "Online Mock Tests",
+      description: "Get exam-ready with our extensive series of online mock tests and detailed performance analysis."
     },
     {
       icon: BookOpen,
+      title: "Quiz",
+      description: "Interactive daily quizzes to sharpen your concepts and stay updated with current affairs."
+    },
+    {
+      icon: Target,
       title: "Study Materials",
-      description: "Comprehensive study materials, practice tests, and digital resources included."
+      description: "Comprehensive study materials and digital resources curated by subject matter experts."
     }
   ];
 

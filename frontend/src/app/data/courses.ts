@@ -54,11 +54,11 @@ export const courses: Record<string, Course> = {
     language: 'English / Hindi',
     highlights: [
       'Complete coverage of Prelims & Mains syllabus',
-      'Expert faculty with 10+ years of banking exam experience',
+      'Expert faculty with 25+ years of banking exam experience',
       'Daily practice sessions & chapter-wise tests',
-      '500+ Mock tests with detailed analysis',
+      '100+ Mock tests with detailed analysis',
       'Interview preparation & personality development',
-      'Current affairs module with monthly compilations'
+      'Current affairs & Computer Awareness modules'
     ],
     examPattern: [
       {
@@ -164,6 +164,90 @@ export const courses: Record<string, Course> = {
       }
     ]
   },
+  
+  'lic-gic': {
+    slug: 'lic-gic',
+    title: 'LIC / GIC Preparation',
+    tagline: 'Master the insurance sector exams for AO, AAO & Assistant positions in LIC & GIC',
+    heroImage: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1080&q=80',
+    overview: 'Comprehensive coaching program for Life Insurance Corporation (LIC) and General Insurance Corporation of India (GIC) recruitment examinations. We cover all aspects of Preliminary and Mains exams, including specialized sections on Insurance and Financial Market Awareness.',
+    eligibility: 'Graduate in any discipline from a recognized university',
+    duration: '4 Months',
+    mode: 'Online Live Classes',
+    batch: 'New Batch Starting Soon',
+    language: 'English / Hindi',
+    highlights: [
+      'Complete coverage of LIC AAO, ADO & GIC Assistant exams',
+      'Specialized module on Insurance & Financial Market Awareness',
+      'Daily practice sessions for QA, Reasoning & English',
+      '100+ Mock tests with detailed performance analysis',
+      'Interview preparation for final selection stage',
+      'Regular current affairs updates with exam focus'
+    ],
+    examPattern: [
+      {
+        stage: 'Preliminary Examination',
+        sections: [
+          { name: 'English Language', questions: 30, marks: 30, duration: '20 min' },
+          { name: 'Quantitative Aptitude', questions: 35, marks: 35, duration: '20 min' },
+          { name: 'Reasoning Ability', questions: 35, marks: 35, duration: '20 min' }
+        ],
+        totalQuestions: 100,
+        totalMarks: 70,
+        negativeMarking: 'No negative marking in prelims'
+      },
+      {
+        stage: 'Main Examination',
+        sections: [
+          { name: 'Reasoning Ability', questions: 30, marks: 90, duration: '40 min' },
+          { name: 'General Knowledge & Current Affairs', questions: 30, marks: 60, duration: '20 min' },
+          { name: 'Professional Knowledge (Insurance)', questions: 30, marks: 90, duration: '40 min' },
+          { name: 'Insurance & Financial Market', questions: 30, marks: 60, duration: '20 min' }
+        ],
+        totalQuestions: 120,
+        totalMarks: 300,
+        negativeMarking: '0.25 marks per wrong answer'
+      }
+    ],
+    syllabus: [
+      {
+        title: 'Insurance Awareness',
+        topics: [
+          'History of Life Insurance in India',
+          'Introduction of Insurance',
+          'Life Insurance Companies in India',
+          'General Insurance Companies in India',
+          'Insurance Regulatory and Development Authority of India (IRDAI)',
+          'Insurance Terms and Terminology',
+          'Government Insurance Schemes',
+          'Bancassurance and Micro Insurance',
+          'Recent Trends in Insurance Sector'
+        ]
+      },
+      {
+        title: 'Financial Market Awareness',
+        topics: [
+          'Indian Financial System',
+          'Capital Market and Money Market',
+          'Stock Exchanges in India (NSE, BSE)',
+          'Derivatives and Debt Markets',
+          'Financial Regulators (RBI, SEBI)',
+          'Banking Awareness in Financial context',
+          'Union Budget and Economic Survey',
+          'Inflation and Monetary Policy',
+          'International Financial Institutions'
+        ]
+      }
+    ],
+    testimonials: [
+      {
+        quote: 'The specialized insurance awareness classes were the best part. I could easily answer 25+ questions in the mains exam. Highly recommend Effort Education for insurance aspirants.',
+        name: 'Sandeep Tiwari',
+        role: 'Selected, LIC AAO 2024',
+        initials: 'ST'
+      }
+    ]
+  },
 
   'dsssb': {
     slug: 'dsssb',
@@ -189,8 +273,8 @@ export const courses: Record<string, Course> = {
         stage: 'One-Tier Examination (PRT)',
         sections: [
           { name: 'General Awareness', questions: 20, marks: 20, duration: '2 Hours' },
-          { name: 'General Intelligence & Reasoning', questions: 20, marks: 20, duration: '' },
-          { name: 'Arithmetical & Numerical Ability', questions: 20, marks: 20, duration: '' },
+          { name: 'Reasoning', questions: 20, marks: 20, duration: '' },
+          { name: 'Quicker Maths', questions: 20, marks: 20, duration: '' },
           { name: 'English Language & Comprehension', questions: 20, marks: 20, duration: '' },
           { name: 'Hindi Language & Comprehension', questions: 20, marks: 20, duration: '' },
           { name: 'Subject Concerned (Teaching Methodology)', questions: 100, marks: 100, duration: '' }
@@ -203,8 +287,8 @@ export const courses: Record<string, Course> = {
         stage: 'One-Tier Examination (TGT)',
         sections: [
           { name: 'General Awareness', questions: 20, marks: 20, duration: '2 Hours' },
-          { name: 'General Intelligence & Reasoning', questions: 20, marks: 20, duration: '' },
-          { name: 'Arithmetical & Numerical Ability', questions: 20, marks: 20, duration: '' },
+          { name: 'Reasoning', questions: 20, marks: 20, duration: '' },
+          { name: 'Quicker Maths', questions: 20, marks: 20, duration: '' },
           { name: 'English Language', questions: 20, marks: 20, duration: '' },
           { name: 'Hindi Language', questions: 20, marks: 20, duration: '' },
           { name: 'Subject Concerned (B.Ed Level)', questions: 100, marks: 100, duration: '' }
@@ -217,8 +301,8 @@ export const courses: Record<string, Course> = {
         stage: 'One-Tier Examination (PGT)',
         sections: [
           { name: 'General Awareness', questions: 20, marks: 20, duration: '2 Hours' },
-          { name: 'General Intelligence & Reasoning', questions: 20, marks: 20, duration: '' },
-          { name: 'Arithmetical & Numerical Ability', questions: 20, marks: 20, duration: '' },
+          { name: 'Reasoning', questions: 20, marks: 20, duration: '' },
+          { name: 'Quicker Maths', questions: 20, marks: 20, duration: '' },
           { name: 'English Language', questions: 20, marks: 20, duration: '' },
           { name: 'Hindi Language', questions: 20, marks: 20, duration: '' },
           { name: 'Subject Concerned (Post-Graduation Level)', questions: 200, marks: 200, duration: '' }
@@ -533,7 +617,7 @@ export const courses: Record<string, Course> = {
       'Research methodology training',
       'Previous year question analysis',
       'JRF-focused preparation strategy',
-      'Answer writing practice for Assistant Professor'
+      'Research Methodology & Paper 1 mastery'
     ],
     examPattern: [
       {
@@ -635,7 +719,7 @@ export const courses: Record<string, Course> = {
     title: 'Government Job Interview Mastery',
     tagline: 'Transform your interview performance and land your dream government job',
     heroImage: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1080&q=80',
-    overview: 'Specialized program to crack government job interviews for Banking, SSC, UPSC, State PSCs, Teaching positions, and PSUs. Master the art of presenting yourself confidently with comprehensive DAF preparation, mock interviews, and body language training.',
+    overview: 'Specialized program to crack government job interviews for Banking, Insurance (LIC/GIC), SSC, UPSC, State PSCs, Teaching positions, and PSUs. Master the art of presenting yourself confidently with comprehensive DAF preparation, mock interviews, and body language training.',
     eligibility: 'Candidates who have cleared written examination for government job recruitment',
     duration: '2 Months',
     mode: 'Online Live Classes',
