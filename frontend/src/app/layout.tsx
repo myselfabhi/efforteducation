@@ -22,8 +22,8 @@ export const metadata: Metadata = {
     template: "%s | Effort Education"
   },
   description:
-    "Online competitive exam coaching and Young Scholar Program for skill development. Expert guidance in Banking, SSC, Railway exams and essential life skills. Established since 1990.",
-  keywords: ["competitive exams", "banking coaching", "SSC coaching", "young scholar program", "skill development", "online classes", "live classes"],
+    "Online competitive exam coaching and Young Scholar Program for skill development. Expert guidance in Banking, SSC, Railway, CUET exams and essential life skills. Established since 1990.",
+  keywords: ["competitive exams", "banking coaching", "SSC coaching", "CUET coaching", "entrance exams", "young scholar program", "skill development", "online classes", "live classes"],
   authors: [{ name: "Effort Education" }],
   openGraph: {
     type: "website",
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     url: "https://efforteducation.vercel.app",
     siteName: "Effort Education",
     title: "Effort Education - Empowering Tomorrow's Leaders",
-    description: "Online competitive exam coaching and Young Scholar Program for skill development. Expert guidance in Banking, SSC, Railway exams.",
+    description: "Online competitive exam coaching and Young Scholar Program for skill development. Expert guidance in Banking, SSC, Railway, CUET exams.",
     images: [
       {
         url: "/og-image.png",

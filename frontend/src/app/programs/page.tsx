@@ -6,10 +6,10 @@ import ProgramCategories from './components/ProgramCategories';
 
 export const metadata: Metadata = {
   title: "Our Programs - Competitive Exams & Skill Development",
-  description: "Explore our comprehensive range of programs: Banking (IBPS PO, SBI PO), SSC (CGL, CHSL), Railway, Police, UPPSC, NET, PCS, and Young Scholar Program. All courses online with live classes.",
+  description: "Explore our comprehensive range of programs: Banking (IBPS PO, SBI PO), SSC (CGL, CHSL), Railway, Police, UPPSC, NET, CUET, PCS, and Young Scholar Program. All courses online with live classes.",
   openGraph: {
     title: "Our Programs - Competitive Exams & Skill Development",
-    description: "Banking, SSC, Railway coaching and Young Scholar Program. Expert guidance, online live classes, proven success.",
+    description: "Banking, SSC, Railway, CUET coaching and Young Scholar Program. Expert guidance, online live classes, proven success.",
     url: "https://efforteducation.vercel.app/programs"
   }
 };

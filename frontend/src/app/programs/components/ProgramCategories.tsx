@@ -16,6 +16,7 @@ const icons = {
   'prt-tgt-pgt': Users,
   'dsssb': Building,
   'hotel-management': Utensils,
+  'cuet': GraduationCap,
 };
 
 export default function ProgramCategories() {

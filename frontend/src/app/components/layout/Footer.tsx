@@ -104,6 +104,12 @@ export default function Footer() {
                 >
                   Hotel Management
                 </Link>
+                <Link
+                  href="/courses/cuet"
+                  className="block text-gray-500 hover:text-red-600 transition-colors text-sm font-bold"
+                >
+                  CUET (UG)
+                </Link>
               </nav>
             </div>
           </div>
@@ -222,6 +228,12 @@ export default function Footer() {
                   className="block text-gray-500 hover:text-red-600 transition-colors text-base font-bold"
                 >
                   Hotel Management
+                </Link>
+                <Link
+                  href="/courses/cuet"
+                  className="block text-gray-500 hover:text-red-600 transition-colors text-base font-bold"
+                >
+                  CUET (UG) Entrance
                 </Link>
               </nav>
             </div>

@@ -940,6 +940,104 @@ export const courses: Record<string, Course> = {
         initials: 'RJ'
       }
     ]
+  },
+
+  'cuet': {
+    slug: 'cuet',
+    title: 'CUET (UG) - Common University Entrance Test',
+    tagline: 'Your gateway to undergraduate programs in Central Universities across India',
+    heroImage: '/cuet-hero.png',
+    overview: 'Comprehensive coaching program for the Common University Entrance Test (CUET) for undergraduate admissions. We provide expert guidance for Sections IA, IB (Languages), Section II (Domain Subjects), and Section III (General Test). Our structured approach ensures you master the NCERT-based domain subjects while excelling in the General Test and Language sections.',
+    eligibility: '12th Class from a recognized board (appearing or passed)',
+    duration: '4 Months',
+    mode: 'Online Live Classes',
+    batch: 'New Batch Starting Soon',
+    language: 'English / Hindi',
+    highlights: [
+      'Coverage of Section IA & IB Languages',
+      'Intensive preparation for 27 Domain-Specific Subjects',
+      'General Test (Section III) mastery with shortcut techniques',
+      '200+ Mock Tests with detailed analysis',
+      'NTA pattern aligned study material',
+      'Doubt clearing sessions with subject experts'
+    ],
+    examPattern: [
+      {
+        stage: 'Section IA & IB (Languages)',
+        sections: [
+          { name: 'Language Proficiency', questions: 50, marks: 200, duration: '45 min' }
+        ],
+        totalQuestions: 50,
+        totalMarks: 200,
+        negativeMarking: '+5 for correct, -1 for wrong'
+      },
+      {
+        stage: 'Section II (Domain Specific)',
+        sections: [
+          { name: 'Subject Knowledge (NCERT 12)', questions: 50, marks: 200, duration: '45-60 min' }
+        ],
+        totalQuestions: 50,
+        totalMarks: 200,
+        negativeMarking: '+5 for correct, -1 for wrong'
+      },
+      {
+        stage: 'Section III (General Test)',
+        sections: [
+          { name: 'General Awareness & Reasoning', questions: 60, marks: 250, duration: '60 min' }
+        ],
+        totalQuestions: 60,
+        totalMarks: 250,
+        negativeMarking: '+5 for correct, -1 for wrong'
+      }
+    ],
+    syllabus: [
+      {
+        title: 'Section III - General Test',
+        topics: [
+          'General Knowledge & Current Affairs',
+          'General Mental Ability',
+          'Numerical Ability',
+          'Quantitative Reasoning (Simple application of basic mathematical concepts arithmetic/algebra geometry/mensuration/stat)',
+          'Logical and Analytical Reasoning'
+        ]
+      },
+      {
+        title: 'Section IA & IB - Languages',
+        topics: [
+          'Reading Comprehension (Factual, Narrative, Literary)',
+          'Literary Aptitude',
+          'Vocabulary & Verbal Ability'
+        ]
+      },
+      {
+        title: 'Section II - Domain Subjects',
+        topics: [
+          'Detailed coverage of NCERT Class 12 Syllabus',
+          'Accountancy/Book Keeping',
+          'Biology/Biological Studies/Biotechnology',
+          'Business Studies',
+          'Chemistry',
+          'Computer Science/Informatics Practices',
+          'Economics/Business Economics',
+          'History, Geography, Political Science',
+          'Physics, Mathematics/Applied Mathematics'
+        ]
+      }
+    ],
+    testimonials: [
+      {
+        quote: 'The domain-specific prep for Physics and Math was amazing. The teachers made sure I understood every NCERT concept. Got into Delhi University thanks to Effort Education!',
+        name: 'Aryan Singh',
+        role: 'Admitted to DU (Hansraj College)',
+        initials: 'AS'
+      },
+      {
+        quote: 'The General Test section seemed tough at first, but the shortcut tricks for reasoning and numerical ability helped me finish way before time. Highly recommend for CUET aspirants.',
+        name: 'Riya Kapoor',
+        role: 'Admitted to BHU',
+        initials: 'RK'
+      }
+    ]
   }
 };
 

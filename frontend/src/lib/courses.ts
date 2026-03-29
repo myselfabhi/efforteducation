@@ -71,5 +71,13 @@ export const COURSES: Course[] = [
     description: 'Expert coaching for NCHMCT JEE - the gateway to premier Institutes of Hotel Management.',
     category: 'Hospitality',
     features: ['NCHMCT JEE Focus', 'Service Sector Aptitude', 'English Mastery', 'Mock Tests'],
+  },
+  {
+    id: 'cuet',
+    slug: 'cuet',
+    title: 'CUET (UG)',
+    description: 'Comprehensive coaching for the Common University Entrance Test for undergraduate admissions in Central Universities.',
+    category: 'Entrance',
+    features: ['Section I (Languages)', 'Section II (Domain)', 'Section III (General Test)', 'NCERT Focus'],
   }
 ];
