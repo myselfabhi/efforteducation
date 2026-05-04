@@ -9,14 +9,14 @@ import { useAuthStore } from '@/lib/stores/authStore';
 interface Quiz {
   id: number;
   title: string;
-  description: string;
+  description: string | null;
   status: string;
   questions: Array<{
     id: number;
     question_text: string;
     time_limit: number;
     order_index: number;
-    options: Array<{ id: number; option_text: string; is_correct: boolean; option_index: number }>;
+    options: Array<{ id: number; option_text: string; is_correct?: boolean; option_index: number }>;
   }>;
 }
 
@@ -42,8 +42,8 @@ export default function PreviewPage() {
   useEffect(() => { hydrate(); }, [hydrate]);
 
   useEffect(() => {
-    if (!isAuthenticated || user?.role !== 'admin') {
-      router.push('/quiz/login');
+    if (!isAuthenticated || !user || !['admin', 'super_admin', 'teacher'].includes(user.role)) {
+      router.push('/login');
       return;
     }
     loadQuiz();

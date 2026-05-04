@@ -4,6 +4,9 @@ import jwt from 'jsonwebtoken';
 import { createAdapter } from '@socket.io/redis-adapter';
 import { pubClient, subClient } from '../redis';
 import { setupQuizSocket } from './quizController';
+import { setupClassSocket } from './classController';
+
+let _io: Server | null = null;
 
 export function initSocket(httpServer: HttpServer): Server {
   const io = new Server(httpServer, {
@@ -36,9 +39,22 @@ export function initSocket(httpServer: HttpServer): Server {
     }
   });
 
-  // Set up quiz event handlers
-  setupQuizSocket(io);
+  // Per-user room for notifications and direct pushes
+  io.on('connection', (socket) => {
+    const user = (socket as any).user;
+    if (user?.id) socket.join(`user:${user.id}`);
+  });
 
+  // Feature handlers
+  setupQuizSocket(io);
+  setupClassSocket(io);
+
+  _io = io;
   console.log('Socket.IO initialized');
   return io;
+}
+
+export function getIO(): Server {
+  if (!_io) throw new Error('Socket.IO not initialized');
+  return _io;
 }

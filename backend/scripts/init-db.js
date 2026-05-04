@@ -5,11 +5,10 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+const sslConfig = process.env.DATABASE_SSL === 'false' ? false : { rejectUnauthorized: false };
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  ssl: sslConfig,
 });
 
 async function init() {

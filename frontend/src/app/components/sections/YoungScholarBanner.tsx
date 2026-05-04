@@ -2,104 +2,197 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Button } from '../ui/button';
-import Logo from '../common/Logo';
-import { GraduationCap, ArrowRight, Star, Clock, Trophy } from 'lucide-react';
+import { ArrowRight, Mic, Brain, Trophy, Sparkles } from 'lucide-react';
+import { useAuthModal } from '@/lib/stores/authModalStore';
+
+const SKILLS = [
+  { icon: Mic, label: 'Public Speaking' },
+  { icon: Brain, label: 'Reasoning' },
+  { icon: Trophy, label: 'Olympiad Prep' },
+  { icon: Sparkles, label: 'Current Affairs' },
+];
+
+const AVATAR_GRADIENTS = [
+  'from-amber-200 to-orange-300',
+  'from-sky-200 to-blue-300',
+  'from-emerald-200 to-teal-300',
+  'from-pink-200 to-rose-300',
+  'from-violet-200 to-purple-300',
+];
 
 export default function YoungScholarBanner() {
+  const openAuth = useAuthModal((s) => s.openModal);
   return (
-    <section className="py-16 bg-white relative overflow-hidden">
-      {/* Decorative background effects */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-red-50 rounded-full blur-[100px] pointer-events-none" />
-      
-      <div className="container mx-auto max-w-6xl px-6 relative z-10">
-        {/* Banner Card */}
+    <section className="py-20 md:py-24 bg-background">
+      <div className="container mx-auto max-w-6xl px-6">
         <motion.div
-          initial={{ opacity: 0, scale: 0.98 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          className="relative rounded-2xl overflow-hidden border border-gray-100 bg-white shadow-2xl group"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.5 }}
+          className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary-soft/80 via-card to-card"
         >
-          {/* Accent Line */}
-          <div className="absolute top-0 left-0 w-full h-[1.5px] bg-gradient-to-r from-transparent via-red-600 to-transparent opacity-40" />
-          
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 p-8 md:p-12 items-center">
-            
-            {/* Left Content */}
+          {/* Subtle decorative ring on the right */}
+          <div
+            aria-hidden
+            className="absolute -right-32 -top-32 h-96 w-96 rounded-full bg-primary/10 blur-3xl"
+          />
+          <div
+            aria-hidden
+            className="absolute -right-20 top-10 h-64 w-64 rounded-full border border-primary/20"
+          />
+          <div
+            aria-hidden
+            className="absolute right-10 top-32 h-32 w-32 rounded-full border border-primary/15"
+          />
+
+          <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-10 p-8 md:p-12 lg:p-14 items-center">
+            {/* Content */}
             <div className="lg:col-span-7">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-50 border border-red-100 rounded-full mb-4">
-                <GraduationCap className="w-3.5 h-3.5 text-red-600" />
-                <span className="text-red-600 text-[10px] font-black uppercase tracking-widest">Ages 8-14</span>
-              </div>
-              
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 mb-4 tracking-tighter uppercase">
-                YOUNG <span className="text-red-600">SCHOLAR</span><br />
-                PROGRAM
-              </h2>
-              
-              <p className="text-base md:text-lg text-gray-500 mb-8 max-w-xl leading-relaxed font-medium">
-                Developing the next generation of critical thinkers. Our weekend skill-building program focuses on holistic growth beyond textbooks.
-              </p>
-              
-              {/* Feature Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <div className="flex flex-col gap-1.5">
-                  <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-100 group-hover:bg-red-50 group-hover:border-red-100 transition-colors">
-                    <Star className="w-4 h-4 text-red-600" />
-                  </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Current Affairs</span>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-100 group-hover:bg-red-50 group-hover:border-red-100 transition-colors">
-                    <Trophy className="w-4 h-4 text-red-600" />
-                  </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Reasoning</span>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-100 group-hover:bg-red-50 group-hover:border-red-100 transition-colors">
-                    <Clock className="w-4 h-4 text-red-600" />
-                  </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Public Speaking</span>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <div className="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-100 group-hover:bg-red-50 group-hover:border-red-100 transition-colors">
-                    <ArrowRight className="w-4 h-4 text-red-600" />
-                  </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">And More!</span>
-                </div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-card/80 backdrop-blur border border-border/60 text-[11px] uppercase tracking-widest text-muted-foreground font-semibold">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                Ages 8–14 · Weekend program
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 items-center">
-                <Link href="/young-scholar" className="w-full sm:w-auto">
-                  <Button className="w-full bg-red-600 hover:bg-red-700 text-white font-black uppercase tracking-widest px-8 h-12 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-xl shadow-red-600/10 text-xs">
-                    Explore Program
-                  </Button>
+              <h2 className="mt-5 text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-[1.05]">
+                Young{' '}
+                <span className="bg-gradient-to-br from-primary via-primary-strong to-primary bg-clip-text text-transparent">
+                  Scholar.
+                </span>
+                <br />
+                Built for curious kids.
+              </h2>
+
+              <p className="mt-5 max-w-lg text-base text-muted-foreground leading-relaxed">
+                A weekend skill-building program for Class 4–8 — public speaking, reasoning, current
+                affairs, and olympiad prep, all in one focused track.
+              </p>
+
+              {/* Skill chips */}
+              <div className="mt-6 flex flex-wrap gap-2">
+                {SKILLS.map((s) => {
+                  const Icon = s.icon;
+                  return (
+                    <span
+                      key={s.label}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-card border border-border text-xs font-semibold text-foreground/80"
+                    >
+                      <Icon className="h-3.5 w-3.5 text-primary" strokeWidth={2.2} />
+                      {s.label}
+                    </span>
+                  );
+                })}
+              </div>
+
+              {/* CTAs */}
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Link
+                  href="/young-scholar"
+                  className="group inline-flex items-center gap-2 h-11 px-6 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
+                >
+                  Explore the program
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
-                <Link href="/contact" className="w-full sm:w-auto">
-                  <Button variant="outline" className="w-full border-2 border-gray-100 bg-white text-gray-900 hover:border-red-600 font-black uppercase tracking-widest px-8 h-12 rounded-lg transition-all duration-300 transform hover:scale-105 text-xs">
-                    Enroll Now
-                  </Button>
-                </Link>
+                <button
+                  type="button"
+                  onClick={() => openAuth('register')}
+                  className="inline-flex items-center gap-1.5 h-11 px-3 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Book a free demo class
+                </button>
               </div>
             </div>
-            
-            {/* Right Side - Visual element or placeholder */}
-            <div className="lg:col-span-5 relative">
-              <div className="aspect-square rounded-xl bg-gradient-to-br from-red-50 to-white border border-gray-100 relative group-hover:border-red-100 transition-colors duration-500 overflow-hidden flex items-center justify-center">
-                 <Logo className="text-7xl opacity-10 group-hover:opacity-30 transition-opacity duration-500" />
-                 {/* Decorative Rings */}
-                 <div className="absolute inset-0 border-[30px] border-red-500/5 rounded-full scale-110" />
-                 <div className="absolute inset-0 border-[60px] border-red-500/10 rounded-full scale-125" />
+
+            {/* Avatar stack — replaces empty decorative circle */}
+            <div className="lg:col-span-5 relative flex items-center justify-center">
+              <div className="relative w-full max-w-sm">
+                {/* Floating stat card top */}
+                <motion.div
+                  initial={{ opacity: 0, y: -12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.15, duration: 0.4 }}
+                  className="absolute -top-2 right-2 sm:right-6 z-10 rounded-2xl bg-card border border-border shadow-lg p-3 pr-4"
+                >
+                  <div className="flex items-center gap-2">
+                    <Trophy className="h-4 w-4 text-warning" strokeWidth={2.4} />
+                    <div>
+                      <div className="text-sm font-bold leading-tight">120+ medals</div>
+                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                        Olympiads &amp; quizzes
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Floating stat card bottom */}
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.25, duration: 0.4 }}
+                  className="absolute -bottom-2 left-2 sm:left-6 z-10 rounded-2xl bg-card border border-border shadow-lg p-3 pr-4"
+                >
+                  <div className="flex items-center gap-2">
+                    <Mic className="h-4 w-4 text-primary" strokeWidth={2.4} />
+                    <div>
+                      <div className="text-sm font-bold leading-tight">2× a week</div>
+                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                        Live online sessions
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Centerpiece — happy-faces stack */}
+                <div className="relative aspect-square rounded-3xl bg-gradient-to-br from-card to-primary-soft/40 border border-border/60 grid grid-cols-3 grid-rows-3 gap-2 p-4">
+                  {AVATAR_GRADIENTS.concat(AVATAR_GRADIENTS).slice(0, 9).map((g, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, scale: 0.6 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{
+                        delay: 0.05 * i,
+                        duration: 0.3,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
+                      className={`rounded-2xl bg-gradient-to-br ${g} relative overflow-hidden`}
+                    >
+                      {/* simple smiley */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="flex flex-col items-center gap-0.5 opacity-80">
+                          <div className="flex gap-1">
+                            <span className="h-1 w-1 rounded-full bg-foreground/70" />
+                            <span className="h-1 w-1 rounded-full bg-foreground/70" />
+                          </div>
+                          <div className="h-0.5 w-2 rounded-full bg-foreground/70" />
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* "+200 students" pill below */}
+                <div className="mt-4 flex items-center justify-center gap-2 text-xs text-muted-foreground">
+                  <span className="flex -space-x-1.5">
+                    {AVATAR_GRADIENTS.slice(0, 3).map((g, i) => (
+                      <span
+                        key={i}
+                        className={`h-5 w-5 rounded-full bg-gradient-to-br ${g} border-2 border-background`}
+                      />
+                    ))}
+                  </span>
+                  <span>
+                    <span className="font-semibold text-foreground">200+ kids</span> currently
+                    enrolled
+                  </span>
+                </div>
               </div>
             </div>
-            
           </div>
         </motion.div>
       </div>
     </section>
   );
 }
-
-// Fixed import in the component above
-// import { MessageCircle } from 'lucide-react'; (already imported)
-

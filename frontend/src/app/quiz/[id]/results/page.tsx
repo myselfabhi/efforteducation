@@ -15,7 +15,7 @@ interface ScoreData {
 
 interface ResponseData {
   question_text: string;
-  selected_option: string;
+  selected_option: string | null;
   is_correct: boolean;
   response_time_ms: number;
   score: number;
@@ -51,12 +51,12 @@ export default function ResultsPage() {
       ]);
       setScore(resultData.score);
       setResponses(resultData.responses);
-      setLeaderboard(leaderboardData.map((entry: { user_id: number; total_score: number; total_time_ms: number; rank?: number; username: string }, i: number) => ({
+      setLeaderboard(leaderboardData.map((entry, i) => ({
         userId: entry.user_id,
         username: entry.username,
         totalScore: entry.total_score,
         totalTimeMs: entry.total_time_ms,
-        rank: entry.rank || i + 1,
+        rank: entry.rank ?? i + 1,
         correctCount: 0,
       })));
     } catch (err) {

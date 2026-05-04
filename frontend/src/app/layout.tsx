@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import BottomNav from "./components/mobile/BottomNav";
-import FloatingActionButton from "./components/mobile/FloatingActionButton";
 import ProgressBar from "./components/mobile/ProgressBar";
+import Providers from "./providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -55,21 +55,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="overflow-x-hidden">
+    <html lang="en" className="overflow-x-hidden" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900 overflow-x-hidden`}
       >
-        {/* Scroll Progress Bar */}
-        <ProgressBar />
-        
-        {/* Main Content */}
-        {children}
-        
-        {/* Mobile Bottom Navigation */}
-        <BottomNav />
-        
-        {/* Floating Action Button */}
-        <FloatingActionButton />
+        <Providers>
+          {/* Scroll Progress Bar */}
+          <ProgressBar />
+
+          {/* Main Content */}
+          {children}
+
+          {/* Mobile Bottom Navigation */}
+          <BottomNav />
+        </Providers>
       </body>
     </html>
   );

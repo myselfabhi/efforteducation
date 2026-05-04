@@ -1043,8 +1043,13 @@ export const courses: Record<string, Course> = {
 
 export const courseList = Object.values(courses);
 
+const SLUG_ALIASES: Record<string, string> = {
+  'ibps-po': 'bank-po-so',
+  'sbi-po': 'bank-po-so',
+};
+
 export function getCourseBySlug(slug: string): Course | undefined {
-  return courses[slug];
+  return courses[slug] ?? courses[SLUG_ALIASES[slug]];
 }
 
 export function getAllCourseSlugs(): string[] {

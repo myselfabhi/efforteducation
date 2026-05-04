@@ -35,7 +35,7 @@ export default function LiveQuizDashboard() {
   useEffect(() => { hydrate(); }, [hydrate]);
 
   useEffect(() => {
-    if (!isAuthenticated || user?.role !== 'admin') {
+    if (!isAuthenticated || !user || !['admin', 'super_admin', 'teacher'].includes(user.role)) {
       router.push('/quiz/login');
       return;
     }

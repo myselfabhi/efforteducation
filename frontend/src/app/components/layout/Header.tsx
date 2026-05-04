@@ -1,159 +1,254 @@
 'use client';
 
-import { useState } from 'react';
-import { Menu, X } from 'lucide-react';
-import { Button } from '../ui/button';
+import { useEffect, useState } from 'react';
+import { Menu, X, ArrowRight, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Logo from '../common/Logo';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuthModal } from '@/lib/stores/authModalStore';
+
+const NAV_ITEMS = [
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
+  { href: '/courses', label: 'Programs' },
+  { href: '/young-scholar', label: 'Young Scholar' },
+  { href: '/contact', label: 'Contact' },
+];
 
 export default function Header() {
   const pathname = usePathname();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const openAuth = useAuthModal((s) => s.openModal);
 
-  const isActive = (path: string) => pathname === path;
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
-  const navItems = [
-    { href: '/', label: 'Home' },
-    { href: '/about', label: 'About' },
-    { href: '/programs', label: 'Programs' },
-    { href: '/young-scholar', label: 'Young Scholar' },
-    { href: '/contact', label: 'Contact' },
-  ];
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/';
+    return pathname === href || pathname.startsWith(href + '/');
+  };
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? 'bg-background/80 backdrop-blur-xl border-b border-border/60 shadow-[0_1px_0_rgba(0,0,0,0.02)]'
+            : 'bg-background/40 backdrop-blur-md border-b border-transparent'
+        }`}
+      >
         <nav className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Brand */}
-            <div className="flex items-center">
-              <Link
-                href="/"
-                className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-              >
-                <Logo className="text-2xl sm:text-3xl" />
-                <span className="text-lg sm:text-xl font-black text-gray-900 tracking-tighter uppercase">EFFORT <span className="text-red-600">EDUCATION</span></span>
-              </Link>
-            </div>
-
-            {/* Desktop Menu */}
-            <div className="hidden md:flex items-center space-x-8">
-              {navItems.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`text-xs font-bold uppercase tracking-widest transition-colors ${
-                    isActive(item.href) ? 'text-red-600' : 'text-gray-500 hover:text-red-600'
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </div>
-
-            {/* Desktop CTA Button */}
-            <div className="hidden md:flex">
-              <Link href="/contact">
-                <Button className="bg-red-600 hover:bg-red-700 text-white font-black rounded-lg px-6 py-4 transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg shadow-red-600/10 text-sm">
-                  Enroll Now
-                </Button>
-              </Link>
-            </div>
-
-            {/* Mobile Hamburger Menu */}
-            <button
-              onClick={() => setIsMobileMenuOpen(true)}
-              className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors"
-              aria-label="Open menu"
+            <Link
+              href="/"
+              className="flex items-center gap-2.5 group"
+              aria-label="Effort Education — home"
             >
-              <Menu className="w-6 h-6 text-gray-700" />
-            </button>
+              <Logo className="text-2xl transition-transform duration-300 group-hover:scale-105" />
+              <span className="hidden sm:inline-flex items-baseline gap-1 text-base font-bold tracking-tight">
+                <span className="text-foreground">Effort</span>
+                <span className="bg-gradient-to-br from-primary via-primary-strong to-primary bg-clip-text text-transparent">
+                  Education
+                </span>
+              </span>
+            </Link>
+
+            {/* Desktop Nav — pill style with active background */}
+            <div className="hidden lg:flex items-center gap-1 rounded-full border border-border/60 bg-card/60 backdrop-blur p-1">
+              {NAV_ITEMS.map((item) => {
+                const active = isActive(item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`relative px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
+                      active
+                        ? 'text-foreground'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {active && (
+                      <motion.span
+                        layoutId="nav-pill"
+                        className="absolute inset-0 rounded-full bg-primary/10"
+                        transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                      />
+                    )}
+                    <span className="relative">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Right side actions */}
+            <div className="flex items-center gap-2">
+              {/* Login (text link, hidden on small) */}
+              <button
+                type="button"
+                onClick={() => openAuth('login')}
+                className="hidden md:inline-flex items-center gap-1.5 h-9 px-3 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors"
+              >
+                <LogIn className="h-3.5 w-3.5" />
+                Sign in
+              </button>
+
+              {/* Enroll CTA */}
+              <button
+                type="button"
+                onClick={() => openAuth('register')}
+                className="hidden md:inline-flex items-center gap-1.5 h-9 px-4 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors group"
+              >
+                Enroll
+                <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+              </button>
+
+              {/* Mobile hamburger */}
+              <button
+                onClick={() => setIsOpen(true)}
+                className="lg:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg text-foreground hover:bg-secondary/60 transition-colors"
+                aria-label="Open menu"
+              >
+                <Menu className="h-5 w-5" />
+              </button>
+            </div>
           </div>
         </nav>
       </header>
 
-      {/* Mobile Menu Modal */}
+      {/* Mobile menu */}
       <AnimatePresence>
-        {isMobileMenuOpen && (
+        {isOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] md:hidden"
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[100] lg:hidden"
           >
             {/* Backdrop */}
-            <motion.div
+            <motion.button
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={() => setIsOpen(false)}
+              aria-label="Close menu"
+              className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
             />
 
-            {/* Menu Content */}
+            {/* Sheet */}
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-              className="absolute inset-y-0 right-0 w-full max-w-sm bg-white shadow-2xl"
+              transition={{ type: 'spring', damping: 28, stiffness: 280 }}
+              className="absolute inset-y-0 right-0 w-full max-w-sm bg-background border-l border-border flex flex-col"
             >
-              {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-gray-100">
-                <span className="text-lg font-bold text-gray-900">Menu</span>
+              {/* Sheet header */}
+              <div className="flex items-center justify-between px-5 h-16 border-b border-border">
+                <Link
+                  href="/"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-2.5"
+                >
+                  <Logo className="text-2xl" />
+                  <span className="text-base font-bold tracking-tight">
+                    Effort{' '}
+                    <span className="bg-gradient-to-br from-primary via-primary-strong to-primary bg-clip-text text-transparent">
+                      Education
+                    </span>
+                  </span>
+                </Link>
                 <button
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors"
+                  onClick={() => setIsOpen(false)}
+                  className="inline-flex items-center justify-center h-10 w-10 rounded-lg text-foreground hover:bg-secondary/60 transition-colors"
                   aria-label="Close menu"
                 >
-                  <X className="w-6 h-6 text-gray-700" />
+                  <X className="h-5 w-5" />
                 </button>
               </div>
 
-              {/* Navigation Items - Centered */}
-              <div className="flex flex-col items-center justify-center flex-1 px-8 py-12">
-                <div className="space-y-6 w-full max-w-xs">
-                  {navItems.map((item, index) => (
-                    <motion.div
-                      key={item.href}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                    >
-                      <Link
-                        href={item.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className={`block text-center text-lg font-bold uppercase tracking-wider transition-colors py-3 px-4 rounded-xl ${
-                          isActive(item.href)
-                            ? 'text-red-600 bg-red-50'
-                            : 'text-gray-700 hover:text-red-600 hover:bg-gray-50'
-                        }`}
+              {/* Nav links */}
+              <div className="flex-1 overflow-y-auto px-3 py-4">
+                <div className="space-y-1">
+                  {NAV_ITEMS.map((item, i) => {
+                    const active = isActive(item.href);
+                    return (
+                      <motion.div
+                        key={item.href}
+                        initial={{ opacity: 0, x: 12 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.04, duration: 0.25 }}
                       >
-                        {item.label}
-                      </Link>
-                    </motion.div>
-                  ))}
+                        <Link
+                          href={item.href}
+                          onClick={() => setIsOpen(false)}
+                          className={`flex items-center justify-between px-4 py-3 rounded-xl text-base font-semibold transition-colors ${
+                            active
+                              ? 'bg-primary/10 text-primary'
+                              : 'text-foreground hover:bg-secondary/60'
+                          }`}
+                        >
+                          {item.label}
+                          <ArrowRight
+                            className={`h-4 w-4 transition-opacity ${
+                              active ? 'opacity-100' : 'opacity-0'
+                            }`}
+                          />
+                        </Link>
+                      </motion.div>
+                    );
+                  })}
                 </div>
 
-                {/* CTA Button */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="mt-10 w-full max-w-xs"
-                >
-                  <Link
-                    href="/contact"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block"
+                {/* Footer actions */}
+                <div className="mt-8 pt-6 border-t border-border space-y-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsOpen(false);
+                      openAuth('login');
+                    }}
+                    className="w-full flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors"
                   >
-                    <Button className="w-full bg-red-600 hover:bg-red-700 text-white font-black rounded-xl py-6 text-sm uppercase tracking-wider shadow-lg shadow-red-600/20">
-                      Enroll Now
-                    </Button>
-                  </Link>
-                </motion.div>
+                    <LogIn className="h-4 w-4" />
+                    Already a student? Sign in
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsOpen(false);
+                      openAuth('register');
+                    }}
+                    className="group w-full flex items-center justify-center gap-2 h-12 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
+                  >
+                    Enroll now
+                    <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                  </button>
+                </div>
               </div>
             </motion.div>
           </motion.div>

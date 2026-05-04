@@ -31,7 +31,11 @@ export default function LoginPage() {
     try {
       const data = await api.auth.login({ email, password });
       login(data.user, data.token);
-      router.push(data.user.role === 'admin' ? '/quiz/admin/create' : '/quiz/dashboard');
+      router.push(
+        data.user.role === 'admin' || data.user.role === 'super_admin'
+          ? '/quiz/admin/create'
+          : '/quiz/dashboard'
+      );
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Login failed');
     } finally {

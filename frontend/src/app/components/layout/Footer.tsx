@@ -62,7 +62,7 @@ export default function Footer() {
                   About Us
                 </Link>
                 <Link
-                  href="/programs"
+                  href="/courses"
                   className="block text-gray-500 hover:text-red-600 transition-colors text-sm font-bold"
                 >
                   Programs
@@ -175,7 +175,7 @@ export default function Footer() {
                   About Us
                 </Link>
                 <Link
-                  href="/programs"
+                  href="/courses"
                   className="block text-gray-500 hover:text-red-600 transition-colors text-base font-bold"
                 >
                   Our Programs

@@ -10,7 +10,7 @@ interface AddedQuestion {
   id: number;
   question_text: string;
   time_limit: number;
-  options: Array<{ id: number; option_text: string; is_correct: boolean }>;
+  options: Array<{ id: number; option_text: string; is_correct?: boolean }>;
 }
 
 export default function AddQuestionsPage() {
@@ -45,7 +45,7 @@ export default function AddQuestionsPage() {
   useEffect(() => { hydrate(); }, [hydrate]);
 
   useEffect(() => {
-    if (!isAuthenticated || user?.role !== 'admin') {
+    if (!isAuthenticated || !user || !['admin', 'super_admin', 'teacher'].includes(user.role)) {
       router.push('/quiz/login');
       return;
     }

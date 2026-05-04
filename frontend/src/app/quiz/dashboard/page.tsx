@@ -9,10 +9,10 @@ import { useAuthStore } from '@/lib/stores/authStore';
 interface Quiz {
   id: number;
   title: string;
-  description: string;
+  description: string | null;
   status: string;
-  question_count: string;
-  creator_name: string;
+  question_count?: number | string;
+  creator_name?: string;
   scheduled_at: string | null;
   created_at: string;
 }

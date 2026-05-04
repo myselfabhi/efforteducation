@@ -16,8 +16,10 @@ export default function CreateQuizPage() {
   useEffect(() => { hydrate(); }, [hydrate]);
 
   useEffect(() => {
-    if (!isAuthenticated || user?.role !== 'admin') {
-      router.push('/quiz/login');
+    if (!isAuthenticated) {
+      router.push('/login');
+    } else if (user && !['admin', 'super_admin', 'teacher'].includes(user.role)) {
+      router.push('/dashboard');
     }
   }, [isAuthenticated, user, router]);
 

@@ -2,19 +2,29 @@ import { Router, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import pool from '../db';
+import { LoginSchema, RegisterStudentSchema, validateBody } from '../lib/validation';
 
 const router = Router();
 
-// POST /api/auth/register
-router.post('/register', async (req, res: Response) => {
+function signToken(user: { id: number; username: string; email: string; role: string; full_name: string | null }) {
+  return jwt.sign(
+    {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      full_name: user.full_name,
+    },
+    process.env.JWT_SECRET!,
+    { expiresIn: '24h' }
+  );
+}
+
+// POST /api/auth/register — student self-signup only
+router.post('/register', validateBody(RegisterStudentSchema), async (req, res: Response) => {
   try {
-    const { username, email, password, role } = req.body;
+    const { username, email, password, full_name, phone, class_grade } = req.body;
 
-    if (!username || !email || !password) {
-      return res.status(400).json({ error: 'username, email, and password are required' });
-    }
-
-    // Check existing
     const existing = await pool.query(
       'SELECT id FROM users WHERE email = $1 OR username = $2',
       [email, username]
@@ -24,19 +34,16 @@ router.post('/register', async (req, res: Response) => {
     }
 
     const passwordHash = await bcrypt.hash(password, 12);
-    const userRole = role === 'admin' ? 'admin' : 'user';
 
     const result = await pool.query(
-      'INSERT INTO users (username, email, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING id, username, email, role',
-      [username, email, passwordHash, userRole]
+      `INSERT INTO users (username, email, password_hash, role, full_name, phone, class_grade)
+       VALUES ($1, $2, $3, 'student', $4, $5, $6)
+       RETURNING id, username, email, role, full_name, phone, class_grade, avatar_url, created_at`,
+      [username, email, passwordHash, full_name ?? null, phone ?? null, class_grade ?? null]
     );
 
     const user = result.rows[0];
-    const token = jwt.sign(
-      { id: user.id, username: user.username, email: user.email, role: user.role },
-      process.env.JWT_SECRET!,
-      { expiresIn: '24h' }
-    );
+    const token = signToken(user);
 
     res.status(201).json({ user, token });
   } catch (err: any) {
@@ -46,16 +53,13 @@ router.post('/register', async (req, res: Response) => {
 });
 
 // POST /api/auth/login
-router.post('/login', async (req, res: Response) => {
+router.post('/login', validateBody(LoginSchema), async (req, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ error: 'email and password are required' });
-    }
-
     const result = await pool.query(
-      'SELECT id, username, email, password_hash, role FROM users WHERE email = $1',
+      `SELECT id, username, email, password_hash, role, full_name, phone, class_grade, avatar_url, deleted_at
+       FROM users WHERE email = $1`,
       [email]
     );
 
@@ -64,19 +68,28 @@ router.post('/login', async (req, res: Response) => {
     }
 
     const user = result.rows[0];
+    if (user.deleted_at) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
     const valid = await bcrypt.compare(password, user.password_hash);
     if (!valid) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    const token = jwt.sign(
-      { id: user.id, username: user.username, email: user.email, role: user.role },
-      process.env.JWT_SECRET!,
-      { expiresIn: '24h' }
-    );
+    const token = signToken(user);
 
     res.json({
-      user: { id: user.id, username: user.username, email: user.email, role: user.role },
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        full_name: user.full_name,
+        phone: user.phone,
+        class_grade: user.class_grade,
+        avatar_url: user.avatar_url,
+      },
       token,
     });
   } catch (err: any) {
