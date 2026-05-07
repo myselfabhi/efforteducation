@@ -38,29 +38,43 @@ const pool = new Pool({
 async function main() {
   const client = await pool.connect();
   try {
-    const hash = await bcrypt.hash(PASSWORD, 10);
+    // Check if user exists already — if so, only ensure role is super_admin
+    // and don't touch the password (in case it was rotated).
+    const existing = await client.query(
+      'SELECT id, role FROM users WHERE email = $1',
+      [EMAIL]
+    );
 
-    // Upsert by email — preserves existing rows, only updates role + password if needed
+    if (existing.rows.length > 0) {
+      const cur = existing.rows[0];
+      if (cur.role === 'super_admin') {
+        console.log('✓ Super admin already exists with correct role; nothing to do.');
+        return;
+      }
+      await client.query(
+        `UPDATE users SET role = 'super_admin' WHERE email = $1`,
+        [EMAIL]
+      );
+      console.log('✓ Promoted existing user to super_admin (password unchanged): ' + EMAIL);
+      return;
+    }
+
+    // User doesn't exist — create with the configured password
+    const hash = await bcrypt.hash(PASSWORD, 10);
     const r = await client.query(
       `INSERT INTO users (username, email, password_hash, role, full_name)
          VALUES ($1, $2, $3, 'super_admin', $4)
-       ON CONFLICT (email) DO UPDATE
-         SET role          = 'super_admin',
-             password_hash = EXCLUDED.password_hash,
-             username      = COALESCE(users.username, EXCLUDED.username),
-             full_name     = COALESCE(users.full_name, EXCLUDED.full_name)
        RETURNING id, username, email, role`,
       [USERNAME, EMAIL, hash, NAME]
     );
-
     const user = r.rows[0];
-    console.log('✅ Super admin ready:');
+    console.log('✅ Super admin created:');
     console.log('   email:    ' + user.email);
     console.log('   username: ' + user.username);
     console.log('   role:     ' + user.role);
-    console.log('   password: (the value of SUPER_ADMIN_PASSWORD or default)');
+    console.log('   password: (the value of SUPER_ADMIN_PASSWORD env var, or default)');
     console.log('');
-    console.log('🔐 Rotate this password from the dashboard after first login.');
+    console.log('🔐 Rotate this password after first login.');
   } catch (err) {
     console.error('❌ Failed to seed super admin:', err.message);
     process.exitCode = 1;

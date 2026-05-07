@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node scripts/migrate.js && node scripts/seed-admin.js && node dist/index.js",
     "migrate": "node scripts/migrate.js",
     "seed:dev": "node scripts/seed-dev.js",
     "seed:admin": "node scripts/seed-admin.js"
