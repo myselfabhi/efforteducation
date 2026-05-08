@@ -4,10 +4,19 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { X, ArrowRight, Mail, Lock, User, Phone, BookOpen } from 'lucide-react';
+import { X, ArrowRight, Mail, Lock, User, Phone, BookOpen, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { api, ApiError } from '@/lib/api';
 import { useAuthStore, dashboardHomeFor } from '@/lib/stores/authStore';
 import { useAuthModal } from '@/lib/stores/authModalStore';
+
+const CLASS_OPTIONS = [
+  'Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10',
+  'Class 11 (Science)', 'Class 11 (Commerce)', 'Class 11 (Arts)',
+  'Class 12 (Science)', 'Class 12 (Commerce)', 'Class 12 (Arts)',
+  'Dropper / Repeater',
+  'JEE Aspirant', 'NEET Aspirant', 'CUET (UG) Aspirant',
+  'Other',
+];
 
 export function AuthModal() {
   const open = useAuthModal((s) => s.open);
@@ -18,6 +27,10 @@ export function AuthModal() {
   const login = useAuthStore((s) => s.login);
 
   const [submitting, setSubmitting] = useState(false);
+  const [loginError, setLoginError] = useState('');
+  const [signupError, setSignupError] = useState('');
+  const [showLoginPw, setShowLoginPw] = useState(false);
+  const [showSignupPw, setShowSignupPw] = useState(false);
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
   const [signupForm, setSignupForm] = useState({
     full_name: '',
@@ -28,27 +41,30 @@ export function AuthModal() {
     class_grade: '',
   });
 
+  // Reset errors when switching modes
+  useEffect(() => {
+    setLoginError('');
+    setSignupError('');
+  }, [mode]);
+
   // Lock body scroll while open
   useEffect(() => {
     if (!open) return;
     document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = '';
-    };
+    return () => { document.body.style.overflow = ''; };
   }, [open]);
 
   // ESC closes
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeModal();
-    };
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeModal(); };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [open, closeModal]);
 
   async function onLogin(e: React.FormEvent) {
     e.preventDefault();
+    setLoginError('');
     setSubmitting(true);
     try {
       const r = await api.auth.login(loginForm);
@@ -57,7 +73,8 @@ export function AuthModal() {
       closeModal();
       router.push(dashboardHomeFor(r.user.role));
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : 'Login failed');
+      const msg = err instanceof ApiError ? err.message : 'Login failed. Please try again.';
+      setLoginError(msg);
     } finally {
       setSubmitting(false);
     }
@@ -65,6 +82,7 @@ export function AuthModal() {
 
   async function onSignup(e: React.FormEvent) {
     e.preventDefault();
+    setSignupError('');
     setSubmitting(true);
     try {
       const r = await api.auth.register({
@@ -76,11 +94,12 @@ export function AuthModal() {
         class_grade: signupForm.class_grade || undefined,
       });
       login(r.user, r.token);
-      toast.success('Account created!');
+      toast.success('Account created! Welcome aboard.');
       closeModal();
       router.push(dashboardHomeFor(r.user.role));
     } catch (err) {
-      toast.error(err instanceof ApiError ? err.message : 'Sign-up failed');
+      const msg = err instanceof ApiError ? err.message : 'Sign-up failed. Please try again.';
+      setSignupError(msg);
     } finally {
       setSubmitting(false);
     }
@@ -103,7 +122,7 @@ export function AuthModal() {
             exit={{ opacity: 0 }}
             onClick={closeModal}
             aria-label="Close"
-            className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
+            className="absolute inset-0 bg-foreground/60 backdrop-blur-sm"
           />
 
           {/* Sheet */}
@@ -132,9 +151,7 @@ export function AuthModal() {
                 <button
                   onClick={() => setMode('login')}
                   className={`relative px-4 py-1.5 text-sm font-semibold rounded-full transition-colors ${
-                    mode === 'login'
-                      ? 'text-foreground'
-                      : 'text-muted-foreground hover:text-foreground'
+                    mode === 'login' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   {mode === 'login' && (
@@ -149,9 +166,7 @@ export function AuthModal() {
                 <button
                   onClick={() => setMode('register')}
                   className={`relative px-4 py-1.5 text-sm font-semibold rounded-full transition-colors ${
-                    mode === 'register'
-                      ? 'text-foreground'
-                      : 'text-muted-foreground hover:text-foreground'
+                    mode === 'register' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   {mode === 'register' && (
@@ -188,6 +203,13 @@ export function AuthModal() {
                     onSubmit={onLogin}
                     className="space-y-4"
                   >
+                    {loginError && (
+                      <div className="flex items-center gap-2 bg-destructive/10 border border-destructive/30 text-destructive px-3 py-2.5 rounded-lg text-sm">
+                        <span className="shrink-0">⚠</span>
+                        <span>{loginError}</span>
+                      </div>
+                    )}
+
                     <Field
                       icon={Mail}
                       label="Email"
@@ -203,12 +225,15 @@ export function AuthModal() {
                       icon={Lock}
                       label="Password"
                       id="login-password"
-                      type="password"
+                      type={showLoginPw ? 'text' : 'password'}
                       autoComplete="current-password"
                       required
                       value={loginForm.password}
                       onChange={(v) => setLoginForm((s) => ({ ...s, password: v }))}
                       placeholder="••••••••"
+                      showToggle
+                      showPassword={showLoginPw}
+                      onTogglePassword={() => setShowLoginPw((p) => !p)}
                     />
 
                     <button
@@ -216,9 +241,16 @@ export function AuthModal() {
                       disabled={submitting}
                       className="group w-full inline-flex items-center justify-center gap-2 h-11 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60"
                     >
-                      {submitting ? 'Signing in…' : 'Sign in'}
-                      {!submitting && (
-                        <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                      {submitting ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Signing in…
+                        </>
+                      ) : (
+                        <>
+                          Sign in
+                          <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                        </>
                       )}
                     </button>
 
@@ -243,6 +275,13 @@ export function AuthModal() {
                     onSubmit={onSignup}
                     className="space-y-4"
                   >
+                    {signupError && (
+                      <div className="flex items-center gap-2 bg-destructive/10 border border-destructive/30 text-destructive px-3 py-2.5 rounded-lg text-sm">
+                        <span className="shrink-0">⚠</span>
+                        <span>{signupError}</span>
+                      </div>
+                    )}
+
                     <Field
                       icon={User}
                       label="Full name"
@@ -261,14 +300,11 @@ export function AuthModal() {
                         value={signupForm.username}
                         onChange={(v) => setSignupForm((s) => ({ ...s, username: v }))}
                         placeholder="@handle"
+                        hint="Unique"
                       />
-                      <Field
-                        icon={BookOpen}
-                        label="Class / level"
-                        id="signup-class"
+                      <ClassSelect
                         value={signupForm.class_grade}
                         onChange={(v) => setSignupForm((s) => ({ ...s, class_grade: v }))}
-                        placeholder="e.g. Class 8"
                       />
                     </div>
                     <Field
@@ -289,21 +325,24 @@ export function AuthModal() {
                       type="tel"
                       value={signupForm.phone}
                       onChange={(v) => setSignupForm((s) => ({ ...s, phone: v }))}
-                      placeholder="+91 …"
+                      placeholder="+91 98765 43210"
                       hint="Optional"
                     />
                     <Field
                       icon={Lock}
                       label="Password"
                       id="signup-password"
-                      type="password"
+                      type={showSignupPw ? 'text' : 'password'}
                       autoComplete="new-password"
                       required
                       minLength={8}
                       value={signupForm.password}
                       onChange={(v) => setSignupForm((s) => ({ ...s, password: v }))}
-                      placeholder="At least 8 characters"
-                      hint="Min. 8 characters"
+                      placeholder="Min. 8 characters"
+                      hint="Min. 8 chars"
+                      showToggle
+                      showPassword={showSignupPw}
+                      onTogglePassword={() => setShowSignupPw((p) => !p)}
                     />
 
                     <button
@@ -311,9 +350,16 @@ export function AuthModal() {
                       disabled={submitting}
                       className="group w-full inline-flex items-center justify-center gap-2 h-11 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60"
                     >
-                      {submitting ? 'Creating…' : 'Create account'}
-                      {!submitting && (
-                        <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                      {submitting ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Creating…
+                        </>
+                      ) : (
+                        <>
+                          Create account
+                          <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                        </>
                       )}
                     </button>
 
@@ -350,6 +396,9 @@ interface FieldProps {
   onChange: (value: string) => void;
   placeholder?: string;
   hint?: string;
+  showToggle?: boolean;
+  showPassword?: boolean;
+  onTogglePassword?: () => void;
 }
 
 function Field({
@@ -364,6 +413,9 @@ function Field({
   onChange,
   placeholder,
   hint,
+  showToggle,
+  showPassword,
+  onTogglePassword,
 }: FieldProps) {
   return (
     <div>
@@ -388,8 +440,51 @@ function Field({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full h-10 pl-9 pr-3 rounded-lg border border-border bg-background text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
+          className="w-full h-10 pl-9 pr-3 rounded-lg border border-border bg-background text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all autofill:bg-background [&:-webkit-autofill]:bg-background"
+          style={{ paddingRight: showToggle ? '2.5rem' : undefined }}
         />
+        {showToggle && (
+          <button
+            type="button"
+            onClick={onTogglePassword}
+            tabIndex={-1}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+          >
+            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ClassSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  return (
+    <div>
+      <label
+        htmlFor="signup-class"
+        className="flex items-center justify-between text-xs font-semibold text-foreground mb-1.5"
+      >
+        <span>Class / level</span>
+        <span className="text-muted-foreground font-normal">Optional</span>
+      </label>
+      <div className="relative">
+        <BookOpen
+          className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none"
+          strokeWidth={2}
+        />
+        <select
+          id="signup-class"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full h-10 pl-9 pr-3 rounded-lg border border-border bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all appearance-none cursor-pointer"
+        >
+          <option value="">Select…</option>
+          {CLASS_OPTIONS.map((opt) => (
+            <option key={opt} value={opt}>{opt}</option>
+          ))}
+        </select>
       </div>
     </div>
   );
