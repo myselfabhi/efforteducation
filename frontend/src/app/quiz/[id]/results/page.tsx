@@ -40,6 +40,7 @@ export default function ResultsPage() {
   const [score, setScore] = useState<QuizScore | null>(null);
   const [responses, setResponses] = useState<QuizResponseRow[]>([]);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [totalQuestions, setTotalQuestions] = useState(0);
   const [loading, setLoading] = useState(true);
   const [openExplanations, setOpenExplanations] = useState<Set<number>>(new Set());
 
@@ -55,6 +56,7 @@ export default function ResultsPage() {
       ]);
       setScore(resultData.score);
       setResponses(resultData.responses);
+      setTotalQuestions(resultData.total_questions ?? resultData.responses.length);
       setLeaderboard(leaderboardData);
     } catch (err) {
       console.error(err);
@@ -81,7 +83,8 @@ export default function ResultsPage() {
   }
 
   const correctCount = responses.filter((r) => r.is_correct).length;
-  const accuracy = responses.length ? Math.round((correctCount / responses.length) * 100) : 0;
+  const denominator = totalQuestions || responses.length;
+  const accuracy = denominator ? Math.round((correctCount / denominator) * 100) : 0;
   const avgMs = responses.length
     ? Math.round(responses.reduce((s, r) => s + r.response_time_ms, 0) / responses.length)
     : 0;
@@ -149,7 +152,7 @@ export default function ResultsPage() {
                 icon={Target}
                 label="Accuracy"
                 value={`${accuracy}%`}
-                hint={`${correctCount}/${responses.length} correct`}
+                hint={`${correctCount}/${denominator} correct`}
                 accent="text-success"
                 bg="bg-success/10"
               />

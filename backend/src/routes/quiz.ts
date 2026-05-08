@@ -374,9 +374,14 @@ router.get('/:id/results', authMiddleware, async (req: AuthRequest, res: Respons
       [quizId, userId]
     );
 
+    const totalQResult = await pool.query(
+      'SELECT COUNT(*)::int AS total FROM questions WHERE quiz_id = $1',
+      [quizId]
+    );
     res.json({
       score: scoreResult.rows[0] || null,
       responses: responsesResult.rows,
+      total_questions: totalQResult.rows[0].total,
     });
   } catch (err: any) {
     console.error('Results error:', err);

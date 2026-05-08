@@ -209,6 +209,7 @@ export interface QuizResponseRow {
 export interface QuizResults {
   score: QuizScore | null;
   responses: QuizResponseRow[];
+  total_questions: number;
 }
 
 // ============= Helpers =============
