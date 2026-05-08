@@ -9,9 +9,18 @@ import { setupClassSocket } from './classController';
 let _io: Server | null = null;
 
 export function initSocket(httpServer: HttpServer): Server {
+  const allowedOrigins = [
+    'https://efforteducation.in',
+    'https://www.efforteducation.in',
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://localhost:3002',
+    ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+  ];
+
   const io = new Server(httpServer, {
     cors: {
-      origin: [process.env.FRONTEND_URL || 'http://localhost:3000', 'http://localhost:3002', 'http://localhost:3000'],
+      origin: allowedOrigins,
       methods: ['GET', 'POST'],
       credentials: true,
     },
