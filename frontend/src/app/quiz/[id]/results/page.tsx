@@ -35,7 +35,7 @@ export default function ResultsPage() {
   const router = useRouter();
   const params = useParams();
   const quizId = Number(params.id);
-  const { hydrate, isAuthenticated, user } = useAuthStore();
+  const { hydrate, isAuthenticated, hasHydrated, user } = useAuthStore();
 
   const [score, setScore] = useState<QuizScore | null>(null);
   const [responses, setResponses] = useState<QuizResponseRow[]>([]);
@@ -64,12 +64,13 @@ export default function ResultsPage() {
   }, [quizId]);
 
   useEffect(() => {
+    if (!hasHydrated) return;
     if (!isAuthenticated) {
       router.push('/quiz/login');
       return;
     }
     loadResults();
-  }, [isAuthenticated, router, loadResults]);
+  }, [hasHydrated, isAuthenticated, router, loadResults]);
 
   if (loading) {
     return (

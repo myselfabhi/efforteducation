@@ -8,7 +8,7 @@ import { useAuthStore } from '@/lib/stores/authStore';
 
 export default function CreateQuizPage() {
   const router = useRouter();
-  const { hydrate, isAuthenticated, user } = useAuthStore();
+  const { hydrate, isAuthenticated, hasHydrated, user } = useAuthStore();
   const [form, setForm] = useState({ title: '', description: '', scheduled_at: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -16,12 +16,13 @@ export default function CreateQuizPage() {
   useEffect(() => { hydrate(); }, [hydrate]);
 
   useEffect(() => {
+    if (!hasHydrated) return;
     if (!isAuthenticated) {
-      router.push('/login');
+      router.push('/quiz/login');
     } else if (user && !['admin', 'super_admin', 'teacher'].includes(user.role)) {
-      router.push('/dashboard');
+      router.push('/dashboard/student');
     }
-  }, [isAuthenticated, user, router]);
+  }, [hasHydrated, isAuthenticated, user, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

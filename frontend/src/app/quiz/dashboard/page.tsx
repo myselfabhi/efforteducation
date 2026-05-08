@@ -19,7 +19,7 @@ interface Quiz {
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user, hydrate, isAuthenticated, logout } = useAuthStore();
+  const { user, hydrate, isAuthenticated, hasHydrated, logout } = useAuthStore();
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -28,12 +28,13 @@ export default function DashboardPage() {
   }, [hydrate]);
 
   useEffect(() => {
+    if (!hasHydrated) return;
     if (!isAuthenticated) {
       router.push('/quiz/login');
       return;
     }
     fetchQuizzes();
-  }, [isAuthenticated, router]);
+  }, [hasHydrated, isAuthenticated, router]);
 
   const fetchQuizzes = async () => {
     try {
@@ -66,7 +67,7 @@ export default function DashboardPage() {
             <p className="text-gray-400 mt-1">Welcome, {user?.username}</p>
           </div>
           <div className="flex items-center gap-3">
-            {user?.role === 'admin' && (
+            {['admin', 'super_admin', 'teacher'].includes(user?.role ?? '') && (
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -93,7 +94,7 @@ export default function DashboardPage() {
         ) : quizzes.length === 0 ? (
           <div className="text-center py-16 bg-white/5 rounded-2xl border border-white/10">
             <p className="text-gray-400 text-lg">No quizzes available</p>
-            {user?.role === 'admin' && (
+            {['admin', 'super_admin', 'teacher'].includes(user?.role ?? '') && (
               <button
                 onClick={() => router.push('/quiz/admin/create')}
                 className="mt-4 text-purple-400 hover:text-purple-300 text-sm"
@@ -116,7 +117,7 @@ export default function DashboardPage() {
                     router.push(`/quiz/${quiz.id}/lobby`);
                   } else if (quiz.status === 'COMPLETED') {
                     router.push(`/quiz/${quiz.id}/results`);
-                  } else if (user?.role === 'admin') {
+                  } else if (['admin', 'super_admin', 'teacher'].includes(user?.role ?? '')) {
                     router.push(`/quiz/admin/${quiz.id}/preview`);
                   }
                 }}

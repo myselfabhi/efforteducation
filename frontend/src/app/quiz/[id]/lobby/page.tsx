@@ -76,7 +76,7 @@ export default function QuizLobby() {
   const router = useRouter();
   const params = useParams();
   const quizId = Number(params.id);
-  const { hydrate, isAuthenticated, user } = useAuthStore();
+  const { hydrate, isAuthenticated, hasHydrated, user } = useAuthStore();
 
   const [participantCount, setParticipantCount] = useState(0);
   const [connected, setConnected] = useState(false);
@@ -95,6 +95,7 @@ export default function QuizLobby() {
   }, [hydrate]);
 
   useEffect(() => {
+    if (!hasHydrated) return;
     if (!isAuthenticated) {
       router.push('/quiz/login');
       return;
@@ -141,7 +142,7 @@ export default function QuizLobby() {
       socket.off('quiz:sync', onSync);
       socket.off('quiz:completed', onCompleted);
     };
-  }, [isAuthenticated, quizId, router]);
+  }, [hasHydrated, isAuthenticated, quizId, router]);
 
   const totalQuestions = quiz?.questions?.length ?? quiz?.question_count ?? 0;
   const totalSeconds = quiz?.questions?.reduce((s, q) => s + (q.time_limit ?? 30), 0) ?? totalQuestions * 30;

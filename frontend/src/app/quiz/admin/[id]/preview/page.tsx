@@ -24,7 +24,7 @@ export default function PreviewPage() {
   const router = useRouter();
   const params = useParams();
   const quizId = Number(params.id);
-  const { hydrate, isAuthenticated, user } = useAuthStore();
+  const { hydrate, isAuthenticated, hasHydrated, user } = useAuthStore();
 
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [launching, setLaunching] = useState(false);
@@ -42,12 +42,13 @@ export default function PreviewPage() {
   useEffect(() => { hydrate(); }, [hydrate]);
 
   useEffect(() => {
+    if (!hasHydrated) return;
     if (!isAuthenticated || !user || !['admin', 'super_admin', 'teacher'].includes(user.role)) {
-      router.push('/login');
+      router.push('/quiz/login');
       return;
     }
     loadQuiz();
-  }, [isAuthenticated, user, router, loadQuiz]);
+  }, [hasHydrated, isAuthenticated, user, router, loadQuiz]);
 
   const handleLaunch = async () => {
     setLaunching(true);

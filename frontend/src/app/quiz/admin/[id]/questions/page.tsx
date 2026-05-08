@@ -17,7 +17,7 @@ export default function AddQuestionsPage() {
   const router = useRouter();
   const params = useParams();
   const quizId = Number(params.id);
-  const { hydrate, isAuthenticated, user } = useAuthStore();
+  const { hydrate, isAuthenticated, hasHydrated, user } = useAuthStore();
 
   const [questions, setQuestions] = useState<AddedQuestion[]>([]);
   const [form, setForm] = useState({
@@ -46,12 +46,13 @@ export default function AddQuestionsPage() {
   useEffect(() => { hydrate(); }, [hydrate]);
 
   useEffect(() => {
+    if (!hasHydrated) return;
     if (!isAuthenticated || !user || !['admin', 'super_admin', 'teacher'].includes(user.role)) {
       router.push('/quiz/login');
       return;
     }
     loadExisting();
-  }, [isAuthenticated, user, router, loadExisting]);
+  }, [hasHydrated, isAuthenticated, user, router, loadExisting]);
 
   const setCorrectOption = (index: number) => {
     setForm({

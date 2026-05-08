@@ -37,7 +37,7 @@ export default function QuizPlayScreen() {
   const router = useRouter();
   const params = useParams();
   const quizId = Number(params.id);
-  const { hydrate, isAuthenticated } = useAuthStore();
+  const { hydrate, isAuthenticated, hasHydrated } = useAuthStore();
 
   const [phase, setPhase] = useState<Phase>('waiting');
   const [question, setQuestion] = useState<QuestionData | null>(null);
@@ -97,6 +97,7 @@ export default function QuizPlayScreen() {
   }, []);
 
   useEffect(() => {
+    if (!hasHydrated) return;
     if (!isAuthenticated) {
       router.push('/quiz/login');
       return;
@@ -193,7 +194,7 @@ export default function QuizPlayScreen() {
       socket.off('quiz:sync');
       socket.off('quiz:completed');
     };
-  }, [isAuthenticated, quizId, router]);
+  }, [hasHydrated, isAuthenticated, quizId, router]);
 
   const handleAnswer = useCallback(
     (optionId: number) => {
