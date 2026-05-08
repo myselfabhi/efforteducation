@@ -122,6 +122,15 @@ export default function QuizPlayScreen() {
     if (socket.connected) setConnection('live');
     socket.emit('quiz:join', { quizId });
 
+    // If quiz hasn't started yet, go back to lobby instead of showing spinner forever
+    socket.on('quiz:lobby', () => {
+      router.push(`/quiz/${quizId}/lobby`);
+    });
+
+    socket.on('error', (err: { message: string }) => {
+      toast.error('Quiz error', { description: err.message });
+    });
+
     socket.on('question:start', (data: QuestionData) => {
       setQuestion(data);
       setPhase('question');
@@ -187,6 +196,8 @@ export default function QuizPlayScreen() {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
       socket.off('connect_error', onConnectError);
+      socket.off('quiz:lobby');
+      socket.off('error');
       socket.off('question:start');
       socket.off('answer:accepted');
       socket.off('answer:rejected');
@@ -489,10 +500,11 @@ function CircularTimer({ endTime, totalTime }: { endTime: number; totalTime: num
   const offset = c * (1 - pct / 100);
   const color =
     pct > 60 ? 'text-success' : pct > 30 ? 'text-warning' : 'text-destructive';
+  const urgent = remaining <= 5;
 
   return (
     <div className="flex items-center gap-4">
-      <div className="relative h-16 w-16 shrink-0">
+      <div className={`relative h-16 w-16 shrink-0 ${urgent ? 'animate-pulse' : ''}`}>
         <svg
           aria-hidden
           viewBox="0 0 64 64"

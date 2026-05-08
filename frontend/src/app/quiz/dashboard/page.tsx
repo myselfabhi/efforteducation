@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { Zap, Clock } from 'lucide-react';
 import { api } from '@/lib/api';
 import { useAuthStore } from '@/lib/stores/authStore';
 
@@ -15,6 +16,27 @@ interface Quiz {
   creator_name?: string;
   scheduled_at: string | null;
   created_at: string;
+}
+
+function LiveCountdown({ scheduledAt }: { scheduledAt: string | null }) {
+  const [label, setLabel] = useState('');
+
+  useEffect(() => {
+    if (!scheduledAt) return;
+    const tick = () => {
+      const diff = new Date(scheduledAt).getTime() - Date.now();
+      if (diff <= 0) { setLabel('Starting now'); return; }
+      const h = Math.floor(diff / 3_600_000);
+      const m = Math.floor((diff % 3_600_000) / 60_000);
+      const s = Math.floor((diff % 60_000) / 1_000);
+      setLabel(h > 0 ? `${h}h ${m}m` : m > 0 ? `${m}m ${s}s` : `${s}s`);
+    };
+    tick();
+    const t = setInterval(tick, 1000);
+    return () => clearInterval(t);
+  }, [scheduledAt]);
+
+  return <span>{label || '—'}</span>;
 }
 
 export default function DashboardPage() {
@@ -85,6 +107,58 @@ export default function DashboardPage() {
             </button>
           </div>
         </div>
+
+        {/* Next live quiz hero card */}
+        {!loading && (() => {
+          const liveQuiz = quizzes.find((q) => q.status === 'LIVE');
+          const upcomingQuiz = !liveQuiz && quizzes.find((q) => q.status === 'UPCOMING' && q.scheduled_at);
+          const featured = liveQuiz || upcomingQuiz;
+          if (!featured) return null;
+          return (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              onClick={() => router.push(`/quiz/${featured.id}/lobby`)}
+              className={`mb-6 rounded-2xl border p-5 cursor-pointer transition ${
+                featured.status === 'LIVE'
+                  ? 'border-emerald-500/40 bg-emerald-500/10 hover:bg-emerald-500/15'
+                  : 'border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/15'
+              }`}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    {featured.status === 'LIVE' ? (
+                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400 uppercase tracking-widest">
+                        <Zap className="h-3 w-3" /> Live now
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-blue-400 uppercase tracking-widest">
+                        <Clock className="h-3 w-3" /> Starts in
+                      </span>
+                    )}
+                    {featured.status === 'UPCOMING' && (
+                      <span className="text-xs font-bold text-blue-300 tabular-nums">
+                        <LiveCountdown scheduledAt={featured.scheduled_at} />
+                      </span>
+                    )}
+                  </div>
+                  <h2 className="text-lg font-bold text-white truncate">{featured.title}</h2>
+                  <p className="text-sm text-gray-400 mt-0.5">
+                    {featured.question_count} questions · By {featured.creator_name}
+                  </p>
+                </div>
+                <span className={`shrink-0 text-sm font-semibold px-3 py-1 rounded-lg ${
+                  featured.status === 'LIVE'
+                    ? 'bg-emerald-500 text-white'
+                    : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                }`}>
+                  {featured.status === 'LIVE' ? 'Join →' : 'Preview →'}
+                </span>
+              </div>
+            </motion.div>
+          );
+        })()}
 
         {/* Quiz list */}
         {loading ? (

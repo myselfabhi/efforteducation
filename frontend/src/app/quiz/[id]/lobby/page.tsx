@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { getSocket } from '@/lib/socket';
 import { api } from '@/lib/api';
@@ -84,6 +85,12 @@ export default function QuizLobby() {
   const [readyChecked, setReadyChecked] = useState(false);
   const [showFormula, setShowFormula] = useState(false);
 
+  // Restore ready-checkbox from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem(`quiz_ready_${quizId}`);
+    if (saved === '1') setReadyChecked(true);
+  }, [quizId]);
+
   const { data: quiz } = useQuery({
     queryKey: ['quiz', quizId],
     queryFn: () => api.quizzes.get(quizId),
@@ -105,6 +112,7 @@ export default function QuizLobby() {
 
     const onConnect = () => setConnected(true);
     const onDisconnect = () => setConnected(false);
+    const onError = (err: { message: string }) => toast.error('Quiz error', { description: err.message });
     const onLobby = (data: { participantCount: number }) => setParticipantCount(data.participantCount);
     const onParticipant = (data: { participantCount: number }) => setParticipantCount(data.participantCount);
     const onStarting = (data: { startsIn: number }) => {
@@ -122,6 +130,7 @@ export default function QuizLobby() {
 
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
+    socket.on('error', onError);
     socket.on('quiz:lobby', onLobby);
     socket.on('participant:joined', onParticipant);
     socket.on('quiz:starting', onStarting);
@@ -135,6 +144,7 @@ export default function QuizLobby() {
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
+      socket.off('error', onError);
       socket.off('quiz:lobby', onLobby);
       socket.off('participant:joined', onParticipant);
       socket.off('quiz:starting', onStarting);
@@ -269,7 +279,11 @@ export default function QuizLobby() {
               {/* Ready toggle */}
               <button
                 type="button"
-                onClick={() => setReadyChecked((v) => !v)}
+                onClick={() => {
+                  const next = !readyChecked;
+                  setReadyChecked(next);
+                  localStorage.setItem(`quiz_ready_${quizId}`, next ? '1' : '0');
+                }}
                 className={`mt-6 w-full inline-flex items-center justify-center gap-2 h-11 rounded-xl border text-sm font-semibold transition-all ${
                   readyChecked
                     ? 'bg-success/10 text-success border-success/30'

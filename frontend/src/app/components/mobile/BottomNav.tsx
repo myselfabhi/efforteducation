@@ -41,6 +41,9 @@ export default function BottomNav() {
     return pathname.startsWith(href);
   };
 
+  // Hide on quiz platform pages (they have their own layout)
+  if (pathname.startsWith('/quiz')) return null;
+
   return (
     <>
       {/* Mobile Bottom Navigation - Only visible on mobile */}

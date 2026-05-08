@@ -3,8 +3,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { getSocket } from '@/lib/socket';
+import { api } from '@/lib/api';
 import LeaderboardScreen from '@/app/quiz/components/LeaderboardScreen';
 
 export default function LiveQuizDashboard() {
@@ -16,6 +18,8 @@ export default function LiveQuizDashboard() {
   const [connected, setConnected] = useState(false);
   const [participantCount, setParticipantCount] = useState(0);
   const [quizStarted, setQuizStarted] = useState(false);
+  const [startLoading, setStartLoading] = useState(false);
+  const [quizTitle, setQuizTitle] = useState('');
   const [currentQuestion, setCurrentQuestion] = useState<{
     questionText: string;
     questionIndex: number;
@@ -41,10 +45,17 @@ export default function LiveQuizDashboard() {
       return;
     }
 
+    // Fetch quiz title
+    api.quizzes.get(quizId).then((q) => setQuizTitle(q.title)).catch(() => {});
+
     const socket = getSocket();
 
     socket.on('connect', () => setConnected(true));
     socket.on('disconnect', () => setConnected(false));
+    socket.on('error', (err: { message: string }) => {
+      setStartLoading(false);
+      toast.error('Quiz error', { description: err.message });
+    });
 
     socket.emit('quiz:join', { quizId });
 
@@ -97,6 +108,7 @@ export default function LiveQuizDashboard() {
     return () => {
       socket.off('connect');
       socket.off('disconnect');
+      socket.off('error');
       socket.off('participant:joined');
       socket.off('quiz:lobby');
       socket.off('quiz:starting');
@@ -110,8 +122,11 @@ export default function LiveQuizDashboard() {
   }, [hasHydrated, isAuthenticated, user, quizId, router, hydrate]);
 
   const handleStartQuiz = useCallback(() => {
+    setStartLoading(true);
     const socket = getSocket();
     socket.emit('quiz:start', { quizId });
+    // The error handler resets loading; also reset on starting event
+    socket.once('quiz:starting', () => setStartLoading(false));
   }, [quizId]);
 
   return (
@@ -120,7 +135,8 @@ export default function LiveQuizDashboard() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-white">Live Dashboard</h1>
+            <p className="text-xs uppercase tracking-widest text-gray-500 font-semibold">Live Dashboard</p>
+            <h1 className="text-2xl font-bold text-white mt-0.5">{quizTitle || 'Quiz'}</h1>
             <div className="flex items-center gap-3 mt-2">
               <span className={`inline-block w-2 h-2 rounded-full ${connected ? 'bg-emerald-400' : 'bg-red-400'}`} />
               <span className="text-sm text-gray-400">{connected ? 'Connected' : 'Disconnected'}</span>
@@ -150,10 +166,17 @@ export default function LiveQuizDashboard() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleStartQuiz}
-              disabled={participantCount === 0}
-              className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold px-8 py-3 rounded-xl text-lg disabled:opacity-50"
+              disabled={startLoading}
+              className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold px-8 py-3 rounded-xl text-lg disabled:opacity-70 flex items-center gap-2"
             >
-              ▶ Start Quiz Now
+              {startLoading ? (
+                <>
+                  <span className="h-5 w-5 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                  Starting…
+                </>
+              ) : (
+                '▶ Start Quiz Now'
+              )}
             </motion.button>
           </motion.div>
         )}

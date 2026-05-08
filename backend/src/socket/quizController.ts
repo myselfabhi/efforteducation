@@ -74,10 +74,11 @@ async function buildLeaderboard(quizId: number) {
     })
   );
 
-  // Sort by score desc, then time asc
+  // Sort by score desc, time asc, then userId asc as stable tiebreaker
   entries.sort((a, b) => {
     if (b.totalScore !== a.totalScore) return b.totalScore - a.totalScore;
-    return a.totalTimeMs - b.totalTimeMs;
+    if (a.totalTimeMs !== b.totalTimeMs) return a.totalTimeMs - b.totalTimeMs;
+    return a.userId - b.userId;
   });
 
   return entries.map((e, i) => ({ ...e, rank: i + 1 }));
@@ -453,6 +454,13 @@ export function setupQuizSocket(io: Server) {
         const questions = await getQuizQuestions(quizId);
         if (questions.length === 0) {
           socket.emit('error', { message: 'No questions in quiz' });
+          return;
+        }
+
+        // Idempotency: abort if quiz is already running
+        const existingState = await getQuizState(quizId);
+        if (existingState && existingState.status !== 'LOBBY') {
+          socket.emit('error', { message: 'Quiz is already in progress' });
           return;
         }
 

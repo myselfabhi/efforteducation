@@ -82,6 +82,32 @@ export default function ResultsPage() {
     );
   }
 
+  // Student who never participated (no score, no responses)
+  if (!score && responses.length === 0) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background gap-6 px-6 text-center">
+        <div className="h-16 w-16 rounded-full bg-secondary flex items-center justify-center">
+          <Trophy className="h-8 w-8 text-muted-foreground" />
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">No results yet</h2>
+          <p className="mt-2 text-muted-foreground">
+            You didn&apos;t participate in this quiz or results haven&apos;t been saved yet.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2 justify-center">
+          <button
+            onClick={() => router.push('/quiz/dashboard')}
+            className="inline-flex items-center gap-2 h-10 px-4 rounded-xl border border-border bg-card text-sm font-semibold hover:bg-secondary/40 transition-colors"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" />
+            Back to dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const correctCount = responses.filter((r) => r.is_correct).length;
   const denominator = totalQuestions || responses.length;
   const accuracy = denominator ? Math.round((correctCount / denominator) * 100) : 0;
@@ -179,6 +205,12 @@ export default function ResultsPage() {
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
                 Back to dashboard
+              </button>
+              <button
+                onClick={() => router.push('/quiz/dashboard')}
+                className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
+              >
+                Take another quiz →
               </button>
             </div>
           </motion.div>
