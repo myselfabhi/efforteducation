@@ -10,7 +10,7 @@ import { useAuthStore, dashboardHomeFor } from '@/lib/stores/authStore';
 export default function CreateQuizPage() {
   const router = useRouter();
   const { hydrate, isAuthenticated, hasHydrated, user } = useAuthStore();
-  const [form, setForm] = useState({ title: '', description: '', scheduled_at: '' });
+  const [form, setForm] = useState({ title: '', description: '', scheduled_at: '', is_practice: true });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -34,6 +34,7 @@ export default function CreateQuizPage() {
         title: form.title,
         description: form.description || undefined,
         scheduled_at: form.scheduled_at || undefined,
+        is_practice: form.is_practice,
       });
       router.push(`/quiz/admin/${quiz.id}/questions`);
     } catch (err: unknown) {
@@ -95,6 +96,19 @@ export default function CreateQuizPage() {
                 className="w-full bg-background border border-border rounded-lg px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition"
               />
             </div>
+
+            <label className="flex items-center gap-3 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={form.is_practice}
+                onChange={(e) => setForm({ ...form, is_practice: e.target.checked })}
+                className="h-4 w-4 rounded border-border accent-primary"
+              />
+              <span className="text-sm font-medium text-foreground">
+                Practice quiz{' '}
+                <span className="text-muted-foreground font-normal">(not tied to a batch)</span>
+              </span>
+            </label>
 
             <div className="flex gap-3 pt-2">
               <button
