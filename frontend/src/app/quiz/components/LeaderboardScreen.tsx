@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { Trophy } from 'lucide-react';
 import { useAuthStore } from '@/lib/stores/authStore';
 
 interface LeaderboardEntry {
@@ -19,12 +20,6 @@ interface LeaderboardScreenProps {
   questionIndex?: number;
   totalQuestions?: number;
 }
-
-const rankColors: Record<number, string> = {
-  1: 'from-yellow-500 to-amber-400',
-  2: 'from-gray-300 to-gray-400',
-  3: 'from-orange-600 to-orange-500',
-};
 
 const rankEmojis: Record<number, string> = {
   1: '🥇',
@@ -56,16 +51,18 @@ export default function LeaderboardScreen({
             animate={{ scale: 1 }}
             transition={{ type: 'spring', stiffness: 200 }}
           >
-            <span className="text-5xl mb-4 block">🏆</span>
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-yellow-400 to-amber-400 bg-clip-text text-transparent">
+            <div className="mx-auto h-14 w-14 rounded-full bg-warning/10 text-warning flex items-center justify-center mb-3">
+              <Trophy className="h-7 w-7" strokeWidth={2.2} />
+            </div>
+            <h2 className="text-3xl font-bold tracking-tight bg-gradient-to-br from-primary via-primary-strong to-primary bg-clip-text text-transparent">
               Final Results
             </h2>
           </motion.div>
         ) : (
           <>
-            <h2 className="text-2xl font-bold text-white">{title}</h2>
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">{title}</h2>
             {questionIndex !== undefined && totalQuestions !== undefined && (
-              <p className="text-gray-400 mt-1">
+              <p className="text-muted-foreground mt-1 text-sm">
                 After question {questionIndex + 1} of {totalQuestions}
               </p>
             )}
@@ -84,11 +81,11 @@ export default function LeaderboardScreen({
               key={entry.userId}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.08 }}
+              transition={{ delay: index * 0.06 }}
               className={`flex items-center gap-4 p-4 rounded-xl border transition-all ${
                 isCurrentUser
-                  ? 'bg-purple-500/15 border-purple-500/40 ring-1 ring-purple-500/20'
-                  : 'bg-white/5 border-white/10'
+                  ? 'bg-primary/5 border-primary/40 ring-1 ring-primary/20'
+                  : 'bg-card border-border'
               }`}
             >
               {/* Rank */}
@@ -96,42 +93,40 @@ export default function LeaderboardScreen({
                 {isTopThree ? (
                   <span className="text-2xl">{rankEmojis[entry.rank]}</span>
                 ) : (
-                  <span className="text-lg font-bold text-gray-400">#{entry.rank}</span>
+                  <span className="text-base font-bold text-muted-foreground tabular-nums">#{entry.rank}</span>
                 )}
               </div>
 
               {/* User info */}
               <div className="flex-1 min-w-0">
-                <p className={`font-semibold truncate ${isCurrentUser ? 'text-purple-200' : 'text-white'}`}>
+                <p className={`font-semibold truncate ${isCurrentUser ? 'text-primary' : 'text-foreground'}`}>
                   {entry.username}
                   {isCurrentUser && (
-                    <span className="ml-2 text-xs bg-purple-500/30 text-purple-300 px-2 py-0.5 rounded-full">
+                    <span className="ml-2 text-[10px] uppercase tracking-widest font-semibold text-primary">
                       You
                     </span>
                   )}
                 </p>
-                <p className="text-sm text-gray-400">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   {entry.correctCount} correct • {(entry.totalTimeMs / 1000).toFixed(1)}s total
                 </p>
               </div>
 
               {/* Score */}
               <div className="flex-shrink-0 text-right">
-                <p className={`text-xl font-bold ${
-                  isTopThree
-                    ? `bg-gradient-to-r ${rankColors[entry.rank] || 'from-white to-gray-200'} bg-clip-text text-transparent`
-                    : 'text-white'
+                <p className={`text-xl font-bold tabular-nums ${
+                  isTopThree ? 'text-primary' : 'text-foreground'
                 }`}>
                   {entry.totalScore}
                 </p>
-                <p className="text-xs text-gray-500">points</p>
+                <p className="text-[10px] uppercase tracking-widest text-muted-foreground">points</p>
               </div>
             </motion.div>
           );
         })}
 
         {leaderboard.length === 0 && (
-          <div className="text-center py-8 text-gray-400">
+          <div className="text-center py-8 text-muted-foreground text-sm">
             <p>No scores yet</p>
           </div>
         )}

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import QuizHeader from './components/QuizHeader';
 
 export const metadata: Metadata = {
   title: 'Quiz Platform',
@@ -7,7 +8,8 @@ export const metadata: Metadata = {
 
 export default function QuizLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="dark min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 text-white overflow-x-hidden">
+    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      <QuizHeader />
       {children}
     </div>
   );

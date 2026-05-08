@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 import { api } from '@/lib/api';
-import { useAuthStore } from '@/lib/stores/authStore';
+import { useAuthStore, dashboardHomeFor } from '@/lib/stores/authStore';
 
 export default function CreateQuizPage() {
   const router = useRouter();
@@ -18,7 +19,7 @@ export default function CreateQuizPage() {
   useEffect(() => {
     if (!hasHydrated) return;
     if (!isAuthenticated) {
-      router.push('/quiz/login');
+      router.push('/login');
     } else if (user && !['admin', 'super_admin', 'teacher'].includes(user.role)) {
       router.push('/dashboard/student');
     }
@@ -42,61 +43,64 @@ export default function CreateQuizPage() {
     }
   };
 
+  const dashboardHref = user ? `${dashboardHomeFor(user.role)}/quizzes` : '/dashboard/admin/quizzes';
+
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-lg"
       >
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
-          <h1 className="text-2xl font-bold text-white mb-6">Create New Quiz</h1>
+        <div className="bg-card border border-border rounded-2xl p-8 shadow-sm">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground mb-1">Create New Quiz</h1>
+          <p className="text-sm text-muted-foreground mb-6">Step 1 of 2 · Set the basics</p>
 
           {error && (
-            <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg mb-4 text-sm">
+            <div className="bg-destructive/10 border border-destructive/30 text-destructive px-4 py-3 rounded-lg mb-4 text-sm">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1.5">Quiz Title *</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Quiz Title *</label>
               <input
                 type="text"
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition"
+                className="w-full bg-background border border-border rounded-lg px-4 py-3 text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition"
                 placeholder="e.g. JavaScript Fundamentals"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1.5">Description</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Description</label>
               <textarea
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition resize-none"
+                className="w-full bg-background border border-border rounded-lg px-4 py-3 text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition resize-none"
                 placeholder="Brief description of your quiz..."
                 rows={3}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1.5">Schedule (optional)</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Schedule (optional)</label>
               <input
                 type="datetime-local"
                 value={form.scheduled_at}
                 onChange={(e) => setForm({ ...form, scheduled_at: e.target.value })}
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition [color-scheme:dark]"
+                className="w-full bg-background border border-border rounded-lg px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition"
               />
             </div>
 
             <div className="flex gap-3 pt-2">
               <button
                 type="button"
-                onClick={() => router.push('/quiz/dashboard')}
-                className="flex-1 bg-white/5 border border-white/10 text-gray-300 py-3 rounded-lg font-medium hover:bg-white/10 transition"
+                onClick={() => router.push(dashboardHref)}
+                className="flex-1 bg-card border border-border text-foreground py-3 rounded-lg font-medium hover:bg-secondary/40 transition"
               >
                 Cancel
               </button>
@@ -105,9 +109,14 @@ export default function CreateQuizPage() {
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={loading}
-                className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg font-semibold disabled:opacity-50"
+                className="flex-1 inline-flex items-center justify-center gap-1.5 bg-primary text-primary-foreground py-3 rounded-lg font-semibold disabled:opacity-50 hover:bg-primary/90 transition"
               >
-                {loading ? 'Creating...' : 'Next: Add Questions →'}
+                {loading ? 'Creating...' : (
+                  <>
+                    Next: Add Questions
+                    <ArrowRight className="h-4 w-4" />
+                  </>
+                )}
               </motion.button>
             </div>
           </form>

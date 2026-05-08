@@ -4,7 +4,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import { useAuthStore } from '@/lib/stores/authStore';
+import { Play, Users, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { useAuthStore, dashboardHomeFor } from '@/lib/stores/authStore';
 import { getSocket } from '@/lib/socket';
 import { api } from '@/lib/api';
 import LeaderboardScreen from '@/app/quiz/components/LeaderboardScreen';
@@ -41,11 +42,10 @@ export default function LiveQuizDashboard() {
   useEffect(() => {
     if (!hasHydrated) return;
     if (!isAuthenticated || !user || !['admin', 'super_admin', 'teacher'].includes(user.role)) {
-      router.push('/quiz/login');
+      router.push('/login');
       return;
     }
 
-    // Fetch quiz title
     api.quizzes.get(quizId).then((q) => setQuizTitle(q.title)).catch(() => {});
 
     const socket = getSocket();
@@ -125,30 +125,32 @@ export default function LiveQuizDashboard() {
     setStartLoading(true);
     const socket = getSocket();
     socket.emit('quiz:start', { quizId });
-    // The error handler resets loading; also reset on starting event
     socket.once('quiz:starting', () => setStartLoading(false));
   }, [quizId]);
 
+  const dashboardHref = user ? `${dashboardHomeFor(user.role)}/quizzes` : '/dashboard/admin/quizzes';
+
   return (
-    <div className="min-h-screen p-6 md:p-8">
+    <div className="min-h-screen bg-background p-6 md:p-8">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <p className="text-xs uppercase tracking-widest text-gray-500 font-semibold">Live Dashboard</p>
-            <h1 className="text-2xl font-bold text-white mt-0.5">{quizTitle || 'Quiz'}</h1>
+            <p className="text-[11px] uppercase tracking-widest text-muted-foreground font-semibold">Live console</p>
+            <h1 className="text-2xl font-bold tracking-tight text-foreground mt-0.5">{quizTitle || 'Quiz'}</h1>
             <div className="flex items-center gap-3 mt-2">
-              <span className={`inline-block w-2 h-2 rounded-full ${connected ? 'bg-emerald-400' : 'bg-red-400'}`} />
-              <span className="text-sm text-gray-400">{connected ? 'Connected' : 'Disconnected'}</span>
-              <span className="text-sm text-gray-500">•</span>
-              <span className="text-sm text-gray-400">{participantCount} participants</span>
+              <span className={`inline-block w-2 h-2 rounded-full ${connected ? 'bg-success' : 'bg-destructive'}`} />
+              <span className="text-sm text-muted-foreground">{connected ? 'Connected' : 'Disconnected'}</span>
+              <span className="text-sm text-muted-foreground">•</span>
+              <span className="text-sm text-muted-foreground">{participantCount} participants</span>
             </div>
           </div>
           <button
-            onClick={() => router.push('/quiz/dashboard')}
-            className="bg-white/5 border border-white/10 text-gray-300 px-4 py-2 rounded-lg text-sm hover:bg-white/10 transition"
+            onClick={() => router.push(dashboardHref)}
+            className="inline-flex items-center gap-1.5 h-9 px-4 rounded-lg border border-border bg-card text-sm font-semibold text-foreground hover:bg-secondary/40 transition-colors"
           >
-            ← Dashboard
+            <ArrowLeft className="h-3.5 w-3.5" />
+            Dashboard
           </button>
         </div>
 
@@ -157,25 +159,30 @@ export default function LiveQuizDashboard() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-center py-16 bg-white/5 rounded-2xl border border-white/10"
+            className="text-center py-16 bg-card rounded-2xl border border-border"
           >
-            <div className="text-5xl mb-4">👥</div>
-            <h2 className="text-xl font-bold text-white mb-2">Waiting for participants</h2>
-            <p className="text-gray-400 mb-8">{participantCount} joined so far</p>
+            <div className="mx-auto h-12 w-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-4">
+              <Users className="h-6 w-6" />
+            </div>
+            <h2 className="text-xl font-bold text-foreground mb-2">Waiting for participants</h2>
+            <p className="text-muted-foreground mb-8">{participantCount} joined so far</p>
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               onClick={handleStartQuiz}
               disabled={startLoading}
-              className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold px-8 py-3 rounded-xl text-lg disabled:opacity-70 flex items-center gap-2"
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-bold px-8 py-3 rounded-xl text-base disabled:opacity-70 hover:bg-primary/90 transition-colors"
             >
               {startLoading ? (
                 <>
-                  <span className="h-5 w-5 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                  <span className="h-4 w-4 rounded-full border-2 border-primary-foreground border-t-transparent animate-spin" />
                   Starting…
                 </>
               ) : (
-                '▶ Start Quiz Now'
+                <>
+                  <Play className="h-4 w-4" />
+                  Start Quiz Now
+                </>
               )}
             </motion.button>
           </motion.div>
@@ -183,19 +190,19 @@ export default function LiveQuizDashboard() {
 
         {/* Question in progress */}
         {phase === 'question' && currentQuestion && (
-          <div className="bg-white/5 rounded-2xl border border-white/10 p-6">
+          <div className="bg-card rounded-2xl border border-border p-6">
             <div className="flex items-center justify-between mb-4">
-              <span className="bg-purple-500/20 text-purple-300 px-3 py-1 rounded-full text-sm font-medium">
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-primary/10 text-primary">
                 Q{currentQuestion.questionIndex + 1}/{currentQuestion.totalQuestions}
               </span>
-              <span className="text-emerald-400 text-sm font-medium">
+              <span className="text-success text-sm font-semibold">
                 {answerCount}/{participantCount} answered
               </span>
             </div>
-            <p className="text-white text-lg font-medium">{currentQuestion.questionText}</p>
-            <div className="mt-4 h-2 bg-white/10 rounded-full overflow-hidden">
+            <p className="text-foreground text-lg font-medium leading-relaxed">{currentQuestion.questionText}</p>
+            <div className="mt-4 h-2 bg-secondary rounded-full overflow-hidden">
               <div
-                className="h-full bg-emerald-500 rounded-full transition-all"
+                className="h-full bg-success rounded-full transition-all"
                 style={{ width: `${participantCount > 0 ? (answerCount / participantCount) * 100 : 0}%` }}
               />
             </div>
@@ -204,10 +211,12 @@ export default function LiveQuizDashboard() {
 
         {/* Answer revealed */}
         {phase === 'answer' && (
-          <div className="text-center py-8 bg-white/5 rounded-2xl border border-white/10">
-            <div className="text-4xl mb-2">✅</div>
-            <p className="text-white font-medium">Answer revealed</p>
-            <p className="text-gray-400 text-sm mt-1">Leaderboard coming up...</p>
+          <div className="text-center py-10 bg-card rounded-2xl border border-border">
+            <div className="mx-auto h-12 w-12 rounded-full bg-success/10 text-success flex items-center justify-center mb-3">
+              <CheckCircle2 className="h-6 w-6" />
+            </div>
+            <p className="text-foreground font-semibold">Answer revealed</p>
+            <p className="text-muted-foreground text-sm mt-1">Leaderboard coming up…</p>
           </div>
         )}
 

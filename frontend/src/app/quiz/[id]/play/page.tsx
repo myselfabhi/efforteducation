@@ -99,7 +99,7 @@ export default function QuizPlayScreen() {
   useEffect(() => {
     if (!hasHydrated) return;
     if (!isAuthenticated) {
-      router.push('/quiz/login');
+      router.push('/login');
       return;
     }
 

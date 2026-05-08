@@ -4,7 +4,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api, type QuizResponseRow, type QuizScore } from '@/lib/api';
-import { useAuthStore } from '@/lib/stores/authStore';
+import { useAuthStore, dashboardHomeFor } from '@/lib/stores/authStore';
+import QuizFooter from '@/app/quiz/components/QuizFooter';
 import {
   Trophy,
   Target,
@@ -68,7 +69,7 @@ export default function ResultsPage() {
   useEffect(() => {
     if (!hasHydrated) return;
     if (!isAuthenticated) {
-      router.push('/quiz/login');
+      router.push('/login');
       return;
     }
     loadResults();
@@ -97,7 +98,7 @@ export default function ResultsPage() {
         </div>
         <div className="flex flex-wrap gap-2 justify-center">
           <button
-            onClick={() => router.push('/quiz/dashboard')}
+            onClick={() => router.push(user ? `${dashboardHomeFor(user.role)}/quizzes` : '/login')}
             className="inline-flex items-center gap-2 h-10 px-4 rounded-xl border border-border bg-card text-sm font-semibold hover:bg-secondary/40 transition-colors"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
@@ -200,14 +201,14 @@ export default function ResultsPage() {
                 Share on WhatsApp
               </button>
               <button
-                onClick={() => router.push('/quiz/dashboard')}
+                onClick={() => router.push(user ? `${dashboardHomeFor(user.role)}/quizzes` : '/login')}
                 className="inline-flex items-center gap-2 h-10 px-4 rounded-xl border border-border bg-card text-sm font-semibold hover:bg-secondary/40 transition-colors"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
                 Back to dashboard
               </button>
               <button
-                onClick={() => router.push('/quiz/dashboard')}
+                onClick={() => router.push(user ? `${dashboardHomeFor(user.role)}/quizzes` : '/login')}
                 className="inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
               >
                 Take another quiz →
@@ -454,6 +455,8 @@ export default function ResultsPage() {
           </div>
         )}
       </div>
+
+      <QuizFooter />
     </div>
   );
 }

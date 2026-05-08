@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { getSocket } from '@/lib/socket';
 import { api } from '@/lib/api';
+import QuizFooter from '@/app/quiz/components/QuizFooter';
 import {
   Clock,
   Lock,
@@ -104,7 +105,7 @@ export default function QuizLobby() {
   useEffect(() => {
     if (!hasHydrated) return;
     if (!isAuthenticated) {
-      router.push('/quiz/login');
+      router.push('/login');
       return;
     }
 
@@ -432,6 +433,8 @@ export default function QuizLobby() {
           Waiting for the host to start the quiz…
         </p>
       </div>
+
+      <QuizFooter />
     </div>
   );
 }
