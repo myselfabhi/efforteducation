@@ -21,7 +21,6 @@ const nextConfig: NextConfig = {
       { source: '/quiz/login', destination: '/login', permanent: true },
       { source: '/quiz/register', destination: '/register', permanent: true },
       { source: '/quiz/dashboard', destination: '/dashboard', permanent: true },
-      { source: '/quiz/admin/create', destination: '/dashboard/admin/quizzes', permanent: false },
     ];
   },
 };
