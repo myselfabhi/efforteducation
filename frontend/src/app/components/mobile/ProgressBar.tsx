@@ -1,10 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
+
+const MARKETING_PATHS = ['/', '/about', '/courses', '/young-scholar', '/contact'];
 
 export default function ProgressBar() {
+  const pathname = usePathname();
   const [progress, setProgress] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+
+  const isMarketingPage = MARKETING_PATHS.some(p => pathname === p || pathname.startsWith('/courses/'));
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,6 +28,8 @@ export default function ProgressBar() {
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  if (!isMarketingPage) return null;
 
   return (
     <div
