@@ -435,7 +435,7 @@ export function setupQuizSocket(io: Server) {
     // --- START QUIZ (admin only) ---
     socket.on('quiz:start', async (data: { quizId: number }) => {
       try {
-        if (user.role !== 'admin') {
+        if (!['admin', 'super_admin', 'teacher'].includes(user.role)) {
           socket.emit('error', { message: 'Only admin can start quiz' });
           return;
         }
@@ -600,7 +600,7 @@ export function setupQuizSocket(io: Server) {
     // --- ADMIN: GET LIVE STATUS ---
     socket.on('admin:status', async (data: { quizId: number }) => {
       try {
-        if (user.role !== 'admin') return;
+        if (!['admin', 'super_admin', 'teacher'].includes(user.role)) return;
 
         const { quizId } = data;
         const state = await getQuizState(quizId);
