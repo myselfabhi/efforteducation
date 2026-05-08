@@ -23,6 +23,7 @@ export default function AddQuestionsPage() {
   const [form, setForm] = useState({
     question_text: '',
     time_limit: 30,
+    explanation: '',
     options: [
       { option_text: '', is_correct: true },
       { option_text: '', is_correct: false },
@@ -73,12 +74,14 @@ export default function AddQuestionsPage() {
       const q = await api.quizzes.addQuestion(quizId, {
         question_text: form.question_text,
         time_limit: form.time_limit,
+        explanation: form.explanation.trim() || undefined,
         options: form.options,
       });
       setQuestions([...questions, q]);
       setForm({
         question_text: '',
         time_limit: 30,
+        explanation: '',
         options: [
           { option_text: '', is_correct: true },
           { option_text: '', is_correct: false },
@@ -186,6 +189,20 @@ export default function AddQuestionsPage() {
                 className="w-32 bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition"
                 min={5}
                 max={120}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                Explanation <span className="text-gray-500 font-normal">(optional, shown on results page)</span>
+              </label>
+              <textarea
+                value={form.explanation}
+                onChange={(e) => setForm({ ...form, explanation: e.target.value })}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition resize-none"
+                placeholder="Why is this the correct answer? (helps students learn from the question)"
+                rows={3}
+                maxLength={2000}
               />
             </div>
 

@@ -79,7 +79,7 @@ export async function trySubmitAnswer(
   quizId: number,
   questionId: number,
   userId: number,
-  answer: { selectedOptionId: number; timeTakenMs: number }
+  answer: { selectedOptionId: number | null; timeTakenMs: number }
 ): Promise<boolean> {
   const key = KEYS.answerLock(quizId, questionId, userId);
   // SETNX — returns 1 if set (first answer), 0 if already exists
@@ -97,7 +97,7 @@ export async function trySubmitAnswer(
 
 export async function getAnswersForQuestion(quizId: number, questionId: number) {
   const data = await redis.hgetall(KEYS.quizAnswers(quizId, questionId));
-  const parsed: Record<number, { selectedOptionId: number; timeTakenMs: number }> = {};
+  const parsed: Record<number, { selectedOptionId: number | null; timeTakenMs: number }> = {};
   for (const [uid, val] of Object.entries(data)) {
     parsed[Number(uid)] = JSON.parse(val);
   }

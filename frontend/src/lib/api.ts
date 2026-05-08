@@ -202,6 +202,8 @@ export interface QuizResponseRow {
   created_at: string;
   question_text: string;
   selected_option: string | null;
+  correct_option: string | null;
+  explanation: string | null;
 }
 
 export interface QuizResults {
@@ -320,7 +322,7 @@ export const api = {
       apiFetch<QuizSummary>('/api/quizzes', j(body)),
     addQuestion: (
       quizId: number,
-      body: { question_text: string; time_limit?: number; options: Array<{ option_text: string; is_correct: boolean }> }
+      body: { question_text: string; time_limit?: number; explanation?: string; options: Array<{ option_text: string; is_correct: boolean }> }
     ) => apiFetch<QuizQuestion>(`/api/quizzes/${quizId}/questions`, j(body)),
     launch: (quizId: number) => apiFetch<{ message: string; quiz: QuizSummary }>(`/api/quizzes/${quizId}/launch`, { method: 'POST' }),
     leaderboard: (quizId: number) => apiFetch<QuizLeaderboardRow[]>(`/api/quizzes/${quizId}/leaderboard`),

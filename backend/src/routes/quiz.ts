@@ -17,6 +17,7 @@ const CreateQuizSchema = z.object({
 const AddQuestionSchema = z.object({
   question_text: NonEmptyText,
   time_limit: z.number().int().min(5).max(600).optional(),
+  explanation: z.string().max(2000).optional().nullable(),
   options: z
     .array(
       z.object({
@@ -215,7 +216,7 @@ router.post(
         return res.status(403).json({ error: 'Cannot add questions after quiz is launched' });
       }
 
-      const { question_text, time_limit, options } = req.body;
+      const { question_text, time_limit, explanation, options } = req.body;
       const correctCount = options.filter((o: any) => o.is_correct).length;
       if (correctCount !== 1) {
         return res.status(400).json({ error: 'Exactly one correct option required' });
@@ -229,8 +230,8 @@ router.post(
       );
 
       const questionResult = await client.query(
-        'INSERT INTO questions (quiz_id, question_text, time_limit, order_index) VALUES ($1, $2, $3, $4) RETURNING *',
-        [quizId, question_text, time_limit || 30, orderResult.rows[0].next_index]
+        'INSERT INTO questions (quiz_id, question_text, time_limit, order_index, explanation) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+        [quizId, question_text, time_limit || 30, orderResult.rows[0].next_index, explanation || null]
       );
 
       const questionId = questionResult.rows[0].id;
@@ -350,10 +351,17 @@ router.get('/:id/results', authMiddleware, async (req: AuthRequest, res: Respons
     );
 
     const responsesResult = await pool.query(
-      `SELECT r.*, q.question_text, o.option_text AS selected_option
+      `SELECT r.*,
+              q.question_text,
+              q.explanation,
+              o.option_text       AS selected_option,
+              correct_o.option_text AS correct_option
          FROM responses r
          JOIN questions q ON r.question_id = q.id
          LEFT JOIN options o ON r.selected_option_id = o.id
+         LEFT JOIN options correct_o
+                ON correct_o.question_id = q.id
+               AND correct_o.is_correct = TRUE
         WHERE r.quiz_id = $1 AND r.user_id = $2
         ORDER BY q.order_index`,
       [quizId, userId]

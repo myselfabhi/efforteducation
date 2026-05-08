@@ -543,6 +543,60 @@ export function setupQuizSocket(io: Server) {
       }
     });
 
+    // --- ANTI-CHEAT: TAB FOCUS LOST DURING QUESTION ---
+    socket.on('quiz:focus_lost', async (data: { quizId: number; questionId?: number }) => {
+      try {
+        const { quizId, questionId } = data;
+
+        // Only count focus loss while a question is actively in progress
+        const quizState = await getQuizState(quizId);
+        if (!quizState || quizState.status !== 'IN_PROGRESS') return;
+
+        const activeQuestionId =
+          questionId && quizState.currentQuestionId === questionId
+            ? questionId
+            : (quizState.currentQuestionId as number | undefined);
+        if (!activeQuestionId) return;
+
+        // Persist the violation
+        await pool.query(
+          `INSERT INTO quiz_violations (quiz_id, user_id, question_id, kind)
+           VALUES ($1, $2, $3, 'focus_lost')`,
+          [quizId, user.id, activeQuestionId],
+        );
+
+        // Count this user's violations in this quiz so far
+        const countRes = await pool.query<{ count: string }>(
+          `SELECT COUNT(*)::text AS count
+             FROM quiz_violations
+            WHERE quiz_id = $1 AND user_id = $2 AND kind = 'focus_lost'`,
+          [quizId, user.id],
+        );
+        const count = parseInt(countRes.rows[0]?.count ?? '0', 10);
+
+        // 2nd+ violation in this quiz → auto-submit blank for the current question
+        if (count >= 2) {
+          const timer = await getQuizTimer(quizId);
+          const timeTakenMs = timer ? Date.now() - timer.startTime : 0;
+          const accepted = await trySubmitAnswer(quizId, activeQuestionId, user.id, {
+            selectedOptionId: null,
+            timeTakenMs,
+          });
+          if (accepted) {
+            socket.emit('answer:rejected', {
+              reason: 'Auto-submitted blank — multiple focus losses detected',
+            });
+          }
+        }
+
+        console.log(
+          `User ${user.username} focus_lost on quiz ${quizId} Q${activeQuestionId} (count=${count})`,
+        );
+      } catch (err) {
+        console.error('quiz:focus_lost error:', err);
+      }
+    });
+
     // --- ADMIN: GET LIVE STATUS ---
     socket.on('admin:status', async (data: { quizId: number }) => {
       try {
