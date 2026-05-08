@@ -20,8 +20,16 @@ const app = express();
 const server = http.createServer(app);
 
 // Middleware
+const allowedOrigins = [
+  'https://efforteducation.in',
+  'https://www.efforteducation.in',
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:3002',
+  ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+];
 app.use(cors({
-  origin: [process.env.FRONTEND_URL || 'http://localhost:3000', 'http://localhost:3002', 'http://localhost:3000'],
+  origin: allowedOrigins,
   credentials: true,
 }));
 app.use(express.json({ limit: '2mb' }));
