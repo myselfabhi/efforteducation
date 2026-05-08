@@ -112,7 +112,7 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
     let params: any[];
 
     if (role === 'super_admin') {
-      query = `SELECT q.*, u.username AS creator_name,
+      query = `SELECT q.*, COALESCE(u.full_name, u.username) AS creator_name,
           (SELECT COUNT(*) FROM questions WHERE quiz_id = q.id) AS question_count
         FROM quizzes q
         JOIN users u ON q.created_by = u.id
@@ -120,7 +120,7 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
         ORDER BY q.created_at DESC`;
       params = batchFilter ? [batchFilter] : [];
     } else if (role === 'teacher') {
-      query = `SELECT q.*, u.username AS creator_name,
+      query = `SELECT q.*, COALESCE(u.full_name, u.username) AS creator_name,
           (SELECT COUNT(*) FROM questions WHERE quiz_id = q.id) AS question_count
         FROM quizzes q
         JOIN users u ON q.created_by = u.id
@@ -130,7 +130,7 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
         ORDER BY q.created_at DESC`;
       params = [userId];
     } else {
-      query = `SELECT q.*, u.username AS creator_name,
+      query = `SELECT q.*, COALESCE(u.full_name, u.username) AS creator_name,
           (SELECT COUNT(*) FROM questions WHERE quiz_id = q.id) AS question_count
         FROM quizzes q
         JOIN users u ON q.created_by = u.id
@@ -159,7 +159,7 @@ router.get('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
     if (!ok) return res.status(403).json({ error: 'Not authorized for this quiz' });
 
     const quizResult = await pool.query(
-      `SELECT q.*, u.username AS creator_name,
+      `SELECT q.*, COALESCE(u.full_name, u.username) AS creator_name,
        (SELECT COUNT(*) FROM questions WHERE quiz_id = q.id)::int AS question_count
        FROM quizzes q
        LEFT JOIN users u ON u.id = q.created_by

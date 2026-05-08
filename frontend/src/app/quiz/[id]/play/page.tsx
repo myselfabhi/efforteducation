@@ -271,7 +271,7 @@ export default function QuizPlayScreen() {
               </>
             )}
           </div>
-          <ConnectionPill state={connection} />
+          {phase !== 'completed' && <ConnectionPill state={connection} />}
         </div>
       </header>
 

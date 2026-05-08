@@ -357,7 +357,12 @@ export function setupQuizSocket(io: Server) {
         }
 
         socket.join(room);
-        await addParticipant(quizId, user.id, user.username);
+
+        // Only count students as participants; admin/teacher/super_admin join for monitoring
+        const isAdmin = ['admin', 'super_admin', 'teacher'].includes(user.role);
+        if (!isAdmin) {
+          await addParticipant(quizId, user.id, user.username);
+        }
 
         const participantCount = await getParticipantCount(quizId);
 
