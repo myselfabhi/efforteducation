@@ -171,7 +171,10 @@ export default function QuizPlayScreen() {
         setPhase('question');
       }
       if (data.leaderboard) setLeaderboard(data.leaderboard);
-      if (data.state?.status === 'SHOWING_LEADERBOARD') setPhase('leaderboard');
+      if (data.state?.status === 'SHOWING_LEADERBOARD') {
+        if (data.isLastQuestion !== undefined) setIsLastQuestion(data.isLastQuestion);
+        setPhase('leaderboard');
+      }
       if (data.state?.status === 'COMPLETED') setPhase('completed');
     });
 

@@ -410,6 +410,7 @@ export function setupQuizSocket(io: Server) {
             socket.emit('quiz:sync', {
               state: quizState,
               leaderboard: leaderboard,
+              isLastQuestion: quizState.currentQuestionIndex === quizState.totalQuestions - 1,
             });
           } else if (quizState.status === 'COMPLETED') {
             socket.emit('quiz:sync', {
