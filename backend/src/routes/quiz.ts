@@ -158,7 +158,14 @@ router.get('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
     const ok = await userCanReadQuiz(req.user!.id, req.user!.role, quizId);
     if (!ok) return res.status(403).json({ error: 'Not authorized for this quiz' });
 
-    const quizResult = await pool.query('SELECT * FROM quizzes WHERE id = $1', [quizId]);
+    const quizResult = await pool.query(
+      `SELECT q.*, u.username AS creator_name,
+       (SELECT COUNT(*) FROM questions WHERE quiz_id = q.id)::int AS question_count
+       FROM quizzes q
+       LEFT JOIN users u ON u.id = q.created_by
+       WHERE q.id = $1`,
+      [quizId]
+    );
     if (quizResult.rows.length === 0) {
       return res.status(404).json({ error: 'Quiz not found' });
     }
@@ -177,7 +184,7 @@ router.get('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
     );
 
     const quiz = quizResult.rows[0];
-    const isPrivileged = req.user!.role === 'super_admin' || quiz.created_by === req.user!.id;
+    const isPrivileged = ['admin', 'super_admin', 'teacher'].includes(req.user!.role) || quiz.created_by === req.user!.id;
     const questions = questionsResult.rows.map((q: any) => ({
       ...q,
       options: q.options.map((o: any) => ({
