@@ -4,9 +4,12 @@
 -- ============================================================
 
 -- Prevent duplicate responses even if Redis SETNX is bypassed
-ALTER TABLE responses
-  ADD CONSTRAINT IF NOT EXISTS uq_responses_quiz_question_user
-  UNIQUE (quiz_id, question_id, user_id);
+DO $$ BEGIN
+  ALTER TABLE responses
+    ADD CONSTRAINT uq_responses_quiz_question_user
+    UNIQUE (quiz_id, question_id, user_id);
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- Speed up leaderboard / results lookups
 CREATE INDEX IF NOT EXISTS idx_responses_quiz_user   ON responses(quiz_id, user_id);
