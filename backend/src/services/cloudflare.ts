@@ -54,13 +54,14 @@ export interface CFTracksResponse {
 // API helpers
 // ─────────────────────────────────────────────────────────────────────────────
 
-async function cfFetch(url: string, opts: RequestInit = {}) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function cfFetch(url: string, opts: RequestInit = {}): Promise<any> {
   const res = await fetch(url, { ...opts, headers: { ...authHeaders(), ...(opts.headers as Record<string, string> ?? {}) } });
   if (!res.ok) {
     const text = await res.text().catch(() => res.statusText);
     throw new Error(`Cloudflare Calls API error ${res.status}: ${text}`);
   }
-  return res.json();
+  return res.json() as Promise<any>;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
