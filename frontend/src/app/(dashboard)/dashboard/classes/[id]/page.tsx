@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { ArrowLeft, Video } from 'lucide-react';
 import Link from 'next/link';
 import { api, ApiError, type JitsiCredentials, type LiveClass } from '@/lib/api';
-import { LiveRoom } from '@/components/live/LiveRoom';
+import { CloudflareRoom } from '@/components/live/CloudflareRoom';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { Button } from '@/app/components/ui/button';
 
@@ -111,5 +111,5 @@ export default function ClassRoomPage({ params }: { params: Promise<{ id: string
     );
   }
 
-  return <LiveRoom liveClass={state.cls} credentials={state.resp.credentials} />;
+  return <CloudflareRoom liveClass={state.cls} credentials={state.resp.credentials} />;
 }
