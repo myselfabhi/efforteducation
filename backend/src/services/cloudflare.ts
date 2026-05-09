@@ -12,7 +12,7 @@ const APP_SECRET  = process.env.CLOUDFLARE_CALLS_APP_SECRET!;
 const APP_ID      = process.env.CLOUDFLARE_CALLS_APP_ID!;
 
 const BASE = () =>
-  `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/calls/sessions`;
+  `https://rtc.live.cloudflare.com/v1/apps/${APP_ID}/sessions`;
 
 const authHeaders = () => ({
   'Content-Type': 'application/json',
