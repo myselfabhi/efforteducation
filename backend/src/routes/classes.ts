@@ -4,6 +4,7 @@ import { authMiddleware, roleGuard, batchMember, AuthRequest } from '../middlewa
 import { CreateLiveClassSchema, validateBody } from '../lib/validation';
 import { generateRoomId, generateRoomPassword, buildCredentials } from '../services/jitsi';
 import { notifyMany } from '../services/notifications';
+import { getIO } from '../socket';
 import {
   createSession,
   pushTracks,
@@ -92,6 +93,17 @@ router.post('/cf/sessions/:sessionId/push-tracks', authMiddleware, async (req: A
       const me = sessions.get(userId);
       if (me) {
         me.tracks = tracks.map((t) => t.trackName);
+        // Notify everyone else in the class room that this participant is ready
+        try {
+          getIO().to(`class:${classId}`).emit('class:cf-tracks-ready', {
+            userId:    me.userId,
+            name:      me.name,
+            sessionId: me.sessionId,
+            tracks:    me.tracks,
+          });
+        } catch {
+          // Socket not yet initialised (e.g. tests) — safe to ignore
+        }
       }
     }
 

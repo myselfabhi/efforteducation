@@ -211,26 +211,61 @@ export function CloudflareRoom({ liveClass, credentials }: Props) {
     }
   }, []);
 
+  // ── Socket: new CF participant ready ─────────────────────────────────────
+  // When another participant finishes pushing their tracks, the backend
+  // broadcasts class:cf-tracks-ready.  We pull those tracks immediately so
+  // both sides see each other without a page reload.
+
+  useEffect(() => {
+    const socket = getSocket();
+    const onCfReady = async (p: CFParticipant) => {
+      if (p.userId === user?.id) return;            // skip our own echo
+      const mySession = sessionIdRef.current;
+      if (!mySession || !pullPcRef.current) return;  // not set up yet
+      await pullRemoteTracks(mySession, [p]);
+    };
+    socket.on('class:cf-tracks-ready', onCfReady);
+    return () => { socket.off('class:cf-tracks-ready', onCfReady); };
+  }, [user, pullRemoteTracks]);
+
   useEffect(() => {
     let cancelled = false;
 
     async function setupWebRTC() {
       try {
-        // 1. Get local media
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        if (cancelled) { stream.getTracks().forEach((t) => t.stop()); return; }
-        setLocalStream(stream);
-        if (localRef.current) {
-          localRef.current.srcObject = stream;
+        // 1. Get local media — try AV first, fall back to audio-only, then view-only.
+        //    Wrap each call in a 6 s timeout so a pending permission dialog
+        //    doesn't block the entire connection flow.
+        function getMediaWithTimeout(constraints: MediaStreamConstraints, ms = 6000): Promise<MediaStream> {
+          return Promise.race([
+            navigator.mediaDevices.getUserMedia(constraints),
+            new Promise<never>((_, reject) => setTimeout(() => reject(new Error('timeout')), ms)),
+          ]);
+        }
+        let stream: MediaStream | null = null;
+        try {
+          stream = await getMediaWithTimeout({ video: true, audio: true });
+        } catch {
+          try {
+            stream = await getMediaWithTimeout({ audio: true });
+          } catch {
+            // No camera/mic available or permission denied — join as view-only
+            console.warn('No local media available; joining as view-only.');
+          }
+        }
+        if (cancelled) { stream?.getTracks().forEach((t) => t.stop()); return; }
+        if (stream) {
+          setLocalStream(stream);
+          if (localRef.current) localRef.current.srcObject = stream;
         }
 
         // 2. Create push PeerConnection
         const pushPc = makePc();
         pushPcRef.current = pushPc;
 
-        // 3. Add tracks to push PC
+        // 3. Add tracks to push PC (skipped when view-only)
         const localTracks: CFLocalTrack[] = [];
-        stream.getTracks().forEach((track) => {
+        stream?.getTracks().forEach((track) => {
           const kind      = track.kind as 'audio' | 'video';
           const trackName = `${kind}0`;
           const transceiver = pushPc.addTransceiver(track, { direction: 'sendonly' });
@@ -242,50 +277,49 @@ export function CloudflareRoom({ liveClass, credentials }: Props) {
         if (cancelled) return;
         sessionIdRef.current = sessionResp.sessionId;
 
-        // 5. Offer → CF
-        const offer = await pushPc.createOffer();
-        await pushPc.setLocalDescription(offer);
-        await waitForIce(pushPc);
+        // 5. Offer → CF (only if we have local tracks to push)
+        if (localTracks.length > 0) {
+          const offer = await pushPc.createOffer();
+          await pushPc.setLocalDescription(offer);
+          await waitForIce(pushPc);
 
-        const pushResult = await api.classes.cfPushTracks(
-          sessionResp.sessionId,
-          pushPc.localDescription!.sdp,
-          localTracks.map((t, i) => ({
-            ...t,
-            mid: pushPc.getTransceivers()[i]?.mid ?? t.mid,
-          })),
-          liveClass.id
-        );
-        if (cancelled) return;
+          const pushResult = await api.classes.cfPushTracks(
+            sessionResp.sessionId,
+            pushPc.localDescription!.sdp,
+            localTracks.map((t, i) => ({
+              ...t,
+              mid: pushPc.getTransceivers()[i]?.mid ?? t.mid,
+            })),
+            liveClass.id
+          );
+          if (cancelled) return;
 
-        // 6. Set answer from CF
-        if (pushResult.sessionDescription) {
-          await pushPc.setRemoteDescription(pushResult.sessionDescription as RTCSessionDescriptionInit);
+          // 6. Set answer from CF
+          if (pushResult.sessionDescription) {
+            await pushPc.setRemoteDescription(pushResult.sessionDescription as RTCSessionDescriptionInit);
+          }
+
+          // Track mids for mute
+          pushPc.getTransceivers().forEach((tc) => {
+            const kind = tc.sender.track?.kind;
+            if (kind === 'video') trackMids.current.video = tc.mid ?? undefined;
+            if (kind === 'audio') trackMids.current.audio = tc.mid ?? undefined;
+          });
         }
-
-        // Track mids for mute
-        pushPc.getTransceivers().forEach((tc) => {
-          const kind = tc.sender.track?.kind;
-          if (kind === 'video') trackMids.current.video = tc.mid ?? undefined;
-          if (kind === 'audio') trackMids.current.audio = tc.mid ?? undefined;
-        });
 
         setConnectionState('connected');
 
-        // 7. Pull existing remote tracks
+        // 7. Pull existing remote tracks (always, even if we have no camera)
         const pullPc = makePc();
         pullPcRef.current = pullPc;
 
-        pullPc.ontrack = ({ track, streams }) => {
+        pullPc.ontrack = ({ streams }) => {
           if (!streams[0]) return;
-          const stream = streams[0];
-          // Try to identify which participant this belongs to by track label
+          const remStream = streams[0];
           setRemoteStreams((prev) => {
-            const existing = prev.find((r) => r.stream.id === stream.id);
-            if (existing) return prev;
-            // Match to a participant — use name from sessionResp.participants or from socket participants
+            if (prev.find((r) => r.stream.id === remStream.id)) return prev;
             const name = 'Participant';
-            return [...prev, { userId: Date.now(), name, stream }];
+            return [...prev, { userId: Date.now(), name, stream: remStream }];
           });
         };
 
@@ -377,15 +411,18 @@ export function CloudflareRoom({ liveClass, credentials }: Props) {
           {connectionState === 'error' && (
             <div className="col-span-full flex flex-col items-center justify-center text-destructive gap-3">
               <Monitor className="h-8 w-8" />
-              <span className="text-sm">Could not access camera/microphone. Please check browser permissions.</span>
+              <span className="text-sm">Connection failed. Please refresh the page.</span>
             </div>
           )}
           {remoteStreams.map((rs) => (
             <RemoteVideo key={rs.stream.id} stream={rs.stream} name={rs.name} />
           ))}
           {connectionState === 'connected' && remoteStreams.length === 0 && (
-            <div className="col-span-full flex items-center justify-center text-zinc-500 text-sm">
-              No other participants yet. Share the class link!
+            <div className="col-span-full flex flex-col items-center justify-center text-zinc-500 text-sm gap-2">
+              <span>No other participants yet. Share the class link!</span>
+              {!localStream && (
+                <span className="text-xs text-amber-400">(View-only — camera/microphone unavailable)</span>
+              )}
             </div>
           )}
         </div>

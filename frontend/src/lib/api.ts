@@ -1,3 +1,5 @@
+import { useAuthStore } from './stores/authStore';
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 export class ApiError extends Error {
@@ -7,7 +9,11 @@ export class ApiError extends Error {
 }
 
 export async function apiFetch<T = unknown>(path: string, options: RequestInit = {}): Promise<T> {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('quiz_token') : null;
+  // Prefer the in-memory token from the Zustand store so that tabs with
+  // different logged-in users don't clobber each other via shared localStorage.
+  const token = typeof window !== 'undefined'
+    ? (useAuthStore.getState().token ?? localStorage.getItem('quiz_token'))
+    : null;
   const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
@@ -353,7 +359,10 @@ export const api = {
 
     /** Send SDP answer after a pull-triggered renegotiation. */
     cfRenegotiate: (sessionId: string, answer: string) =>
-      apiFetch(`/api/cf/sessions/${sessionId}/renegotiate`, { method: 'PUT', ...j({ answer }) }),
+      apiFetch(`/api/cf/sessions/${sessionId}/renegotiate`, {
+        method: 'PUT',
+        body: JSON.stringify({ answer }),
+      }),
   },
 
   announcements: {
