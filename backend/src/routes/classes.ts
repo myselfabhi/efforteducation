@@ -59,7 +59,7 @@ router.post('/classes/:id/cf-session', authMiddleware, async (req: AuthRequest, 
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error('cf-session error', msg);
-    res.status(500).json({ error: 'Failed to create Cloudflare session', detail: msg });
+    res.status(500).json({ error: 'Failed to create Cloudflare session' });
   }
 });
 

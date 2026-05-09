@@ -71,7 +71,8 @@ async function cfFetch(url: string, opts: RequestInit = {}): Promise<any> {
 /** Create a new Cloudflare Calls session for a participant. */
 export async function createSession(): Promise<CFSession> {
   const data = await cfFetch(`${BASE()}/new`, { method: 'POST' });
-  return { sessionId: data.result.sessionId as string };
+  // rtc.live.cloudflare.com returns flat JSON: { sessionId: "..." }
+  return { sessionId: data.sessionId as string };
 }
 
 /**
@@ -92,7 +93,8 @@ export async function pushTracks(
       tracks,
     }),
   });
-  return data.result as CFTracksResponse;
+  // rtc.live.cloudflare.com returns flat JSON (no result wrapper)
+  return data as CFTracksResponse;
 }
 
 /**
@@ -108,7 +110,8 @@ export async function pullTracks(
     method: 'POST',
     body: JSON.stringify({ tracks: remoteTracks }),
   });
-  return data.result as CFTracksResponse;
+  // rtc.live.cloudflare.com returns flat JSON (no result wrapper)
+  return data as CFTracksResponse;
 }
 
 /**
