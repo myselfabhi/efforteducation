@@ -410,6 +410,16 @@ export function CloudflareRoom({ liveClass, credentials }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [liveClass.id, user]);
 
+  // ── Re-attach localStream when the local video element re-renders ──────
+  // (the same `localRef` is mounted on different <video>s depending on whether
+  //  the teacher is alone — so attach in an effect that re-runs on toggles)
+  useEffect(() => {
+    const node = localRef.current;
+    if (!node || !localStream) return;
+    if (node.srcObject !== localStream) node.srcObject = localStream;
+    node.play().catch(() => {});
+  }, [localStream, remoteStreams.length, connectionState]);
+
   // ── Elapsed timer ───────────────────────────────────────────────────────
 
   useEffect(() => {
@@ -557,11 +567,11 @@ export function CloudflareRoom({ liveClass, credentials }: Props) {
           )}
           <button
             onClick={leaveAll}
-            className="text-xs text-muted-foreground hover:text-foreground transition"
+            className="inline-flex items-center justify-center gap-1.5 h-11 min-w-[44px] px-3 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition"
             aria-label="Leave class"
           >
+            <LogOut className="h-4 w-4" />
             <span className="hidden sm:inline">Exit</span>
-            <LogOut className="h-4 w-4 sm:hidden" />
           </button>
         </div>
       </header>
@@ -624,9 +634,9 @@ export function CloudflareRoom({ liveClass, credentials }: Props) {
                   </p>
                   <button
                     onClick={copyClassLink}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/95 text-foreground text-xs font-medium hover:bg-white transition"
+                    className="inline-flex items-center gap-2 h-11 min-w-[44px] px-4 rounded-lg bg-white/95 text-foreground text-sm font-medium hover:bg-white transition shadow"
                   >
-                    {copied ? <Check className="h-3.5 w-3.5 text-green-600" /> : <Link2 className="h-3.5 w-3.5" />}
+                    {copied ? <Check className="h-4 w-4 text-green-600" /> : <Link2 className="h-4 w-4" />}
                     {copied ? 'Link copied' : 'Copy class link'}
                   </button>
                 </div>
