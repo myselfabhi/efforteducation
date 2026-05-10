@@ -61,9 +61,17 @@ export function RealtimekitRoom({ liveClass, authToken }: Props) {
 
   return (
     <RealtimeKitProvider value={meeting}>
+      {/* The rtk-meeting Stencil web component is `display: inline` by default,
+          so it must be told to fill the wrapper explicitly via inline style;
+          a Tailwind class on the React component is forwarded as className but
+          doesn't override the host-element default display. */}
       <div className="h-[100dvh] w-full bg-black">
         {meeting ? (
-          <RtkMeeting meeting={meeting} mode="fill" />
+          <RtkMeeting
+            meeting={meeting}
+            mode="fill"
+            style={{ display: 'block', width: '100%', height: '100%' }}
+          />
         ) : (
           <div className="h-full w-full flex flex-col items-center justify-center text-white gap-3">
             <Loader2 className="h-8 w-8 animate-spin" />
