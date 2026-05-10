@@ -26,6 +26,7 @@ import {
   Video,
   VideoOff,
   Monitor,
+  MonitorOff,
   Loader2,
 } from 'lucide-react';
 import {
@@ -56,6 +57,7 @@ interface RemoteStream {
   userId: number;
   name: string;
   stream: MediaStream;
+  isScreen?: boolean;
 }
 
 interface Props {
@@ -118,12 +120,18 @@ export function CloudflareRoom({ liveClass, credentials }: Props) {
   const [chatInput, setChatInput] = useState('');
   const [myHand, setMyHand]     = useState(false);
 
+  // Screen share state
+  const [isSharing, setIsSharing]   = useState(false);
+  const screenStreamRef             = useRef<MediaStream | null>(null);
+
   // Refs for peer connections & session
-  const pushPcRef    = useRef<RTCPeerConnection | null>(null);
-  const pullPcRef    = useRef<RTCPeerConnection | null>(null);
-  const sessionIdRef = useRef<string>('');
-  const localRef     = useRef<HTMLVideoElement>(null);
-  const trackMids    = useRef<{ video?: string; audio?: string }>({});
+  const pushPcRef         = useRef<RTCPeerConnection | null>(null);
+  const pullPcRef         = useRef<RTCPeerConnection | null>(null);
+  const sessionIdRef      = useRef<string>('');
+  const localRef          = useRef<HTMLVideoElement>(null);
+  const trackMids         = useRef<{ video?: string; audio?: string }>({});
+  // Maps pull-PC mid → CF trackName so ontrack can label screen vs camera
+  const midToTrackNameRef = useRef<Map<string, string>>(new Map());
 
   // ── Socket lifecycle ────────────────────────────────────────────────────
 
@@ -197,6 +205,11 @@ export function CloudflareRoom({ liveClass, credentials }: Props) {
     await waitForIce(pullPc);
 
     const result = await api.classes.cfPullTracks(sessionId, tracksToPull);
+
+    // Populate mid → trackName BEFORE setRemoteDescription so ontrack can tag streams
+    result.tracks?.forEach(({ mid, trackName }) => {
+      if (mid && trackName) midToTrackNameRef.current.set(mid, trackName);
+    });
 
     if (result.requiresImmediateRenegotiation && result.sessionDescription) {
       // CF sent an offer — we must answer
@@ -313,13 +326,21 @@ export function CloudflareRoom({ liveClass, credentials }: Props) {
         const pullPc = makePc();
         pullPcRef.current = pullPc;
 
-        pullPc.ontrack = ({ streams }) => {
+        pullPc.ontrack = ({ track, transceiver, streams }) => {
           if (!streams[0]) return;
           const remStream = streams[0];
+          const trackName = midToTrackNameRef.current.get(transceiver?.mid ?? '') ?? '';
+          const isScreen  = trackName.startsWith('screen');
+
+          // Remove tile when the remote track ends (screen share stopped by sender)
+          track.onended = () => {
+            setRemoteStreams((prev) => prev.filter((r) => r.stream.id !== remStream.id));
+          };
+
           setRemoteStreams((prev) => {
             if (prev.find((r) => r.stream.id === remStream.id)) return prev;
-            const name = 'Participant';
-            return [...prev, { userId: Date.now(), name, stream: remStream }];
+            const name = isScreen ? 'Screen' : 'Participant';
+            return [...prev, { userId: Date.now(), name, stream: remStream, isScreen }];
           });
         };
 
@@ -340,6 +361,8 @@ export function CloudflareRoom({ liveClass, credentials }: Props) {
     return () => {
       cancelled = true;
       localStream?.getTracks().forEach((t) => t.stop());
+      screenStreamRef.current?.getTracks().forEach((t) => t.stop());
+      screenStreamRef.current = null;
       pushPcRef.current?.close();
       pullPcRef.current?.close();
       api.classes.cfLeave(liveClass.id).catch(() => {});
@@ -359,6 +382,57 @@ export function CloudflareRoom({ liveClass, credentials }: Props) {
     setCamEnabled((v) => !v);
   }
 
+  async function startScreenShare() {
+    if (!navigator.mediaDevices?.getDisplayMedia) {
+      console.warn('Screen sharing not supported in this browser');
+      return;
+    }
+    try {
+      const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
+      const screenTrack  = screenStream.getVideoTracks()[0];
+      if (!screenTrack) return;
+
+      // Auto-stop when user clicks browser's native "Stop sharing" button
+      screenTrack.onended = () => stopScreenShare();
+
+      const pushPc = pushPcRef.current;
+      if (!pushPc || !sessionIdRef.current) {
+        screenStream.getTracks().forEach((t) => t.stop());
+        return;
+      }
+
+      // Add a new sendonly transceiver for the screen track
+      const transceiver = pushPc.addTransceiver(screenTrack, { direction: 'sendonly' });
+
+      // Renegotiate with CF to push the new track
+      const offer = await pushPc.createOffer();
+      await pushPc.setLocalDescription(offer);
+      await waitForIce(pushPc);
+
+      const result = await api.classes.cfPushTracks(
+        sessionIdRef.current,
+        pushPc.localDescription!.sdp,
+        [{ location: 'local', trackName: 'screen0', mid: transceiver.mid ?? undefined }],
+        liveClass.id,
+      );
+
+      if (result.sessionDescription) {
+        await pushPc.setRemoteDescription(result.sessionDescription as RTCSessionDescriptionInit);
+      }
+
+      screenStreamRef.current = screenStream;
+      setIsSharing(true);
+    } catch (err) {
+      console.error('Screen share failed', err);
+    }
+  }
+
+  function stopScreenShare() {
+    screenStreamRef.current?.getTracks().forEach((t) => t.stop());
+    screenStreamRef.current = null;
+    setIsSharing(false);
+  }
+
   // ── Chat / hand ────────────────────────────────────────────────────────
 
   function sendChat() {
@@ -376,6 +450,8 @@ export function CloudflareRoom({ liveClass, credentials }: Props) {
 
   function leaveAll() {
     localStream?.getTracks().forEach((t) => t.stop());
+    screenStreamRef.current?.getTracks().forEach((t) => t.stop());
+    screenStreamRef.current = null;
     pushPcRef.current?.close();
     pullPcRef.current?.close();
     classRoom.leave(liveClass.id);
@@ -415,7 +491,7 @@ export function CloudflareRoom({ liveClass, credentials }: Props) {
             </div>
           )}
           {remoteStreams.map((rs) => (
-            <RemoteVideo key={rs.stream.id} stream={rs.stream} name={rs.name} />
+            <RemoteVideo key={rs.stream.id} stream={rs.stream} name={rs.name} isScreen={rs.isScreen} />
           ))}
           {connectionState === 'connected' && remoteStreams.length === 0 && (
             <div className="col-span-full flex flex-col items-center justify-center text-zinc-500 text-sm gap-2">
@@ -468,6 +544,14 @@ export function CloudflareRoom({ liveClass, credentials }: Props) {
               icon={<Hand className="h-4 w-4" />}
               label={myHand ? 'Lower hand' : 'Raise hand'}
             />
+            {connectionState === 'connected' && (
+              <ControlButton
+                onClick={isSharing ? stopScreenShare : startScreenShare}
+                active={isSharing}
+                icon={isSharing ? <MonitorOff className="h-4 w-4" /> : <Monitor className="h-4 w-4" />}
+                label={isSharing ? 'Stop share' : 'Share screen'}
+              />
+            )}
             {isMod ? (
               <Button variant="destructive" size="sm" onClick={endForAll} className="gap-1">
                 <PhoneOff className="h-4 w-4" /> End for all
@@ -552,16 +636,22 @@ export function CloudflareRoom({ liveClass, credentials }: Props) {
 // Sub-components
 // ─────────────────────────────────────────────────────────────────────────────
 
-function RemoteVideo({ stream, name }: { stream: MediaStream; name: string }) {
+function RemoteVideo({ stream, name, isScreen }: { stream: MediaStream; name: string; isScreen?: boolean }) {
   const ref = useRef<HTMLVideoElement>(null);
   useEffect(() => {
     if (ref.current) ref.current.srcObject = stream;
   }, [stream]);
 
   return (
-    <div className="relative rounded-lg overflow-hidden bg-zinc-800">
-      <video ref={ref} autoPlay playsInline className="w-full h-full object-cover" />
-      <span className="absolute bottom-1 left-1 text-[10px] bg-black/60 px-1 rounded">
+    <div className={`relative rounded-lg overflow-hidden bg-zinc-800 ${isScreen ? 'col-span-full' : ''}`}>
+      <video
+        ref={ref}
+        autoPlay
+        playsInline
+        className={`w-full h-full ${isScreen ? 'object-contain max-h-[60vh]' : 'object-cover'}`}
+      />
+      <span className={`absolute bottom-1 left-1 text-[10px] bg-black/60 px-1.5 py-0.5 rounded flex items-center gap-1 ${isScreen ? 'text-blue-300' : ''}`}>
+        {isScreen && <Monitor className="h-3 w-3" />}
         {name}
       </span>
     </div>
