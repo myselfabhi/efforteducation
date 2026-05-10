@@ -41,8 +41,9 @@ export default function BottomNav() {
     return pathname.startsWith(href);
   };
 
-  // Hide on quiz platform pages (they have their own layout)
+  // Hide on quiz platform + live class room pages (they own the full viewport)
   if (pathname.startsWith('/quiz')) return null;
+  if (/^\/dashboard\/classes\/\d+/.test(pathname)) return null;
 
   return (
     <>

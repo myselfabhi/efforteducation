@@ -41,6 +41,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (!isAuthenticated) return null;
 
+  // Live class room owns the full viewport — no sidebar / topbar / padding
+  const isFullscreenRoute = /^\/dashboard\/classes\/\d+/.test(pathname);
+  if (isFullscreenRoute) {
+    return <div className="min-h-screen bg-background">{children}</div>;
+  }
+
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar />
