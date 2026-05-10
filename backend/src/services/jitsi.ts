@@ -20,7 +20,10 @@ export interface JitsiCredentials {
   password: string | null;
   isModerator: boolean;
   user: { id: number; name: string; email: string };
-  // Future: jwt: string when self-hosting with JWT auth
+  // Cloudflare RealtimeKit credentials. Optional during the migration window
+  // — when present, the frontend renders <RtkMeeting>; when absent, it falls
+  // back to the manual <CloudflareRoom> path against the Calls SFU REST API.
+  realtimekit?: { authToken: string; meetingId: string };
 }
 
 export function buildCredentials(opts: {

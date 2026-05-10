@@ -112,6 +112,9 @@ export interface JitsiCredentials {
   domain: string; room: string; password: string | null;
   isModerator: boolean;
   user: { id: number; name: string; email: string };
+  /** Cloudflare RealtimeKit credentials. Present once the backend is configured
+   *  with CLOUDFLARE_REALTIMEKIT_APP_ID + CLOUDFLARE_API_TOKEN. */
+  realtimekit?: { authToken: string; meetingId: string };
 }
 
 // ─── Cloudflare Calls / RealtimeKit ───────────────────────────────────────

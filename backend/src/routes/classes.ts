@@ -3,6 +3,7 @@ import pool from '../db';
 import { authMiddleware, roleGuard, batchMember, AuthRequest } from '../middleware/auth';
 import { CreateLiveClassSchema, validateBody } from '../lib/validation';
 import { generateRoomId, generateRoomPassword, buildCredentials } from '../services/jitsi';
+import * as rtk from '../services/realtimekit';
 import { notifyMany } from '../services/notifications';
 import { getIO } from '../socket';
 import {
@@ -361,6 +362,48 @@ router.post('/classes/:id/join', authMiddleware, async (req: AuthRequest, res: R
         email: req.user!.email,
       },
     });
+
+    // ─── Cloudflare RealtimeKit (additive) ─────────────────────────────────
+    // Lazily create one RealtimeKit meeting per live_class on the first join,
+    // then mint a per-participant auth token for every joiner. Failures here
+    // are non-fatal — the frontend falls back to the legacy CloudflareRoom
+    // path when `credentials.realtimekit` is absent.
+    if (rtk.isRealtimekitConfigured()) {
+      try {
+        let meetingId: string | null = cls.realtimekit_meeting_id;
+        if (!meetingId) {
+          const created = await rtk.createMeeting(cls.title);
+          // Race-safe write: only one concurrent joiner wins.
+          const w = await pool.query(
+            `UPDATE live_classes
+                SET realtimekit_meeting_id = $1
+              WHERE id = $2 AND realtimekit_meeting_id IS NULL
+              RETURNING realtimekit_meeting_id`,
+            [created.id, id]
+          );
+          if (w.rows.length > 0) {
+            meetingId = w.rows[0].realtimekit_meeting_id;
+          } else {
+            const r2 = await pool.query(
+              'SELECT realtimekit_meeting_id FROM live_classes WHERE id = $1',
+              [id]
+            );
+            meetingId = r2.rows[0]?.realtimekit_meeting_id ?? null;
+          }
+        }
+        if (meetingId) {
+          const auth = await rtk.addParticipant(meetingId, {
+            customId: String(req.user!.id),
+            name: req.user!.full_name || req.user!.username,
+            picture: (req.user as { avatar_url?: string }).avatar_url ?? null,
+            presetName: isTeacher ? rtk.presets.host : rtk.presets.participant,
+          });
+          credentials.realtimekit = { authToken: auth.token, meetingId };
+        }
+      } catch (rtkErr) {
+        console.error('[realtimekit] failed to mint token, falling back to CF Calls path', rtkErr);
+      }
+    }
 
     res.json({ class: { id: cls.id, title: cls.title, status }, credentials });
   } catch (err) {
