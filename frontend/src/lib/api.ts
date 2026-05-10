@@ -117,40 +117,6 @@ export interface JitsiCredentials {
   realtimekit?: { authToken: string; meetingId: string };
 }
 
-// ─── Cloudflare Calls / RealtimeKit ───────────────────────────────────────
-
-export interface CFParticipant {
-  userId: number;
-  sessionId: string;
-  name: string;
-  tracks: string[];          // e.g. ["video0", "audio0"]
-}
-
-export interface CFSessionResponse {
-  sessionId: string;
-  appId: string;
-  accountId: string;
-  participants: CFParticipant[];
-}
-
-export interface CFLocalTrack {
-  location: 'local';
-  trackName: string;
-  mid?: string;
-}
-
-export interface CFRemoteTrack {
-  location: 'remote';
-  sessionId: string;
-  trackName: string;
-}
-
-export interface CFTracksResult {
-  sessionDescription?: { type: 'offer' | 'answer'; sdp: string };
-  tracks: { trackName: string; mid: string }[];
-  requiresImmediateRenegotiation?: boolean;
-}
-
 export interface Notification {
   id: number; user_id: number; type: string; title: string;
   body: string | null; link_url: string | null;
@@ -338,34 +304,6 @@ export const api = {
     ),
     leave: (id: number) => apiFetch(`/api/classes/${id}/leave`, { method: 'POST' }),
     upcoming: () => apiFetch<LiveClass[]>('/api/classes/upcoming'),
-
-    // ── Cloudflare Calls (RealtimeKit) ────────────────────────────────────
-    /** Create a CF Calls session for this participant. */
-    cfSession: (classId: number) =>
-      apiFetch<CFSessionResponse>(`/api/classes/${classId}/cf-session`, { method: 'POST' }),
-
-    /** List all active CF Calls participants in a class. */
-    cfParticipants: (classId: number) =>
-      apiFetch<CFParticipant[]>(`/api/classes/${classId}/cf-participants`),
-
-    /** Remove this user's session from the registry. */
-    cfLeave: (classId: number) =>
-      apiFetch(`/api/classes/${classId}/cf-session`, { method: 'DELETE' }),
-
-    /** Push local tracks to CF SFU (proxied through backend). */
-    cfPushTracks: (sessionId: string, offer: string, tracks: CFLocalTrack[], classId: number) =>
-      apiFetch<CFTracksResult>(`/api/cf/sessions/${sessionId}/push-tracks`, j({ offer, tracks, classId })),
-
-    /** Pull remote tracks into this session. */
-    cfPullTracks: (sessionId: string, tracks: CFRemoteTrack[]) =>
-      apiFetch<CFTracksResult>(`/api/cf/sessions/${sessionId}/pull-tracks`, j({ tracks })),
-
-    /** Send SDP answer after a pull-triggered renegotiation. */
-    cfRenegotiate: (sessionId: string, answer: string) =>
-      apiFetch(`/api/cf/sessions/${sessionId}/renegotiate`, {
-        method: 'PUT',
-        body: JSON.stringify({ answer }),
-      }),
   },
 
   announcements: {

@@ -5,161 +5,8 @@ import { CreateLiveClassSchema, validateBody } from '../lib/validation';
 import { generateRoomId, generateRoomPassword, buildCredentials } from '../services/jitsi';
 import * as rtk from '../services/realtimekit';
 import { notifyMany } from '../services/notifications';
-import { getIO } from '../socket';
-import {
-  createSession,
-  pushTracks,
-  pullTracks,
-  renegotiate,
-  cfConfig,
-  type CFLocalTrack,
-  type CFRemoteTrack,
-} from '../services/cloudflare';
 
 const router = Router();
-
-// ─────────────────────────────────────────────────────────────────────────────
-// In-memory session registry: classId → userId → {sessionId, tracks[]}
-// For production this should live in Redis/DB; fine for a single-instance deploy.
-// ─────────────────────────────────────────────────────────────────────────────
-interface ParticipantSession {
-  sessionId: string;
-  userId: number;
-  name: string;
-  tracks: string[]; // trackNames pushed so far
-}
-const classSessionMap = new Map<number, Map<number, ParticipantSession>>();
-
-function getClassSessions(classId: number): Map<number, ParticipantSession> {
-  if (!classSessionMap.has(classId)) classSessionMap.set(classId, new Map());
-  return classSessionMap.get(classId)!;
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /api/classes/:id/cf-session
-// Create a Cloudflare Calls session for the requesting participant.
-// Returns: { sessionId, participants: [{userId, sessionId, name, tracks}], ...cfConfig }
-// ─────────────────────────────────────────────────────────────────────────────
-router.post('/classes/:id/cf-session', authMiddleware, async (req: AuthRequest, res: Response) => {
-  try {
-    const classId = parseInt(req.params.id, 10);
-    const userId  = req.user!.id;
-    const name    = req.user!.full_name || req.user!.username;
-
-    const { sessionId } = await createSession();
-
-    const sessions = getClassSessions(classId);
-    sessions.set(userId, { sessionId, userId, name, tracks: [] });
-
-    const others = Array.from(sessions.values()).filter((p) => p.userId !== userId);
-
-    res.json({
-      sessionId,
-      participants: others,
-      ...cfConfig(),
-    });
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    console.error('cf-session error', msg);
-    res.status(500).json({ error: 'Failed to create Cloudflare session' });
-  }
-});
-
-// ─────────────────────────────────────────────────────────────────────────────
-// GET /api/classes/:id/cf-participants
-// Returns all active CF Calls sessions in this class.
-// ─────────────────────────────────────────────────────────────────────────────
-router.get('/classes/:id/cf-participants', authMiddleware, async (req: AuthRequest, res: Response) => {
-  const classId  = parseInt(req.params.id, 10);
-  const sessions = getClassSessions(classId);
-  res.json(Array.from(sessions.values()));
-});
-
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /api/cf/sessions/:sessionId/push-tracks
-// Proxy: push local tracks to CF Calls SFU.
-// Body: { offer: string, tracks: CFLocalTrack[] }
-// ─────────────────────────────────────────────────────────────────────────────
-router.post('/cf/sessions/:sessionId/push-tracks', authMiddleware, async (req: AuthRequest, res: Response) => {
-  try {
-    const { sessionId } = req.params;
-    const { offer, tracks, classId } = req.body as { offer: string; tracks: CFLocalTrack[]; classId: number };
-
-    const result = await pushTracks(sessionId, offer, tracks);
-
-    // Record track names for this participant so others can pull them
-    if (classId) {
-      const sessions = getClassSessions(classId);
-      const userId   = req.user!.id;
-      const me = sessions.get(userId);
-      if (me) {
-        me.tracks = tracks.map((t) => t.trackName);
-        // Notify everyone else in the class room that this participant is ready
-        try {
-          getIO().to(`class:${classId}`).emit('class:cf-tracks-ready', {
-            userId:    me.userId,
-            name:      me.name,
-            sessionId: me.sessionId,
-            tracks:    me.tracks,
-          });
-        } catch {
-          // Socket not yet initialised (e.g. tests) — safe to ignore
-        }
-      }
-    }
-
-    res.json(result);
-  } catch (err) {
-    console.error('push-tracks error', err);
-    res.status(500).json({ error: 'Failed to push tracks' });
-  }
-});
-
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /api/cf/sessions/:sessionId/pull-tracks
-// Proxy: pull remote tracks from other participants into this session.
-// Body: { tracks: CFRemoteTrack[] }
-// ─────────────────────────────────────────────────────────────────────────────
-router.post('/cf/sessions/:sessionId/pull-tracks', authMiddleware, async (req: AuthRequest, res: Response) => {
-  try {
-    const { sessionId } = req.params;
-    const { tracks } = req.body as { tracks: CFRemoteTrack[] };
-
-    const result = await pullTracks(sessionId, tracks);
-    res.json(result);
-  } catch (err) {
-    console.error('pull-tracks error', err);
-    res.status(500).json({ error: 'Failed to pull tracks' });
-  }
-});
-
-// ─────────────────────────────────────────────────────────────────────────────
-// PUT /api/cf/sessions/:sessionId/renegotiate
-// Proxy: send SDP answer back after pull-triggered renegotiation.
-// Body: { answer: string }
-// ─────────────────────────────────────────────────────────────────────────────
-router.put('/cf/sessions/:sessionId/renegotiate', authMiddleware, async (req: AuthRequest, res: Response) => {
-  try {
-    const { sessionId } = req.params;
-    const { answer } = req.body as { answer: string };
-    await renegotiate(sessionId, answer);
-    res.status(204).end();
-  } catch (err) {
-    console.error('renegotiate error', err);
-    res.status(500).json({ error: 'Failed to renegotiate' });
-  }
-});
-
-// ─────────────────────────────────────────────────────────────────────────────
-// DELETE /api/classes/:id/cf-session
-// Remove this user's session from the registry (called on leave).
-// ─────────────────────────────────────────────────────────────────────────────
-router.delete('/classes/:id/cf-session', authMiddleware, async (req: AuthRequest, res: Response) => {
-  const classId  = parseInt(req.params.id, 10);
-  const sessions = getClassSessions(classId);
-  sessions.delete(req.user!.id);
-  res.status(204).end();
-});
 
 // GET /api/batches/:id/classes — list scheduled+past for a batch
 router.get(
@@ -363,11 +210,10 @@ router.post('/classes/:id/join', authMiddleware, async (req: AuthRequest, res: R
       },
     });
 
-    // ─── Cloudflare RealtimeKit (additive) ─────────────────────────────────
+    // ─── Cloudflare RealtimeKit ────────────────────────────────────────────
     // Lazily create one RealtimeKit meeting per live_class on the first join,
-    // then mint a per-participant auth token for every joiner. Failures here
-    // are non-fatal — the frontend falls back to the legacy CloudflareRoom
-    // path when `credentials.realtimekit` is absent.
+    // then mint a per-participant auth token for every joiner. The frontend
+    // refuses to render the room without `credentials.realtimekit`.
     if (rtk.isRealtimekitConfigured()) {
       try {
         let meetingId: string | null = cls.realtimekit_meeting_id;

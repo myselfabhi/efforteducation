@@ -35,24 +35,15 @@ export function reconnectSocket() {
 // Live class room helpers
 // =====================================================
 
-export interface ClassChatMessage {
-  userId: number;
-  username: string;
-  fullName: string | null;
-  text: string;
-  ts: number;
-}
+// RealtimeKit owns the in-meeting chat + hand-raise UX. Our socket layer
+// only carries lifecycle signals — join/leave for attendance + presence,
+// heartbeat for liveness, and end-for-all that mirrors the host action so
+// non-RTK dashboard widgets can react.
 
 export interface ClassParticipant {
   userId: number;
   username: string;
   fullName?: string | null;
-}
-
-export interface ClassHandRaiseUpdate {
-  userId: number;
-  username: string;
-  raised: boolean;
 }
 
 export const classRoom = {
@@ -64,12 +55,6 @@ export const classRoom = {
   },
   leave(classId: number) {
     getSocket().emit('class:leave', { classId });
-  },
-  sendChat(classId: number, text: string) {
-    getSocket().emit('class:chat-message', { classId, text });
-  },
-  raiseHand(classId: number, raised: boolean) {
-    getSocket().emit('class:hand-raise', { classId, raised });
   },
   end(classId: number) {
     getSocket().emit('class:end', { classId });

@@ -20,9 +20,10 @@ export interface JitsiCredentials {
   password: string | null;
   isModerator: boolean;
   user: { id: number; name: string; email: string };
-  // Cloudflare RealtimeKit credentials. Optional during the migration window
-  // — when present, the frontend renders <RtkMeeting>; when absent, it falls
-  // back to the manual <CloudflareRoom> path against the Calls SFU REST API.
+  // Cloudflare RealtimeKit credentials — required for the live room to render.
+  // Optional in the type only because the field is populated at runtime after
+  // the RealtimeKit REST round-trip; if it ever comes back undefined the
+  // frontend shows an "unavailable" screen.
   realtimekit?: { authToken: string; meetingId: string };
 }
 

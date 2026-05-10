@@ -96,33 +96,9 @@ export function setupClassSocket(io: Server) {
       io.to(roomKey(classId)).emit('class:participant-left', { userId: user.id });
     });
 
-    socket.on(
-      'class:chat-message',
-      ({ classId, text }: { classId: number; text: string }) => {
-        if (!Number.isInteger(classId) || typeof text !== 'string') return;
-        const trimmed = text.trim().slice(0, 1000);
-        if (!trimmed) return;
-        io.to(roomKey(classId)).emit('class:chat-broadcast', {
-          userId: user.id,
-          username: user.username,
-          fullName: user.full_name ?? null,
-          text: trimmed,
-          ts: Date.now(),
-        });
-      }
-    );
-
-    socket.on(
-      'class:hand-raise',
-      ({ classId, raised }: { classId: number; raised: boolean }) => {
-        if (!Number.isInteger(classId)) return;
-        io.to(roomKey(classId)).emit('class:hand-raise-update', {
-          userId: user.id,
-          username: user.username,
-          raised: !!raised,
-        });
-      }
-    );
+    // class:chat-message and class:hand-raise used to be relayed here when
+    // the room was hand-rolled; RealtimeKit now owns both UX flows in-band,
+    // so the legacy events were removed in commit cba2e7d's follow-up.
 
     socket.on('class:end', async ({ classId }: { classId: number }) => {
       try {

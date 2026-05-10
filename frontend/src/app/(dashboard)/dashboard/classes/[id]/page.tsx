@@ -6,7 +6,6 @@ import { format } from 'date-fns';
 import { ArrowLeft, Video } from 'lucide-react';
 import Link from 'next/link';
 import { api, ApiError, type JitsiCredentials, type LiveClass } from '@/lib/api';
-import { CloudflareRoom } from '@/components/live/CloudflareRoom';
 import { RealtimekitRoom } from '@/components/live/RealtimekitRoom';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { Button } from '@/app/components/ui/button';
@@ -112,12 +111,21 @@ export default function ClassRoomPage({ params }: { params: Promise<{ id: string
     );
   }
 
-  // Prefer RealtimeKit when the backend has issued a token. Fall back to the
-  // legacy CloudflareRoom (manual SFU) while the RTK env vars aren't set yet
-  // — once verified, the legacy path is deleted in a follow-up commit.
   const rtk = state.resp.credentials.realtimekit;
-  if (rtk?.authToken) {
-    return <RealtimekitRoom liveClass={state.cls} authToken={rtk.authToken} />;
+  if (!rtk?.authToken) {
+    return (
+      <div className="max-w-md mx-auto p-8 text-center space-y-4">
+        <h1 className="text-xl font-semibold text-destructive">
+          Live class is temporarily unavailable
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          The video room couldn&rsquo;t initialise. Please refresh in a moment, or contact support.
+        </p>
+        <Button onClick={() => router.push('/dashboard')} variant="outline">
+          Back to dashboard
+        </Button>
+      </div>
+    );
   }
-  return <CloudflareRoom liveClass={state.cls} credentials={state.resp.credentials} />;
+  return <RealtimekitRoom liveClass={state.cls} authToken={rtk.authToken} />;
 }
