@@ -31,8 +31,16 @@ export const KEYS = {
   quizLeaderboard: (quizId: number) => `quiz:${quizId}:leaderboard`,
   quizAnswers: (quizId: number, questionId: number) => `quiz:${quizId}:answers:${questionId}`,
   quizParticipants: (quizId: number) => `quiz:${quizId}:participants`,
+  // Holds the FIRST-click timestamp (ms) for this user / question. While
+  // present, the entry is treated as "soft-locked" — overwrites are accepted
+  // until `firstClickTs + gracePeriodMs`.
   answerLock: (quizId: number, questionId: number, userId: number) =>
     `answer:${quizId}:${questionId}:${userId}`,
+  // Sentinel set by anti-cheat (focus_lost auto-submit) or by an explicit
+  // hard-lock request. When present, no further overwrites are allowed even
+  // if we're still within the grace window.
+  answerHardLock: (quizId: number, questionId: number, userId: number) =>
+    `answer:${quizId}:${questionId}:${userId}:hardlock`,
   userScore: (quizId: number, userId: number) => `quiz:${quizId}:userscore:${userId}`,
 };
 
@@ -40,18 +48,23 @@ export const KEYS = {
 // QUIZ STATE
 // =====================
 
-export async function setQuizState(quizId: number, state: {
+export interface QuizState {
   currentQuestionId: number;
   currentQuestionIndex: number;
   totalQuestions: number;
   status: 'LOBBY' | 'IN_PROGRESS' | 'SHOWING_ANSWER' | 'SHOWING_LEADERBOARD' | 'COMPLETED';
-}) {
+  /** Per-quiz answer-change grace window (ms). Optional for backwards-compat
+   *  with quizzes started before migration 007. */
+  gracePeriodMs?: number;
+}
+
+export async function setQuizState(quizId: number, state: QuizState) {
   await redis.set(KEYS.quizState(quizId), JSON.stringify(state));
 }
 
-export async function getQuizState(quizId: number) {
+export async function getQuizState(quizId: number): Promise<QuizState | null> {
   const data = await redis.get(KEYS.quizState(quizId));
-  return data ? JSON.parse(data) : null;
+  return data ? (JSON.parse(data) as QuizState) : null;
 }
 
 // =====================
@@ -72,27 +85,78 @@ export async function getQuizTimer(quizId: number) {
 }
 
 // =====================
-// ANSWER SUBMISSION (SETNX for duplicate prevention)
+// ANSWER SUBMISSION
+// First click sets the lock (TS in ms) + the answer hash. Subsequent clicks
+// within `gracePeriodMs` overwrite the selection but PRESERVE the first
+// click's time-taken so the time bonus stays honest. After the grace window
+// or once the hard-lock sentinel is present, further submissions are
+// rejected — same as classic Kahoot behaviour.
 // =====================
+
+export type SubmitAnswerResult =
+  | { accepted: true;  firstClick: boolean }
+  | { accepted: false; reason: 'hard_locked' | 'grace_expired' };
 
 export async function trySubmitAnswer(
   quizId: number,
   questionId: number,
   userId: number,
-  answer: { selectedOptionId: number | null; timeTakenMs: number }
-): Promise<boolean> {
-  const key = KEYS.answerLock(quizId, questionId, userId);
-  // SETNX — returns 1 if set (first answer), 0 if already exists
-  const result = await redis.set(key, '1', 'EX', 3600, 'NX');
-  if (!result) return false; // duplicate
+  answer: { selectedOptionId: number | null; timeTakenMs: number },
+  opts: { gracePeriodMs?: number; forceLock?: boolean } = {}
+): Promise<SubmitAnswerResult> {
+  const lockKey     = KEYS.answerLock(quizId, questionId, userId);
+  const hardLockKey = KEYS.answerHardLock(quizId, questionId, userId);
+  const answersKey  = KEYS.quizAnswers(quizId, questionId);
+  const grace       = Math.max(0, opts.gracePeriodMs ?? 0);
+  const now         = Date.now();
 
-  // Store the actual answer in the hash
+  // Once hard-locked, never accept anything else.
+  if ((await redis.exists(hardLockKey)) === 1) {
+    return { accepted: false, reason: 'hard_locked' };
+  }
+
+  // Atomic first-click insert. SETNX returns the value on success, null on
+  // existing key. We store the FIRST-click timestamp as the value so any
+  // subsequent call can compute elapsed.
+  const setRes = await redis.set(lockKey, String(now), 'EX', 3600, 'NX');
+  if (setRes) {
+    // First submission for this user/question.
+    await redis.hset(
+      answersKey,
+      String(userId),
+      JSON.stringify(answer)
+    );
+    if (opts.forceLock) {
+      await redis.set(hardLockKey, '1', 'EX', 3600);
+    }
+    return { accepted: true, firstClick: true };
+  }
+
+  // Subsequent submission: gated by the grace window.
+  const firstClickRaw = await redis.get(lockKey);
+  const firstClick    = firstClickRaw ? parseInt(firstClickRaw, 10) : now;
+  const elapsed       = now - firstClick;
+
+  // forceLock implies "this is a final attempt" (e.g. focus_lost auto-blank).
+  // Set the hard-lock immediately and reject any later overwrites.
+  if (opts.forceLock) {
+    await redis.set(hardLockKey, '1', 'EX', 3600);
+  }
+  if (grace <= 0 || elapsed > grace) {
+    return { accepted: false, reason: 'grace_expired' };
+  }
+
+  // Within grace — overwrite the selection, but keep the original timeTakenMs.
+  const existingRaw = await redis.hget(answersKey, String(userId));
+  const preservedTime = existingRaw
+    ? (JSON.parse(existingRaw) as { timeTakenMs: number }).timeTakenMs
+    : answer.timeTakenMs;
   await redis.hset(
-    KEYS.quizAnswers(quizId, questionId),
+    answersKey,
     String(userId),
-    JSON.stringify(answer)
+    JSON.stringify({ selectedOptionId: answer.selectedOptionId, timeTakenMs: preservedTime })
   );
-  return true;
+  return { accepted: true, firstClick: false };
 }
 
 export async function getAnswersForQuestion(quizId: number, questionId: number) {

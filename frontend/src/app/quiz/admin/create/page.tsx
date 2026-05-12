@@ -10,7 +10,13 @@ import { useAuthStore, dashboardHomeFor } from '@/lib/stores/authStore';
 export default function CreateQuizPage() {
   const router = useRouter();
   const { hydrate, isAuthenticated, hasHydrated, user } = useAuthStore();
-  const [form, setForm] = useState({ title: '', description: '', scheduled_at: '', is_practice: true });
+  const [form, setForm] = useState({
+    title: '',
+    description: '',
+    scheduled_at: '',
+    is_practice: true,
+    answer_grace_period_ms: 3000,
+  });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -35,6 +41,7 @@ export default function CreateQuizPage() {
         description: form.description || undefined,
         scheduled_at: form.scheduled_at || undefined,
         is_practice: form.is_practice,
+        answer_grace_period_ms: form.answer_grace_period_ms,
       });
       router.push(`/quiz/admin/${quiz.id}/questions`);
     } catch (err: unknown) {
@@ -109,6 +116,27 @@ export default function CreateQuizPage() {
                 <span className="text-muted-foreground font-normal">(not tied to a batch)</span>
               </span>
             </label>
+
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1.5">
+                Answer-change grace
+              </label>
+              <select
+                value={form.answer_grace_period_ms}
+                onChange={(e) => setForm({ ...form, answer_grace_period_ms: Number(e.target.value) })}
+                className="w-full bg-background border border-border rounded-lg px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition"
+              >
+                <option value={0}>Off — locks on first click (Kahoot-style)</option>
+                <option value={2000}>2 seconds (fast)</option>
+                <option value={3000}>3 seconds (recommended)</option>
+                <option value={5000}>5 seconds (relaxed)</option>
+                <option value={10000}>10 seconds (max)</option>
+              </select>
+              <p className="text-xs text-muted-foreground mt-1.5">
+                Time window after a player's first click during which they can change their selection.
+                Time bonus uses the first click, so a change of mind doesn't lower their score.
+              </p>
+            </div>
 
             <div className="flex gap-3 pt-2">
               <button

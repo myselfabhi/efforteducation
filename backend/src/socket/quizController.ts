@@ -157,7 +157,13 @@ async function persistQuizResults(quizId: number, questions: QuizQuestion[]) {
 // QUIZ FLOW CONTROLLER
 // =====================
 
-async function startQuestion(io: Server, quizId: number, questions: QuizQuestion[], questionIndex: number) {
+async function startQuestion(
+  io: Server,
+  quizId: number,
+  questions: QuizQuestion[],
+  questionIndex: number,
+  gracePeriodMs: number,
+) {
   if (questionIndex >= questions.length) {
     // Quiz complete
     await endQuiz(io, quizId, questions);
@@ -169,12 +175,14 @@ async function startQuestion(io: Server, quizId: number, questions: QuizQuestion
   const totalTimeMs = question.time_limit * 1000;
   const endTime = now + totalTimeMs;
 
-  // Set state in Redis
+  // Set state in Redis (carry the quiz's grace window across question
+  // boundaries so trySubmitAnswer can read it without a DB round-trip).
   await setQuizState(quizId, {
     currentQuestionId: question.id,
     currentQuestionIndex: questionIndex,
     totalQuestions: questions.length,
     status: 'IN_PROGRESS',
+    gracePeriodMs,
   });
 
   // Set timestamp-based timer in Redis
@@ -200,20 +208,23 @@ async function startQuestion(io: Server, quizId: number, questions: QuizQuestion
     timeLimit: question.time_limit,
     startTime: now,
     endTime: endTime,
+    // Surface the grace window so the client can keep options interactive
+    // for exactly the same window the server will accept overwrites for.
+    gracePeriodMs,
   });
 
-  console.log(`Quiz ${quizId}: Question ${questionIndex + 1}/${questions.length} started (${question.time_limit}s)`);
+  console.log(`Quiz ${quizId}: Question ${questionIndex + 1}/${questions.length} started (${question.time_limit}s, grace ${gracePeriodMs}ms)`);
 
   // Schedule question end using setTimeout for the transition only
   // The actual timing validation is done via timestamps
   clearQuizTimer(quizId);
   const timer = setTimeout(async () => {
-    await endQuestion(io, quizId, questions, questionIndex);
+    await endQuestion(io, quizId, questions, questionIndex, gracePeriodMs);
   }, totalTimeMs);
   activeTimers.set(quizId, timer);
 }
 
-async function endQuestion(io: Server, quizId: number, questions: QuizQuestion[], questionIndex: number) {
+async function endQuestion(io: Server, quizId: number, questions: QuizQuestion[], questionIndex: number, gracePeriodMs: number) {
   clearQuizTimer(quizId);
 
   const question = questions[questionIndex];
@@ -260,12 +271,12 @@ async function endQuestion(io: Server, quizId: number, questions: QuizQuestion[]
 
   // After 2 seconds, show leaderboard
   const leaderboardTimer = setTimeout(async () => {
-    await showLeaderboard(io, quizId, questions, questionIndex);
+    await showLeaderboard(io, quizId, questions, questionIndex, gracePeriodMs);
   }, 2000);
   activeTimers.set(quizId, leaderboardTimer);
 }
 
-async function showLeaderboard(io: Server, quizId: number, questions: QuizQuestion[], questionIndex: number) {
+async function showLeaderboard(io: Server, quizId: number, questions: QuizQuestion[], questionIndex: number, gracePeriodMs: number) {
   clearQuizTimer(quizId);
 
   await setQuizState(quizId, {
@@ -286,7 +297,7 @@ async function showLeaderboard(io: Server, quizId: number, questions: QuizQuesti
 
   // After 5 seconds, go to next question
   const nextTimer = setTimeout(async () => {
-    await startQuestion(io, quizId, questions, questionIndex + 1);
+    await startQuestion(io, quizId, questions, questionIndex + 1, gracePeriodMs);
   }, 5000);
   activeTimers.set(quizId, nextTimer);
 }
@@ -449,12 +460,19 @@ export function setupQuizSocket(io: Server) {
 
         const { quizId } = data;
 
-        // Verify quiz is LIVE
-        const quizResult = await pool.query('SELECT status FROM quizzes WHERE id = $1', [quizId]);
+        // Verify quiz is LIVE + read its per-quiz grace setting (migration 007).
+        // Coalesce in case the column doesn't exist on legacy rows during a
+        // partial deploy.
+        const quizResult = await pool.query(
+          `SELECT status, COALESCE(answer_grace_period_ms, 3000) AS grace
+             FROM quizzes WHERE id = $1`,
+          [quizId]
+        );
         if (quizResult.rows.length === 0 || quizResult.rows[0].status !== 'LIVE') {
           socket.emit('error', { message: 'Quiz must be launched first' });
           return;
         }
+        const gracePeriodMs = Math.max(0, Math.min(10_000, Number(quizResult.rows[0].grace) || 0));
 
         const questions = await getQuizQuestions(quizId);
         if (questions.length === 0) {
@@ -475,6 +493,7 @@ export function setupQuizSocket(io: Server) {
           currentQuestionIndex: -1,
           totalQuestions: questions.length,
           status: 'LOBBY',
+          gracePeriodMs,
         });
 
         io.to(`quiz:${quizId}`).emit('quiz:starting', {
@@ -484,7 +503,7 @@ export function setupQuizSocket(io: Server) {
 
         // 3 second countdown before first question
         setTimeout(async () => {
-          await startQuestion(io, quizId, questions, 0);
+          await startQuestion(io, quizId, questions, 0, gracePeriodMs);
         }, 3000);
 
         console.log(`Quiz ${quizId} started by admin ${user.username}`);
@@ -523,14 +542,22 @@ export function setupQuizSocket(io: Server) {
         // 4. Calculate time taken
         const timeTakenMs = now - timer.startTime;
 
-        // 5. Atomic duplicate prevention with SETNX
-        const accepted = await trySubmitAnswer(quizId, questionId, user.id, {
-          selectedOptionId,
-          timeTakenMs,
-        });
+        // 5. Submit answer with grace-aware overwrite semantics.
+        const gracePeriodMs = quizState.gracePeriodMs ?? 0;
+        const result = await trySubmitAnswer(
+          quizId,
+          questionId,
+          user.id,
+          { selectedOptionId, timeTakenMs },
+          { gracePeriodMs }
+        );
 
-        if (!accepted) {
-          socket.emit('answer:rejected', { reason: 'Already answered' });
+        if (!result.accepted) {
+          socket.emit('answer:rejected', {
+            reason: result.reason === 'hard_locked'
+              ? 'Answer is locked'
+              : 'Grace window expired',
+          });
           return;
         }
 
@@ -538,6 +565,8 @@ export function setupQuizSocket(io: Server) {
           questionId,
           selectedOptionId,
           timeTakenMs,
+          firstClick: result.firstClick,
+          gracePeriodMs,
         });
 
         // Notify admin of answer count
@@ -588,15 +617,20 @@ export function setupQuizSocket(io: Server) {
         );
         const count = parseInt(countRes.rows[0]?.count ?? '0', 10);
 
-        // 2nd+ violation in this quiz → auto-submit blank for the current question
+        // 2nd+ violation in this quiz → auto-submit blank for the current
+        // question AND set the hard-lock so any subsequent overwrite (even
+        // within the normal grace window) is refused.
         if (count >= 2) {
           const timer = await getQuizTimer(quizId);
           const timeTakenMs = timer ? Date.now() - timer.startTime : 0;
-          const accepted = await trySubmitAnswer(quizId, activeQuestionId, user.id, {
-            selectedOptionId: null,
-            timeTakenMs,
-          });
-          if (accepted) {
+          const result = await trySubmitAnswer(
+            quizId,
+            activeQuestionId,
+            user.id,
+            { selectedOptionId: null, timeTakenMs },
+            { forceLock: true }
+          );
+          if (result.accepted) {
             socket.emit('answer:rejected', {
               reason: 'Auto-submitted blank — multiple focus losses detected',
             });

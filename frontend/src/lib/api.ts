@@ -162,6 +162,8 @@ export interface QuizSummary {
   updated_at: string;
   batch_id: number | null;
   is_practice: boolean;
+  /** Per-quiz answer-change grace window in ms (migration 007). Defaults to 3000. */
+  answer_grace_period_ms?: number;
   creator_name?: string;
   question_count?: number;
 }
@@ -334,7 +336,7 @@ export const api = {
     list: (batch_id?: number) =>
       apiFetch<QuizSummary[]>(`/api/quizzes${batch_id ? `?batch_id=${batch_id}` : ''}`),
     get: (id: number) => apiFetch<QuizDetail>(`/api/quizzes/${id}`),
-    create: (body: { title: string; description?: string; scheduled_at?: string; batch_id?: number; is_practice?: boolean }) =>
+    create: (body: { title: string; description?: string; scheduled_at?: string; batch_id?: number; is_practice?: boolean; answer_grace_period_ms?: number }) =>
       apiFetch<QuizSummary>('/api/quizzes', j(body)),
     addQuestion: (
       quizId: number,

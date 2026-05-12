@@ -12,6 +12,9 @@ const CreateQuizSchema = z.object({
   scheduled_at: z.string().optional().nullable(),
   batch_id: z.number().int().positive().optional().nullable(),
   is_practice: z.boolean().optional(),
+  // Per-quiz answer-change grace window in ms (migration 007). Clamped to
+  // [0, 10000] server-side. 0 disables the grace (classic Kahoot).
+  answer_grace_period_ms: z.number().int().min(0).max(10_000).optional(),
 });
 
 const AddQuestionSchema = z.object({
@@ -71,7 +74,7 @@ router.post(
   validateBody(CreateQuizSchema),
   async (req: AuthRequest, res: Response) => {
     try {
-      const { title, description, scheduled_at, batch_id, is_practice } = req.body;
+      const { title, description, scheduled_at, batch_id, is_practice, answer_grace_period_ms } = req.body;
 
       if (batch_id) {
         const ok = await userCanWriteToBatch(req.user!.id, req.user!.role, batch_id);
@@ -80,9 +83,11 @@ router.post(
         return res.status(400).json({ error: 'batch_id is required (or set is_practice=true)' });
       }
 
+      const grace = Math.max(0, Math.min(10_000, Number(answer_grace_period_ms ?? 3000)));
+
       const result = await pool.query(
-        `INSERT INTO quizzes (title, description, created_by, status, scheduled_at, batch_id, is_practice)
-         VALUES ($1, $2, $3, 'DRAFT', $4, $5, $6)
+        `INSERT INTO quizzes (title, description, created_by, status, scheduled_at, batch_id, is_practice, answer_grace_period_ms)
+         VALUES ($1, $2, $3, 'DRAFT', $4, $5, $6, $7)
          RETURNING *`,
         [
           title,
@@ -91,6 +96,7 @@ router.post(
           scheduled_at || null,
           batch_id || null,
           !!is_practice,
+          grace,
         ]
       );
 

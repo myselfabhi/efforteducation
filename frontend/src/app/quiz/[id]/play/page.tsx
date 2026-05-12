@@ -29,6 +29,9 @@ interface QuestionData {
   timeLimit: number;
   startTime: number;
   endTime: number;
+  /** Server-sent grace window (ms) the player can change their answer in
+   *  after the first click. Defaults to 0 (no grace) when absent. */
+  gracePeriodMs?: number;
 }
 
 const OPTION_LABELS = ['A', 'B', 'C', 'D'];
@@ -52,6 +55,12 @@ export default function QuizPlayScreen() {
   const [violationCount, setViolationCount] = useState(0);
   // 🔥 client-only streak — increments on consecutive correct answers, resets on wrong/skip.
   const [streak, setStreak] = useState(0);
+  // Grace-window machinery (migration 007). lockDeadline is the ms timestamp
+  // after which we treat the answer as locked; null means "no answer yet".
+  // isLocked is the derived flag — once true, no further overwrites allowed.
+  const [lockDeadline, setLockDeadline] = useState<number | null>(null);
+  const [isLocked, setIsLocked] = useState(false);
+  const [, setNow] = useState(Date.now()); // forces re-render for the countdown
 
   const phaseRef = useRef(phase);
   phaseRef.current = phase;
@@ -139,6 +148,8 @@ export default function QuizPlayScreen() {
       setSelectedOptionId(null);
       setCorrectOptionId(null);
       setAlreadyAnswered(false);
+      setLockDeadline(null);
+      setIsLocked(false);
       setAnswerCount(0);
     });
 
@@ -159,6 +170,7 @@ export default function QuizPlayScreen() {
     socket.on('question:end', (data) => {
       setCorrectOptionId(data.correctOptionId);
       setPhase('answer');
+      setIsLocked(true);          // grace closed; no more changes
       // Streak update — compare your selection (state at the time of the listener
       // closure may be stale, so read via setter callback).
       setSelectedOptionId((sel) => {
@@ -185,6 +197,13 @@ export default function QuizPlayScreen() {
       if (data.currentQuestion) {
         setQuestion(data.currentQuestion);
         setAlreadyAnswered(data.alreadyAnswered || false);
+        // After a reconnect mid-question the server tells us whether the user
+        // already submitted; treat that as "locked" since we don't get a
+        // useful grace remainder back.
+        if (data.alreadyAnswered) {
+          setIsLocked(true);
+          setLockDeadline(Date.now());
+        }
         setPhase('question');
       }
       if (data.leaderboard) setLeaderboard(data.leaderboard);
@@ -218,11 +237,36 @@ export default function QuizPlayScreen() {
     };
   }, [hasHydrated, isAuthenticated, quizId, router]);
 
+  // Tick once per 100ms while a grace window is active so the countdown
+  // updates and we flip isLocked the moment it expires.
+  useEffect(() => {
+    if (lockDeadline == null || isLocked) return;
+    const id = setInterval(() => {
+      const t = Date.now();
+      setNow(t);
+      if (t >= lockDeadline) {
+        setIsLocked(true);
+        clearInterval(id);
+      }
+    }, 100);
+    return () => clearInterval(id);
+  }, [lockDeadline, isLocked]);
+
   const handleAnswer = useCallback(
     (optionId: number) => {
-      if (alreadyAnswered || !question) return;
+      if (!question || isLocked) return;
+      // First click → opens the grace window. Subsequent clicks just update
+      // the selection (state and over the wire). If grace is 0, this also
+      // locks immediately because the deadline equals now.
+      const now = Date.now();
+      const grace = Math.max(0, question.gracePeriodMs ?? 0);
+      const deadlineCandidate = now + grace;
       setSelectedOptionId(optionId);
-      setAlreadyAnswered(true); // optimistic lock
+      if (lockDeadline == null) {
+        setLockDeadline(deadlineCandidate);
+        if (grace === 0) setIsLocked(true);
+      }
+      setAlreadyAnswered(true);
       const socket = getSocket();
       socket.emit('answer:submit', {
         quizId,
@@ -230,7 +274,7 @@ export default function QuizPlayScreen() {
         selectedOptionId: optionId,
       });
     },
-    [alreadyAnswered, question, quizId],
+    [isLocked, lockDeadline, question, quizId],
   );
 
   const progressPct = question
@@ -345,13 +389,26 @@ export default function QuizPlayScreen() {
                     text={opt.option_text}
                     isSelected={selectedOptionId === opt.id}
                     isCorrect={null}
-                    disabled={alreadyAnswered}
+                    disabled={isLocked}
                     onClick={() => handleAnswer(opt.id)}
                   />
                 ))}
               </div>
 
-              {alreadyAnswered && (
+              {alreadyAnswered && !isLocked && lockDeadline != null && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-6 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-warning/10 border border-warning/30 text-warning text-xs font-semibold"
+                >
+                  <Clock className="h-3.5 w-3.5" />
+                  You can change your answer for{' '}
+                  <span className="tabular-nums">
+                    {Math.max(0, Math.ceil((lockDeadline - Date.now()) / 1000))}s
+                  </span>
+                </motion.div>
+              )}
+              {isLocked && alreadyAnswered && (
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
