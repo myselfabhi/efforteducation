@@ -4,6 +4,7 @@ import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import { StickyCTABar } from "@/components/landing/StickyCTABar";
 import { CourseDetailContent } from "./components/CourseDetailContent";
+import { BatchesPicker } from "./components/BatchesPicker";
 import { courseList, getCourseBySlug } from "../../data/courses";
 import Link from "next/link";
 import { ArrowRight, BookOpen } from "lucide-react";
@@ -94,6 +95,7 @@ export default async function CoursePage({ params }: PageProps) {
       <Header />
       <main className="flex-1 pb-24 sm:pb-28 md:pb-16">
         <CourseDetailContent course={course} />
+        <BatchesPicker slug={slug} />
       </main>
       <Footer />
       <StickyCTABar />

@@ -19,6 +19,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
   X,
+  MailQuestion,
 } from 'lucide-react';
 
 interface NavItem {
@@ -54,6 +55,7 @@ function navFor(role: UserRole): NavItem[] {
       return [
         { href: '/dashboard/student', label: 'Overview', icon: LayoutDashboard },
         { href: '/dashboard/student/batches', label: 'My Batches', icon: GraduationCap },
+        { href: '/dashboard/student/enrolments', label: 'My Requests', icon: MailQuestion },
         { href: '/dashboard/student/classes', label: 'Live Classes', icon: Video },
         { href: '/dashboard/student/materials', label: 'Materials', icon: FileText },
         { href: '/dashboard/student/quizzes', label: 'Quizzes', icon: ClipboardList },

@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
-import { Video, FileText, ClipboardList, Megaphone, Users, Plus, GraduationCap, Star, X, Loader2 } from 'lucide-react';
-import { api, type Batch, type BatchTeacher, type LiveClass, type Material, type Announcement, type AuthUser } from '@/lib/api';
+import { Video, FileText, ClipboardList, Megaphone, Users, Plus, GraduationCap, Star, X, Loader2, UserCheck, UserX, MailQuestion } from 'lucide-react';
+import { api, type Batch, type BatchTeacher, type LiveClass, type Material, type Announcement, type AuthUser, type EnrolmentRequest } from '@/lib/api';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { Button } from '@/app/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/app/components/ui/tabs';
@@ -41,6 +41,14 @@ export function BatchDetail({ batchId, canManage, basePath }: Props) {
     queryFn: () => api.announcements.listForBatch(batchId) as Promise<Announcement[]>,
   });
 
+  // Pending enrolment requests — drives the Requests tab badge for managers.
+  const requestsQ = useQuery({
+    queryKey: ['batch', batchId, 'enrolment-requests', 'pending'],
+    queryFn: () => api.batches.listEnrolmentRequests(batchId, 'pending') as Promise<EnrolmentRequest[]>,
+    enabled: canManage,
+  });
+  const pendingCount = requestsQ.data?.length ?? 0;
+
   if (batchQ.isLoading) return <p className="text-sm text-muted-foreground">Loading…</p>;
   if (batchQ.error || !batchQ.data) return <p className="text-sm text-destructive">Failed to load batch.</p>;
   const batch = batchQ.data;
@@ -64,6 +72,16 @@ export function BatchDetail({ batchId, canManage, basePath }: Props) {
           <TabsTrigger value="materials">Materials</TabsTrigger>
           <TabsTrigger value="announcements">Announcements</TabsTrigger>
           <TabsTrigger value="people">People</TabsTrigger>
+          {canManage && (
+            <TabsTrigger value="requests" className="relative">
+              Requests
+              {pendingCount > 0 && (
+                <span className="ml-2 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold tabular-nums">
+                  {pendingCount}
+                </span>
+              )}
+            </TabsTrigger>
+          )}
           {isSuperAdmin && <TabsTrigger value="teachers">Teachers</TabsTrigger>}
         </TabsList>
 
@@ -163,6 +181,12 @@ export function BatchDetail({ batchId, canManage, basePath }: Props) {
           )}
         </TabsContent>
 
+        {canManage && (
+          <TabsContent value="requests" className="space-y-4 pt-4">
+            <RequestsManager batchId={batchId} />
+          </TabsContent>
+        )}
+
         {isSuperAdmin && (
           <TabsContent value="teachers" className="space-y-4 pt-4">
             <TeachersManager
@@ -225,6 +249,171 @@ export function BatchDetail({ batchId, canManage, basePath }: Props) {
             </Link>
           </Button>
         </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Enrolment-request triage (admin + teacher of batch).
+// ─────────────────────────────────────────────────────────────────────────────
+
+function RequestsManager({ batchId }: { batchId: number }) {
+  const qc = useQueryClient();
+  const [filter, setFilter] = useState<'pending' | 'all'>('pending');
+  const [noteFor, setNoteFor] = useState<number | null>(null);
+  const [note, setNote] = useState('');
+
+  const q = useQuery({
+    queryKey: ['batch', batchId, 'enrolment-requests', filter],
+    queryFn: () => api.batches.listEnrolmentRequests(batchId, filter) as Promise<EnrolmentRequest[]>,
+  });
+
+  const decideM = useMutation({
+    mutationFn: ({ reqId, action, note: n }: { reqId: number; action: 'approve' | 'decline'; note?: string }) =>
+      api.batches.decideEnrolmentRequest(batchId, reqId, action, n),
+    onSuccess: () => {
+      setNoteFor(null);
+      setNote('');
+      qc.invalidateQueries({ queryKey: ['batch', batchId] });
+      qc.invalidateQueries({ queryKey: ['batch', batchId, 'enrolment-requests'] });
+    },
+  });
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <h3 className="font-semibold flex items-center gap-2">
+            <MailQuestion className="h-4 w-4" />
+            Enrolment requests
+          </h3>
+          <p className="text-xs text-muted-foreground">
+            Approve to add the student to the batch; decline to dismiss with an optional note.
+          </p>
+        </div>
+        <div className="flex rounded-lg border border-border bg-card text-xs overflow-hidden shrink-0">
+          <button
+            onClick={() => setFilter('pending')}
+            className={`px-3 h-8 ${filter === 'pending' ? 'bg-primary text-primary-foreground' : 'hover:bg-secondary/40'}`}
+          >
+            Pending
+          </button>
+          <button
+            onClick={() => setFilter('all')}
+            className={`px-3 h-8 border-l border-border ${filter === 'all' ? 'bg-primary text-primary-foreground' : 'hover:bg-secondary/40'}`}
+          >
+            All
+          </button>
+        </div>
+      </div>
+
+      {q.isLoading && <p className="text-sm text-muted-foreground">Loading…</p>}
+      {q.data && q.data.length === 0 && (
+        <p className="text-sm text-muted-foreground text-center py-6">
+          {filter === 'pending' ? 'No pending requests.' : 'No requests yet.'}
+        </p>
+      )}
+
+      {q.data && q.data.length > 0 && (
+        <ul className="divide-y divide-border rounded-xl border border-border bg-card">
+          {q.data.map((r) => {
+            const isPending  = r.status === 'pending';
+            const isOpenNote = noteFor === r.id;
+            return (
+              <li key={r.id} className="p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex items-start gap-3">
+                    <div className="h-9 w-9 rounded-full bg-muted flex items-center justify-center text-xs font-medium shrink-0">
+                      {(r.student_full_name || r.student_username || '??').slice(0, 2).toUpperCase()}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium truncate">
+                        {r.student_full_name || r.student_username}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">{r.student_email}</p>
+                      <p className="text-[11px] text-muted-foreground mt-0.5">
+                        Sent {format(new Date(r.requested_at), 'PP p')}
+                        {!isPending && r.decided_at && ` · ${r.status} ${format(new Date(r.decided_at), 'PP p')}`}
+                      </p>
+                      {r.message && (
+                        <blockquote className="mt-2 text-sm text-muted-foreground italic border-l-2 border-border pl-2">
+                          "{r.message}"
+                        </blockquote>
+                      )}
+                    </div>
+                  </div>
+                  {isPending ? (
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        onClick={() => decideM.mutate({ reqId: r.id, action: 'approve' })}
+                        disabled={decideM.isPending}
+                        className="inline-flex items-center gap-1 h-9 px-3 rounded-lg bg-success text-success-foreground text-xs font-semibold hover:opacity-90 disabled:opacity-60"
+                      >
+                        <UserCheck className="h-3.5 w-3.5" />
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => { setNoteFor(r.id); setNote(''); }}
+                        disabled={decideM.isPending}
+                        className="inline-flex items-center gap-1 h-9 px-3 rounded-lg border border-border text-xs font-semibold hover:bg-destructive/10 hover:text-destructive transition"
+                      >
+                        <UserX className="h-3.5 w-3.5" />
+                        Decline
+                      </button>
+                    </div>
+                  ) : (
+                    <span className={`shrink-0 inline-flex items-center px-2 h-6 rounded-full text-[10px] font-semibold uppercase tracking-widest ${
+                      r.status === 'approved' ? 'bg-success/10 text-success' :
+                      r.status === 'declined' ? 'bg-destructive/10 text-destructive' :
+                      'bg-secondary/40 text-muted-foreground'
+                    }`}>
+                      {r.status}
+                    </span>
+                  )}
+                </div>
+
+                {isOpenNote && (
+                  <div className="mt-3 space-y-2 rounded-lg border border-border bg-secondary/20 p-3">
+                    <label className="text-xs font-medium text-muted-foreground block">
+                      Decline note (optional — shown to student)
+                    </label>
+                    <textarea
+                      value={note}
+                      onChange={(e) => setNote(e.target.value.slice(0, 500))}
+                      rows={2}
+                      className="w-full text-base sm:text-sm bg-background border border-border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/40"
+                      placeholder="e.g. 'This batch is for class 8 only.'"
+                    />
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => decideM.mutate({ reqId: r.id, action: 'decline', note: note.trim() || undefined })}
+                        disabled={decideM.isPending}
+                        className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg bg-destructive text-destructive-foreground text-xs font-semibold hover:opacity-90 disabled:opacity-60"
+                      >
+                        {decideM.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <UserX className="h-3.5 w-3.5" />}
+                        Confirm decline
+                      </button>
+                      <button
+                        onClick={() => { setNoteFor(null); setNote(''); }}
+                        className="h-9 px-3 rounded-lg border border-border text-xs hover:bg-secondary/40"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {r.note && r.status === 'declined' && !isOpenNote && (
+                  <div className="mt-2 rounded-lg bg-destructive/5 text-destructive/90 px-3 py-2 text-xs">
+                    <span className="font-semibold mr-1">Note sent:</span>
+                    {r.note}
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
       )}
     </div>
   );

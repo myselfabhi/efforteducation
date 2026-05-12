@@ -20,6 +20,36 @@ router.get('/me', authMiddleware, async (req: AuthRequest, res: Response) => {
   }
 });
 
+// GET /api/users/me/enrolment-requests — student's own request history
+// (migration 006). Joins the batch row so the UI can render the badge name
+// without a second round-trip.
+router.get(
+  '/me/enrolment-requests',
+  authMiddleware,
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const r = await pool.query(
+        `SELECT
+            req.id, req.batch_id, req.status, req.message, req.note,
+            req.requested_at, req.decided_at,
+            b.name        AS batch_name,
+            c.title       AS course_title,
+            c.slug        AS course_slug
+           FROM batch_enrolment_requests req
+           JOIN batches  b ON b.id = req.batch_id
+           JOIN courses  c ON c.id = b.course_id
+          WHERE req.student_id = $1
+          ORDER BY req.requested_at DESC`,
+        [req.user!.id]
+      );
+      res.json(r.rows);
+    } catch (err) {
+      console.error('GET /me/enrolment-requests error', err);
+      res.status(500).json({ error: 'Failed to load requests' });
+    }
+  }
+);
+
 // PATCH /api/users/me
 router.patch(
   '/me',

@@ -7,7 +7,10 @@ export type NotificationType =
   | 'quiz_launched'
   | 'material_added'
   | 'enrolled'
-  | 'announcement';
+  | 'announcement'
+  | 'enrolment_requested'
+  | 'enrolment_approved'
+  | 'enrolment_declined';
 
 export interface CreateNotificationInput {
   userId: number;

@@ -123,6 +123,41 @@ export interface Notification {
   read_at: string | null; created_at: string;
 }
 
+export interface EnrolmentRequest {
+  id: number;
+  batch_id: number;
+  student_id?: number;
+  status: 'pending' | 'approved' | 'declined' | 'cancelled';
+  message: string | null;
+  note: string | null;
+  requested_at: string;
+  decided_at: string | null;
+  decided_by?: number | null;
+  // joined fields (LIST endpoint adds student info; /me endpoint adds batch/course info)
+  student_username?: string;
+  student_full_name?: string | null;
+  student_email?: string;
+  student_avatar_url?: string | null;
+  batch_name?: string;
+  course_title?: string;
+  course_slug?: string;
+}
+
+export interface PublicBatch {
+  id: number;
+  name: string;
+  start_date: string;
+  end_date: string | null;
+  schedule_description: string | null;
+  capacity: number | null;
+  status: string;
+  enrolled_count: number;
+  teachers: Array<{
+    id: number; full_name: string | null; username: string;
+    avatar_url: string | null; is_primary: boolean;
+  }> | null;
+}
+
 export interface Announcement {
   id: number; batch_id: number; posted_by: number;
   title: string; body: string; is_pinned: boolean; created_at: string;
@@ -250,12 +285,15 @@ export const api = {
     setRole: (id: number, role: 'super_admin' | 'teacher' | 'student') =>
       apiFetch(`/api/users/${id}/role`, patch({ role })),
     remove: (id: number) => apiFetch(`/api/users/${id}`, del()),
+    myEnrolmentRequests: () =>
+      apiFetch<EnrolmentRequest[]>('/api/users/me/enrolment-requests'),
   },
 
   courses: {
     list: () => apiFetch<Course[]>('/api/courses'),
     listAdmin: () => apiFetch<Course[]>('/api/courses/admin'),
     get: (slug: string) => apiFetch<Course>(`/api/courses/${slug}`),
+    batches: (slug: string) => apiFetch<PublicBatch[]>(`/api/courses/${slug}/batches`),
     create: (body: Partial<Course> & { slug: string; title: string; category: string }) =>
       apiFetch<Course>('/api/courses', j(body)),
     update: (id: number, body: Partial<Course>) =>
@@ -280,6 +318,23 @@ export const api = {
       apiFetch<{ total_past: number; attended: number; total_seconds: number }>(
         `/api/batches/${id}/my-attendance`
       ),
+    // ── Request-to-join enrolment (migration 006) ───────────────────────
+    requestEnrolment: (id: number, message?: string) =>
+      apiFetch<EnrolmentRequest>(
+        `/api/batches/${id}/enrolment-requests`,
+        j({ message })
+      ),
+    listEnrolmentRequests: (id: number, status: 'pending' | 'approved' | 'declined' | 'cancelled' | 'all' = 'pending') =>
+      apiFetch<EnrolmentRequest[]>(
+        `/api/batches/${id}/enrolment-requests?status=${status}`
+      ),
+    decideEnrolmentRequest: (id: number, reqId: number, action: 'approve' | 'decline', note?: string) =>
+      apiFetch(
+        `/api/batches/${id}/enrolment-requests/${reqId}`,
+        patch({ action, note })
+      ),
+    cancelEnrolmentRequest: (id: number, reqId: number) =>
+      apiFetch(`/api/batches/${id}/enrolment-requests/${reqId}`, del()),
     addStudents: (id: number, student_ids: number[]) =>
       apiFetch(`/api/batches/${id}/students`, j({ student_ids })),
     removeStudent: (id: number, student_id: number) =>

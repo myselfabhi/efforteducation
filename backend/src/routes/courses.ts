@@ -39,6 +39,35 @@ router.get('/:slug', async (req: Request, res: Response) => {
   }
 });
 
+// GET /api/courses/:slug/batches — public batch catalog for "request to join"
+// flow (migration 006). Excludes completed/archived; includes a seat count
+// so the frontend can render "X / Y seats" or "Full".
+router.get('/:slug/batches', async (req: Request, res: Response) => {
+  try {
+    const r = await pool.query(
+      `SELECT
+          b.id, b.name, b.start_date, b.end_date, b.schedule_description,
+          b.capacity, b.status,
+          (SELECT COUNT(*)::INTEGER FROM batch_students bs
+             WHERE bs.batch_id = b.id AND bs.status = 'active') AS enrolled_count,
+          (SELECT json_agg(json_build_object(
+             'id', u.id, 'full_name', u.full_name, 'username', u.username,
+             'avatar_url', u.avatar_url, 'is_primary', bt.is_primary))
+             FROM batch_teachers bt JOIN users u ON u.id = bt.teacher_id
+            WHERE bt.batch_id = b.id) AS teachers
+         FROM batches b
+         JOIN courses c ON c.id = b.course_id
+        WHERE c.slug = $1 AND b.status IN ('upcoming', 'active')
+        ORDER BY b.start_date ASC`,
+      [req.params.slug]
+    );
+    res.json(r.rows);
+  } catch (err) {
+    console.error('GET /courses/:slug/batches error', err);
+    res.status(500).json({ error: 'Failed to load batches' });
+  }
+});
+
 // POST /api/courses
 router.post(
   '/',

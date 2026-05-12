@@ -301,4 +301,245 @@ async function notifyUser(userId: number, batchId: number, title: string) {
   return nu({ userId, type: 'enrolled', title, linkUrl: `/dashboard/batches/${batchId}` });
 }
 
+// =============================================================================
+// HYBRID REQUEST-TO-JOIN ENROLMENT (migration 006)
+//
+// Students browse a course's batches, click "Request to join", and the row
+// lands in `batch_enrolment_requests` with status='pending'. Any teacher of
+// that batch or any super_admin can then approve or decline.
+// =============================================================================
+
+// POST /api/batches/:id/enrolment-requests — student asks to join
+router.post(
+  '/:id/enrolment-requests',
+  authMiddleware,
+  roleGuard('student'),
+  async (req: AuthRequest, res: Response) => {
+    const batchId = parseInt(req.params.id, 10);
+    const userId  = req.user!.id;
+    const message = typeof req.body?.message === 'string'
+      ? req.body.message.slice(0, 500)
+      : null;
+    try {
+      const batchRes = await pool.query(
+        `SELECT id, status, capacity FROM batches WHERE id = $1`,
+        [batchId]
+      );
+      if (batchRes.rows.length === 0) return res.status(404).json({ error: 'Batch not found' });
+      const batch = batchRes.rows[0];
+      if (batch.status === 'completed' || batch.status === 'archived') {
+        return res.status(410).json({ error: 'Batch is closed' });
+      }
+      // Already enrolled?
+      const enrolled = await pool.query(
+        `SELECT 1 FROM batch_students WHERE batch_id = $1 AND student_id = $2 AND status = 'active'`,
+        [batchId, userId]
+      );
+      if (enrolled.rowCount && enrolled.rowCount > 0) {
+        return res.status(409).json({ error: 'Already enrolled in this batch' });
+      }
+      // Capacity check
+      if (batch.capacity != null) {
+        const counted = await pool.query(
+          `SELECT COUNT(*)::INTEGER AS n FROM batch_students WHERE batch_id = $1 AND status = 'active'`,
+          [batchId]
+        );
+        if (counted.rows[0].n >= batch.capacity) {
+          return res.status(409).json({ error: 'Batch is full' });
+        }
+      }
+      // Insert; the partial unique index rejects duplicate pending rows.
+      try {
+        const inserted = await pool.query(
+          `INSERT INTO batch_enrolment_requests (batch_id, student_id, message)
+           VALUES ($1, $2, $3)
+           RETURNING *`,
+          [batchId, userId, message]
+        );
+        // Fan out to all teachers of the batch + super_admins.
+        const recipients = await pool.query<{ id: number }>(
+          `SELECT bt.teacher_id AS id FROM batch_teachers bt WHERE bt.batch_id = $1
+           UNION
+           SELECT u.id FROM users u WHERE u.role IN ('super_admin', 'admin')`,
+          [batchId]
+        );
+        const { notifyMany } = await import('../services/notifications');
+        await notifyMany(
+          recipients.rows.map((r) => r.id),
+          {
+            type: 'enrolment_requested',
+            title: 'New join request',
+            body: `${req.user!.full_name || req.user!.username} asked to join the batch.`,
+            linkUrl: `/dashboard/teacher/batches/${batchId}?tab=requests`,
+          }
+        );
+        res.status(201).json(inserted.rows[0]);
+      } catch (e: unknown) {
+        const err = e as { code?: string };
+        if (err.code === '23505') {
+          return res.status(409).json({ error: 'You already have a pending request for this batch' });
+        }
+        throw e;
+      }
+    } catch (err) {
+      console.error('POST /batches/:id/enrolment-requests error', err);
+      res.status(500).json({ error: 'Failed to create enrolment request' });
+    }
+  }
+);
+
+// GET /api/batches/:id/enrolment-requests — admin/teacher lists requests
+router.get(
+  '/:id/enrolment-requests',
+  authMiddleware,
+  roleGuard('super_admin', 'teacher'),
+  batchMember('id'),
+  async (req: AuthRequest, res: Response) => {
+    const batchId = parseInt(req.params.id, 10);
+    const filter  = (typeof req.query.status === 'string' ? req.query.status : 'pending')
+      .toLowerCase();
+    const validStatuses = new Set(['pending', 'approved', 'declined', 'cancelled', 'all']);
+    if (!validStatuses.has(filter)) {
+      return res.status(400).json({ error: 'invalid status filter' });
+    }
+    try {
+      const r = await pool.query(
+        `SELECT
+            req.*,
+            u.username   AS student_username,
+            u.full_name  AS student_full_name,
+            u.email      AS student_email,
+            u.avatar_url AS student_avatar_url
+           FROM batch_enrolment_requests req
+           JOIN users u ON u.id = req.student_id
+          WHERE req.batch_id = $1
+            ${filter === 'all' ? '' : 'AND req.status = $2'}
+          ORDER BY req.status = 'pending' DESC, req.requested_at DESC`,
+        filter === 'all' ? [batchId] : [batchId, filter]
+      );
+      res.json(r.rows);
+    } catch (err) {
+      console.error('GET /batches/:id/enrolment-requests error', err);
+      res.status(500).json({ error: 'Failed to list requests' });
+    }
+  }
+);
+
+// PATCH /api/batches/:id/enrolment-requests/:reqId — approve or decline
+router.patch(
+  '/:id/enrolment-requests/:reqId',
+  authMiddleware,
+  roleGuard('super_admin', 'teacher'),
+  batchMember('id'),
+  async (req: AuthRequest, res: Response) => {
+    const batchId = parseInt(req.params.id, 10);
+    const reqId   = parseInt(req.params.reqId, 10);
+    const action  = req.body?.action;
+    const note    = typeof req.body?.note === 'string' ? req.body.note.slice(0, 500) : null;
+    if (action !== 'approve' && action !== 'decline') {
+      return res.status(400).json({ error: 'action must be "approve" or "decline"' });
+    }
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      const lock = await client.query(
+        `SELECT * FROM batch_enrolment_requests
+          WHERE id = $1 AND batch_id = $2 AND status = 'pending'
+          FOR UPDATE`,
+        [reqId, batchId]
+      );
+      if (lock.rows.length === 0) {
+        await client.query('ROLLBACK');
+        return res.status(404).json({ error: 'Pending request not found' });
+      }
+      const reqRow = lock.rows[0];
+
+      if (action === 'approve') {
+        // Re-check capacity inside the transaction.
+        const batchRes = await client.query(
+          `SELECT capacity FROM batches WHERE id = $1`,
+          [batchId]
+        );
+        if (batchRes.rows[0]?.capacity != null) {
+          const counted = await client.query(
+            `SELECT COUNT(*)::INTEGER AS n FROM batch_students
+              WHERE batch_id = $1 AND status = 'active'`,
+            [batchId]
+          );
+          if (counted.rows[0].n >= batchRes.rows[0].capacity) {
+            await client.query('ROLLBACK');
+            return res.status(409).json({ error: 'Batch is full' });
+          }
+        }
+        await client.query(
+          `INSERT INTO batch_students (batch_id, student_id, status)
+             VALUES ($1, $2, 'active')
+           ON CONFLICT (batch_id, student_id)
+             DO UPDATE SET status = 'active'`,
+          [batchId, reqRow.student_id]
+        );
+      }
+
+      await client.query(
+        `UPDATE batch_enrolment_requests
+            SET status = $1, decided_at = NOW(), decided_by = $2, note = $3
+          WHERE id = $4`,
+        [action === 'approve' ? 'approved' : 'declined', req.user!.id, note, reqId]
+      );
+      await client.query('COMMIT');
+
+      const { notifyUser: nu } = await import('../services/notifications');
+      await nu({
+        userId: reqRow.student_id,
+        type: action === 'approve' ? 'enrolment_approved' : 'enrolment_declined',
+        title: action === 'approve' ? 'Enrolment approved' : 'Enrolment request declined',
+        body: action === 'approve'
+          ? 'You have been added to the batch — open My Batches to get started.'
+          : (note || 'Your enrolment request was not approved.'),
+        linkUrl: action === 'approve'
+          ? `/dashboard/student/batches/${batchId}`
+          : `/dashboard/student/enrolments`,
+      });
+
+      res.status(204).end();
+    } catch (err) {
+      await client.query('ROLLBACK');
+      console.error('PATCH /batches/:id/enrolment-requests/:reqId error', err);
+      res.status(500).json({ error: 'Failed to decide request' });
+    } finally {
+      client.release();
+    }
+  }
+);
+
+// DELETE /api/batches/:id/enrolment-requests/:reqId — student cancels their own pending request
+router.delete(
+  '/:id/enrolment-requests/:reqId',
+  authMiddleware,
+  roleGuard('student'),
+  async (req: AuthRequest, res: Response) => {
+    const batchId = parseInt(req.params.id, 10);
+    const reqId   = parseInt(req.params.reqId, 10);
+    try {
+      const r = await pool.query(
+        `UPDATE batch_enrolment_requests
+            SET status = 'cancelled', decided_at = NOW()
+          WHERE id = $1
+            AND batch_id = $2
+            AND student_id = $3
+            AND status = 'pending'
+          RETURNING id`,
+        [reqId, batchId, req.user!.id]
+      );
+      if (r.rowCount === 0) {
+        return res.status(404).json({ error: 'No pending request to cancel' });
+      }
+      res.status(204).end();
+    } catch (err) {
+      console.error('DELETE /batches/:id/enrolment-requests/:reqId error', err);
+      res.status(500).json({ error: 'Failed to cancel request' });
+    }
+  }
+);
+
 export default router;
