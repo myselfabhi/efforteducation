@@ -272,6 +272,12 @@ export const api = {
       apiFetch(`/api/batches/${id}/teachers`, j({ teacher_id, is_primary })),
     removeTeacher: (id: number, teacher_id: number) =>
       apiFetch(`/api/batches/${id}/teachers/${teacher_id}`, del()),
+    setPrimaryTeacher: (id: number, teacher_id: number) =>
+      apiFetch(`/api/batches/${id}/teachers/${teacher_id}/primary`, { method: 'PATCH' }),
+    myAttendance: (id: number) =>
+      apiFetch<{ total_past: number; attended: number; total_seconds: number }>(
+        `/api/batches/${id}/my-attendance`
+      ),
     addStudents: (id: number, student_ids: number[]) =>
       apiFetch(`/api/batches/${id}/students`, j({ student_ids })),
     removeStudent: (id: number, student_id: number) =>

@@ -50,6 +50,8 @@ export default function QuizPlayScreen() {
   const [participantCount, setParticipantCount] = useState(0);
   const [connection, setConnection] = useState<'live' | 'reconnecting' | 'offline'>('live');
   const [violationCount, setViolationCount] = useState(0);
+  // 🔥 client-only streak — increments on consecutive correct answers, resets on wrong/skip.
+  const [streak, setStreak] = useState(0);
 
   const phaseRef = useRef(phase);
   phaseRef.current = phase;
@@ -157,6 +159,12 @@ export default function QuizPlayScreen() {
     socket.on('question:end', (data) => {
       setCorrectOptionId(data.correctOptionId);
       setPhase('answer');
+      // Streak update — compare your selection (state at the time of the listener
+      // closure may be stale, so read via setter callback).
+      setSelectedOptionId((sel) => {
+        setStreak((s) => (sel != null && sel === data.correctOptionId ? s + 1 : 0));
+        return sel;
+      });
     });
 
     socket.on(
@@ -271,7 +279,23 @@ export default function QuizPlayScreen() {
               </>
             )}
           </div>
-          {phase !== 'completed' && <ConnectionPill state={connection} />}
+          <div className="flex items-center gap-2">
+            <AnimatePresence>
+              {streak >= 2 && (
+                <motion.span
+                  key={streak}
+                  initial={{ opacity: 0, scale: 0.6, y: -4 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  className="inline-flex items-center gap-1 rounded-full bg-warning/10 text-warning border border-warning/30 px-2.5 py-1 text-xs font-bold tabular-nums"
+                  aria-label={`${streak} correct in a row`}
+                >
+                  🔥 {streak} in a row
+                </motion.span>
+              )}
+            </AnimatePresence>
+            {phase !== 'completed' && <ConnectionPill state={connection} />}
+          </div>
         </div>
       </header>
 

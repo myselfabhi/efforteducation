@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
-import { GraduationCap, Video, FileText, Trophy, Zap, Clock, Play } from 'lucide-react';
-import { api, type QuizSummary } from '@/lib/api';
+import { GraduationCap, Video, FileText, Trophy, Zap, Clock, Play, Crown } from 'lucide-react';
+import { api, type QuizSummary, type QuizLeaderboardRow } from '@/lib/api';
+import { useAuthStore } from '@/lib/stores/authStore';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { Button } from '@/app/components/ui/button';
 
@@ -167,23 +168,104 @@ export default function StudentDashboard() {
           </div>
 
           {data.recent_scores.length > 0 && (
-            <section className="rounded-2xl border border-border bg-card p-5">
-              <h2 className="font-semibold mb-4">Recent quiz scores</h2>
-              <ul className="divide-y divide-border">
-                {data.recent_scores.map((s) => (
-                  <li key={s.quiz_id} className="flex items-center justify-between py-2">
-                    <span className="truncate">{s.title}</span>
-                    <span className="text-sm">
-                      <span className="font-semibold">{s.total_score}</span>
-                      {s.rank && <span className="text-muted-foreground"> · rank #{s.rank}</span>}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </section>
+            <div className="grid lg:grid-cols-2 gap-6">
+              <section className="rounded-2xl border border-border bg-card p-5">
+                <h2 className="font-semibold mb-4">Recent quiz scores</h2>
+                <ul className="divide-y divide-border">
+                  {data.recent_scores.map((s) => (
+                    <li key={s.quiz_id} className="flex items-center justify-between py-2">
+                      <Link
+                        href={`/quiz/${s.quiz_id}/results`}
+                        className="truncate hover:underline"
+                      >
+                        {s.title}
+                      </Link>
+                      <span className="text-sm shrink-0 ml-3">
+                        <span className="font-semibold">{s.total_score}</span>
+                        {s.rank && <span className="text-muted-foreground"> · rank #{s.rank}</span>}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <TopOfClassWidget mostRecentQuizId={data.recent_scores[0].quiz_id} />
+            </div>
           )}
         </>
       )}
     </div>
+  );
+}
+
+function TopOfClassWidget({ mostRecentQuizId }: { mostRecentQuizId: number }) {
+  const me = useAuthStore((s) => s.user);
+  const { data, isLoading } = useQuery({
+    queryKey: ['quiz', mostRecentQuizId, 'leaderboard'],
+    queryFn: () => api.quizzes.leaderboard(mostRecentQuizId) as Promise<QuizLeaderboardRow[]>,
+    staleTime: 60_000,
+  });
+
+  return (
+    <section className="rounded-2xl border border-border bg-card p-5">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Crown className="h-5 w-5 text-warning" />
+          <h2 className="font-semibold">Top of the class</h2>
+        </div>
+        <Link
+          href={`/quiz/${mostRecentQuizId}/results`}
+          className="text-sm text-primary hover:underline"
+        >
+          See full
+        </Link>
+      </div>
+      {isLoading && <p className="text-sm text-muted-foreground">Loading…</p>}
+      {data && data.length === 0 && (
+        <p className="text-sm text-muted-foreground">No scores yet.</p>
+      )}
+      {data && data.length > 0 && (
+        <ul className="space-y-2">
+          {data.slice(0, 5).map((row, i) => {
+            const isMe = row.user_id === me?.id;
+            return (
+              <li
+                key={row.user_id}
+                className={`flex items-center justify-between rounded-lg px-3 py-2 ${
+                  isMe ? 'bg-primary/5 border border-primary/20' : 'bg-secondary/30'
+                }`}
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <span
+                    className={`inline-flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold ${
+                      i === 0
+                        ? 'bg-warning/15 text-warning'
+                        : i === 1
+                          ? 'bg-muted text-foreground'
+                          : i === 2
+                            ? 'bg-info/10 text-info'
+                            : 'bg-secondary text-muted-foreground'
+                    }`}
+                  >
+                    {i + 1}
+                  </span>
+                  <span className="truncate text-sm">
+                    {row.full_name || row.username}
+                    {isMe && (
+                      <span className="ml-2 text-[10px] uppercase tracking-widest text-primary font-semibold">
+                        You
+                      </span>
+                    )}
+                  </span>
+                </div>
+                <span className="text-sm font-semibold tabular-nums shrink-0">
+                  {row.total_score.toLocaleString()}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </section>
   );
 }

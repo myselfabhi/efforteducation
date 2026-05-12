@@ -77,6 +77,41 @@ router.get('/:id', authMiddleware, batchMember('id'), async (req: AuthRequest, r
   }
 });
 
+// GET /api/batches/:id/my-attendance — caller's attendance over past classes
+// in this batch. Used by the student dashboard Attendance card. Open to any
+// member (teacher/student/super_admin); shows the SELF row, never others.
+router.get(
+  '/:id/my-attendance',
+  authMiddleware,
+  batchMember('id'),
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const batchId = parseInt(req.params.id, 10);
+      const userId  = req.user!.id;
+      const r = await pool.query(
+        `SELECT
+            COUNT(*) FILTER (WHERE lc.status = 'ENDED')                                         AS total_past,
+            COUNT(*) FILTER (WHERE lc.status = 'ENDED' AND att.id IS NOT NULL)                  AS attended,
+            COALESCE(SUM(att.duration_seconds) FILTER (WHERE lc.status = 'ENDED'), 0)::INTEGER  AS total_seconds
+           FROM live_classes lc
+           LEFT JOIN live_class_attendance att
+             ON att.live_class_id = lc.id AND att.user_id = $2
+          WHERE lc.batch_id = $1`,
+        [batchId, userId]
+      );
+      const row = r.rows[0];
+      res.json({
+        total_past:    Number(row.total_past),
+        attended:      Number(row.attended),
+        total_seconds: Number(row.total_seconds),
+      });
+    } catch (err) {
+      console.error('GET /batches/:id/my-attendance error', err);
+      res.status(500).json({ error: 'Failed to load attendance' });
+    }
+  }
+);
+
 // POST /api/batches — super_admin
 router.post(
   '/',
@@ -186,6 +221,41 @@ router.delete('/:id/teachers/:teacherId', authMiddleware, roleGuard('super_admin
     res.status(500).json({ error: 'Failed to remove teacher' });
   }
 });
+
+// PATCH /api/batches/:id/teachers/:teacherId/primary — flip primary flag.
+// Enforces single-primary-per-batch by clearing all flags first, then setting
+// the target's. Safer than calling POST with is_primary=true (which leaves
+// any prior primary in place).
+router.patch(
+  '/:id/teachers/:teacherId/primary',
+  authMiddleware,
+  roleGuard('super_admin'),
+  async (req: AuthRequest, res: Response) => {
+    const batchId   = parseInt(req.params.id, 10);
+    const teacherId = parseInt(req.params.teacherId, 10);
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      await client.query('UPDATE batch_teachers SET is_primary = FALSE WHERE batch_id = $1', [batchId]);
+      const r = await client.query(
+        'UPDATE batch_teachers SET is_primary = TRUE WHERE batch_id = $1 AND teacher_id = $2',
+        [batchId, teacherId]
+      );
+      if (r.rowCount === 0) {
+        await client.query('ROLLBACK');
+        return res.status(404).json({ error: 'Teacher is not assigned to this batch' });
+      }
+      await client.query('COMMIT');
+      res.status(204).end();
+    } catch (err) {
+      await client.query('ROLLBACK');
+      console.error('set primary teacher error', err);
+      res.status(500).json({ error: 'Failed to set primary teacher' });
+    } finally {
+      client.release();
+    }
+  }
+);
 
 // POST /api/batches/:id/students — enroll students (super_admin or teacher of batch)
 router.post('/:id/students', authMiddleware, roleGuard('super_admin', 'teacher'), batchMember('id'), async (req: AuthRequest, res: Response) => {

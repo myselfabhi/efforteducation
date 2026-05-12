@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { Video, Clock } from 'lucide-react';
+import { Video, Clock, PlayCircle } from 'lucide-react';
 import { format, formatDistanceToNowStrict, isAfter, isBefore, addMinutes, subMinutes } from 'date-fns';
 import type { LiveClass } from '@/lib/api';
 import { Button } from '@/app/components/ui/button';
@@ -57,7 +57,7 @@ export function ClassCard({ cls }: Props) {
         </span>
       </div>
 
-      <div className="mt-4">
+      <div className="mt-4 space-y-2">
         {canJoin ? (
           <Button asChild className="w-full">
             <Link href={`/dashboard/classes/${cls.id}`}>
@@ -65,9 +65,18 @@ export function ClassCard({ cls }: Props) {
               {cls.status === 'LIVE' ? 'Join now' : 'Open room'}
             </Link>
           </Button>
+        ) : cls.recording_url ? (
+          <Button asChild variant="outline" className="w-full">
+            <a href={cls.recording_url} target="_blank" rel="noopener noreferrer">
+              <PlayCircle className="h-4 w-4 mr-2" />
+              Watch recording
+            </a>
+          </Button>
         ) : (
           <Button variant="outline" disabled className="w-full">
-            Opens 10 min before
+            {cls.status === 'ENDED' || isAfter(now, addMinutes(new Date(cls.scheduled_end), 30))
+              ? 'Class ended'
+              : 'Opens 10 min before'}
           </Button>
         )}
       </div>
