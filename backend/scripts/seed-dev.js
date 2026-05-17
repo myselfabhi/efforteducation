@@ -10,7 +10,7 @@ const pool = new Pool({
   ssl: process.env.DATABASE_SSL === 'false' ? false : { rejectUnauthorized: false },
 });
 
-const PASSWORD = 'Password123!';
+const PASSWORD = 'Effort@2025';
 
 async function upsertUser(client, { username, email, role, full_name, phone = null, class_grade = null, bio = null }) {
   const hash = await bcrypt.hash(PASSWORD, 10);
@@ -49,7 +49,7 @@ async function main() {
     // Clear mutable seed data (safe for dev resets)
     await client.query('TRUNCATE batch_students, batch_teachers, live_class_attendance, live_classes, materials, batch_announcements, batches RESTART IDENTITY CASCADE');
 
-    // Users
+    // Users — canonical platform accounts
     const superAdmin = await upsertUser(client, {
       username: 'admin',
       email: 'admin@efforteducation.in',
@@ -57,33 +57,26 @@ async function main() {
       full_name: 'Super Admin',
     });
 
-    const t1 = await upsertUser(client, {
-      username: 'teacher_neha',
-      email: 'neha.teacher@efforteducation.in',
+    const mk = await upsertUser(client, {
+      username: 'mk',
+      email: 'mk@efforteducation.in',
       role: 'teacher',
-      full_name: 'Neha Sharma',
-      bio: 'Quant + Reasoning, 12 years',
-    });
-    const t2 = await upsertUser(client, {
-      username: 'teacher_arjun',
-      email: 'arjun.teacher@efforteducation.in',
-      role: 'teacher',
-      full_name: 'Arjun Mehta',
-      bio: 'English & General Awareness',
+      full_name: 'MK',
     });
 
-    const students = [];
-    for (let i = 1; i <= 5; i++) {
-      students.push(
-        await upsertUser(client, {
-          username: `student_${i}`,
-          email: `student${i}@example.com`,
-          role: 'student',
-          full_name: `Student ${i}`,
-          class_grade: i <= 2 ? 'Class 8' : 'Adult',
-        })
-      );
-    }
+    const ishika = await upsertUser(client, {
+      username: 'ishika',
+      email: 'ishika@efforteducation.in',
+      role: 'student',
+      full_name: 'Ishika',
+    });
+
+    const abhinav = await upsertUser(client, {
+      username: 'abhinav',
+      email: 'abhinav@efforteducation.in',
+      role: 'student',
+      full_name: 'Abhinav',
+    });
 
     // Courses
     const ibpsId = await upsertCourse(client, {
@@ -122,21 +115,19 @@ async function main() {
 
     await client.query(
       `INSERT INTO batch_teachers (batch_id, teacher_id, is_primary)
-         VALUES ($1, $2, TRUE), ($1, $3, FALSE), ($4, $2, TRUE)
+         VALUES ($1, $2, TRUE), ($3, $2, TRUE)
        ON CONFLICT DO NOTHING`,
-      [batch1, t1.id, t2.id, batch2]
+      [batch1, mk.id, batch2]
     );
 
-    for (const s of students.slice(0, 3)) {
+    for (const studentId of [ishika.id, abhinav.id]) {
       await client.query(
         `INSERT INTO batch_students (batch_id, student_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-        [batch1, s.id]
+        [batch1, studentId]
       );
-    }
-    for (const s of students.slice(2)) {
       await client.query(
         `INSERT INTO batch_students (batch_id, student_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-        [batch2, s.id]
+        [batch2, studentId]
       );
     }
 
@@ -144,8 +135,8 @@ async function main() {
 
     console.log('\n✅ Seed complete. Login with password: ' + PASSWORD);
     console.log('  super_admin: admin@efforteducation.in');
-    console.log('  teachers:    neha.teacher@efforteducation.in, arjun.teacher@efforteducation.in');
-    console.log('  students:    student1@example.com … student5@example.com');
+    console.log('  teacher:     mk@efforteducation.in');
+    console.log('  students:    ishika@efforteducation.in, abhinav@efforteducation.in');
   } catch (e) {
     await client.query('ROLLBACK');
     console.error('Seed failed:', e);

@@ -8,7 +8,8 @@
     "start": "node scripts/migrate.js && node scripts/seed-admin.js && node dist/index.js",
     "migrate": "node scripts/migrate.js",
     "seed:dev": "node scripts/seed-dev.js",
-    "seed:admin": "node scripts/seed-admin.js"
+    "seed:admin": "node scripts/seed-admin.js",
+    "setup:users": "node scripts/setup-users.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.668.0",
