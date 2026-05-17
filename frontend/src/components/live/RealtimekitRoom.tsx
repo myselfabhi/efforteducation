@@ -278,6 +278,18 @@ function InRoom({ meeting, liveClass }: { meeting: RTKClient; liveClass: LiveCla
   // Reactive participants list — selector re-runs whenever participants change.
   const remoteIds = useRealtimeKitSelector((m) => Array.from(m.participants.joined.keys()));
 
+  // Track who is screen-sharing. Selector returns a stable string so we only
+  // re-render when the sharing set actually changes.
+  const sharingKey = useRealtimeKitSelector((m) => {
+    const ids: string[] = [];
+    if ((m.self as { screenShareEnabled?: boolean }).screenShareEnabled) ids.push(m.self.id);
+    m.participants.joined.forEach((p, id) => {
+      if ((p as { screenShareEnabled?: boolean }).screenShareEnabled) ids.push(id);
+    });
+    return ids.join(',');
+  });
+  const sharingIds = sharingKey ? sharingKey.split(',') : [];
+
   // ── handlers ───────────────────────────────────────────────────────────
   const toggleMic    = () => audioOn ? meeting.self.disableAudio() : meeting.self.enableAudio();
   const toggleCam    = () => videoOn ? meeting.self.disableVideo() : meeting.self.enableVideo();
@@ -327,6 +339,14 @@ function InRoom({ meeting, liveClass }: { meeting: RTKClient; liveClass: LiveCla
   const remoteParticipants = remoteIds.map((id) => meeting.participants.joined.get(id)).filter(Boolean) as RemoteLike[];
   const peopleList = [meeting.self as unknown as RemoteLike, ...remoteParticipants];
 
+  // First screen-sharer to display prominently. Prefer a remote share so the
+  // sharer doesn't see their own desktop infinitely mirrored.
+  const remoteSharerId = sharingIds.find((id) => id !== meeting.self.id);
+  const sharerParticipant: RemoteLike | undefined = remoteSharerId
+    ? (meeting.participants.joined.get(remoteSharerId) as unknown as RemoteLike | undefined)
+    : undefined;
+  const isSharing = sharingIds.length > 0;
+
   return (
     <div className="flex flex-col h-[100dvh] bg-background text-foreground overflow-hidden">
 
@@ -365,23 +385,56 @@ function InRoom({ meeting, liveClass }: { meeting: RTKClient; liveClass: LiveCla
 
         {/* Video area */}
         <div className="flex-1 flex flex-col min-h-0 relative">
-          <div className={`flex-1 grid gap-1 p-1 bg-muted/30 overflow-hidden ${
-            isAlone ? 'grid-cols-1' : remoteParticipants.length === 1 ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3'
-          }`}>
-            {isAlone ? (
-              <SelfTile
-                meeting={meeting}
-                videoOn={videoOn}
-                copyLink={copyLink}
-                copied={copied}
-                promoted
-              />
-            ) : (
-              remoteParticipants.map((p) => (
-                <RemoteTile key={p.id} participant={p} handRaised={hands.has(p.id)} />
-              ))
-            )}
-          </div>
+          {isSharing && sharerParticipant ? (
+            // Screen-share layout: prominent share on top, video strip below.
+            <div className="flex-1 flex flex-col min-h-0 gap-1 p-1 bg-muted/30 overflow-hidden">
+              <div className="flex-1 min-h-0">
+                <ScreenShareTile participant={sharerParticipant} />
+              </div>
+              {remoteParticipants.length > 0 && (
+                <div className="shrink-0 h-24 sm:h-28 flex gap-1 overflow-x-auto">
+                  {remoteParticipants.map((p) => (
+                    <div key={p.id} className="h-full w-32 sm:w-40 shrink-0">
+                      <RemoteTile participant={p} handRaised={hands.has(p.id)} />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : isSharing && !sharerParticipant ? (
+            // Self is sharing (no remote sharer). Show a hint + video grid.
+            <div className="flex-1 flex flex-col min-h-0 gap-1 p-1 bg-muted/30 overflow-hidden">
+              <div className="shrink-0 mx-auto bg-primary/10 text-primary text-xs sm:text-sm px-3 py-1.5 rounded-full inline-flex items-center gap-2">
+                <Monitor className="h-4 w-4" />
+                You are sharing your screen
+              </div>
+              <div className={`flex-1 grid gap-1 overflow-hidden ${
+                remoteParticipants.length === 1 ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3'
+              }`}>
+                {remoteParticipants.map((p) => (
+                  <RemoteTile key={p.id} participant={p} handRaised={hands.has(p.id)} />
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className={`flex-1 grid gap-1 p-1 bg-muted/30 overflow-hidden ${
+              isAlone ? 'grid-cols-1' : remoteParticipants.length === 1 ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3'
+            }`}>
+              {isAlone ? (
+                <SelfTile
+                  meeting={meeting}
+                  videoOn={videoOn}
+                  copyLink={copyLink}
+                  copied={copied}
+                  promoted
+                />
+              ) : (
+                remoteParticipants.map((p) => (
+                  <RemoteTile key={p.id} participant={p} handRaised={hands.has(p.id)} />
+                ))
+              )}
+            </div>
+          )}
 
           {/* Floating self PiP when others are present */}
           {!isAlone && (
@@ -528,7 +581,30 @@ interface RemoteLike {
   name: string;
   videoEnabled?: boolean;
   audioEnabled?: boolean;
+  screenShareEnabled?: boolean;
   videoTrack?: MediaStreamTrack;
+  audioTrack?: MediaStreamTrack;
+  screenShareTracks?: { video?: MediaStreamTrack; audio?: MediaStreamTrack };
+}
+
+// Participant-level event subscription. RealtimeKit fires these whenever
+// a participant toggles a track, so we tick a counter to re-read fresh
+// track references and enabled flags.
+type ParticipantEmitter = {
+  on: (event: string, fn: (...args: unknown[]) => void) => void;
+  off: (event: string, fn: (...args: unknown[]) => void) => void;
+};
+function useParticipantTick(participant: { id: string } & Partial<ParticipantEmitter>) {
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    const p = participant as Partial<ParticipantEmitter>;
+    if (!p.on || !p.off) return;
+    const refresh = () => setTick((t) => t + 1);
+    const events = ['audioUpdate', 'videoUpdate', 'screenShareUpdate', 'mediaScoreUpdate'];
+    events.forEach((e) => p.on!(e, refresh));
+    return () => events.forEach((e) => p.off!(e, refresh));
+  }, [participant]);
+  return tick;
 }
 
 function SelfTile({ meeting, videoOn, copyLink, copied, promoted }: {
@@ -583,24 +659,43 @@ function SelfTile({ meeting, videoOn, copyLink, copied, promoted }: {
 }
 
 function RemoteTile({ participant, handRaised }: { participant: RemoteLike; handRaised: boolean }) {
-  const ref = useRef<HTMLVideoElement>(null);
-  const track = participant.videoTrack;
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  // Re-render when this participant updates audio/video state.
+  useParticipantTick(participant);
+
+  const videoTrack = participant.videoTrack;
+  const audioTrack = participant.audioTrack;
 
   useEffect(() => {
-    const node = ref.current;
+    const node = videoRef.current;
     if (!node) return;
-    if (track) {
-      const stream = new MediaStream([track]);
-      node.srcObject = stream;
+    if (videoTrack) {
+      node.srcObject = new MediaStream([videoTrack]);
       node.play().catch(() => {});
     } else {
       node.srcObject = null;
     }
-  }, [track]);
+  }, [videoTrack]);
+
+  useEffect(() => {
+    const node = audioRef.current;
+    if (!node) return;
+    if (audioTrack) {
+      node.srcObject = new MediaStream([audioTrack]);
+      // Remote audio must NOT be muted (unlike self preview).
+      node.muted = false;
+      node.play().catch(() => {});
+    } else {
+      node.srcObject = null;
+    }
+  }, [audioTrack]);
 
   return (
     <div className="relative rounded-lg overflow-hidden bg-card border border-border">
-      <video ref={ref} autoPlay playsInline className="w-full h-full object-cover" />
+      <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
+      <audio ref={audioRef} autoPlay playsInline />
       {!participant.videoEnabled && (
         <div className="absolute inset-0 flex items-center justify-center bg-card/95">
           <VideoOff className="h-10 w-10 text-muted-foreground" />
@@ -610,6 +705,50 @@ function RemoteTile({ participant, handRaised }: { participant: RemoteLike; hand
         {participant.name}
         {handRaised && <Hand className="h-3 w-3 text-amber-300" />}
         {!participant.audioEnabled && <MicOff className="h-3 w-3" />}
+      </span>
+    </div>
+  );
+}
+
+// ScreenShareTile — full-width prominent display of a participant's screen share.
+function ScreenShareTile({ participant }: { participant: RemoteLike }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  useParticipantTick(participant);
+
+  const screenVideo = participant.screenShareTracks?.video;
+  const screenAudio = participant.screenShareTracks?.audio;
+
+  useEffect(() => {
+    const node = videoRef.current;
+    if (!node) return;
+    if (screenVideo) {
+      node.srcObject = new MediaStream([screenVideo]);
+      node.play().catch(() => {});
+    } else {
+      node.srcObject = null;
+    }
+  }, [screenVideo]);
+
+  useEffect(() => {
+    const node = audioRef.current;
+    if (!node) return;
+    if (screenAudio) {
+      node.srcObject = new MediaStream([screenAudio]);
+      node.muted = false;
+      node.play().catch(() => {});
+    } else {
+      node.srcObject = null;
+    }
+  }, [screenAudio]);
+
+  return (
+    <div className="relative rounded-lg overflow-hidden bg-black border border-border h-full w-full">
+      <video ref={videoRef} autoPlay playsInline className="h-full w-full object-contain bg-black" />
+      <audio ref={audioRef} autoPlay playsInline />
+      <span className="absolute top-2 left-2 text-xs bg-black/70 text-white px-2 py-0.5 rounded flex items-center gap-1.5">
+        <Monitor className="h-3 w-3" />
+        {participant.name} is sharing
       </span>
     </div>
   );
