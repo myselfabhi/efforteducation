@@ -133,8 +133,8 @@ export default function CreateQuizPage() {
                 <option value={10000}>10 seconds (max)</option>
               </select>
               <p className="text-xs text-muted-foreground mt-1.5">
-                Time window after a player's first click during which they can change their selection.
-                Time bonus uses the first click, so a change of mind doesn't lower their score.
+                Time window after a player&apos;s first click during which they can change their selection.
+                Time bonus uses the first click, so a change of mind doesn&apos;t lower their score.
               </p>
             </div>
 

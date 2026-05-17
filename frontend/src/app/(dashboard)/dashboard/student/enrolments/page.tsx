@@ -37,7 +37,7 @@ export default function StudentEnrolmentsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">My enrolment requests</h1>
-        <p className="text-muted-foreground">Track which batches you've asked to join.</p>
+        <p className="text-muted-foreground">Track which batches you&apos;ve asked to join.</p>
       </div>
 
       {isLoading && <p className="text-sm text-muted-foreground">Loading…</p>}
@@ -89,7 +89,7 @@ export default function StudentEnrolmentsPage() {
 
                 {r.message && (
                   <blockquote className="mt-3 text-sm border-l-2 border-border pl-3 text-muted-foreground italic">
-                    "{r.message}"
+                    &ldquo;{r.message}&rdquo;
                   </blockquote>
                 )}
                 {r.note && (

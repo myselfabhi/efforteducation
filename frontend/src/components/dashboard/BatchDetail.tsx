@@ -338,7 +338,7 @@ function RequestsManager({ batchId }: { batchId: number }) {
                       </p>
                       {r.message && (
                         <blockquote className="mt-2 text-sm text-muted-foreground italic border-l-2 border-border pl-2">
-                          "{r.message}"
+                          &ldquo;{r.message}&rdquo;
                         </blockquote>
                       )}
                     </div>
