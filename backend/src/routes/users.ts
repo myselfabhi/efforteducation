@@ -2,7 +2,7 @@ import { Router, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import pool from '../db';
 import { authMiddleware, roleGuard, AuthRequest } from '../middleware/auth';
-import { InviteUserSchema, UpdateProfileSchema, validateBody } from '../lib/validation';
+import { ChangePasswordSchema, InviteUserSchema, UpdateProfileSchema, validateBody } from '../lib/validation';
 
 const router = Router();
 
@@ -73,6 +73,33 @@ router.patch(
     } catch (err) {
       console.error('PATCH /me error', err);
       res.status(500).json({ error: 'Failed to update profile' });
+    }
+  }
+);
+
+// PATCH /api/users/me/password — change own password (any role)
+router.patch(
+  '/me/password',
+  authMiddleware,
+  validateBody(ChangePasswordSchema),
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const { current_password, new_password } = req.body;
+      const r = await pool.query(
+        'SELECT password_hash FROM users WHERE id = $1',
+        [req.user!.id]
+      );
+      if (r.rows.length === 0) return res.status(404).json({ error: 'Not found' });
+
+      const ok = await bcrypt.compare(current_password, r.rows[0].password_hash);
+      if (!ok) return res.status(400).json({ error: 'Current password is incorrect' });
+
+      const newHash = await bcrypt.hash(new_password, 10);
+      await pool.query('UPDATE users SET password_hash = $1 WHERE id = $2', [newHash, req.user!.id]);
+      res.status(204).end();
+    } catch (err) {
+      console.error('PATCH /me/password error', err);
+      res.status(500).json({ error: 'Failed to change password' });
     }
   }
 );

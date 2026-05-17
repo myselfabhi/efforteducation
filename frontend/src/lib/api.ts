@@ -278,6 +278,8 @@ export const api = {
     me: () => apiFetch('/api/users/me'),
     updateMe: (body: Partial<{ full_name: string; phone: string; avatar_url: string; bio: string; class_grade: string }>) =>
       apiFetch('/api/users/me', patch(body)),
+    changePassword: (body: { current_password: string; new_password: string }) =>
+      apiFetch('/api/users/me/password', patch(body)),
     list: (role?: 'super_admin' | 'teacher' | 'student') =>
       apiFetch(`/api/users${role ? `?role=${role}` : ''}`),
     invite: (body: { username: string; email: string; password: string; role: 'teacher' | 'student'; full_name: string; phone?: string; bio?: string; class_grade?: string }) =>

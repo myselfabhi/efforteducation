@@ -64,6 +64,11 @@ export const InviteUserSchema = z.object({
   class_grade: z.string().max(32).optional().nullable(),
 });
 
+export const ChangePasswordSchema = z.object({
+  current_password: z.string().min(1).max(128),
+  new_password: z.string().min(6).max(128),
+});
+
 export const UpdateProfileSchema = z.object({
   full_name: z.string().min(2).max(120).optional(),
   phone: Phone,
