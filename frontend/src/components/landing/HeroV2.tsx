@@ -423,7 +423,7 @@ export function HeroV2() {
             </span>
           </div>
           <div className="h-4 w-px bg-border shrink-0" />
-          <div className="relative flex-1 h-5 overflow-hidden">
+          <div className="relative flex-1 min-w-0 h-5 overflow-hidden">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activityIdx}
@@ -431,11 +431,11 @@ export function HeroV2() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
                 transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute inset-0 flex items-center gap-2 text-sm"
+                className="absolute inset-0 flex items-center gap-2 text-sm whitespace-nowrap"
               >
                 <CheckCircle2 className="h-3.5 w-3.5 text-success shrink-0" strokeWidth={2.4} />
                 <span className="font-semibold">{ACTIVITY_FEED[activityIdx].name}</span>
-                <span className="text-muted-foreground">
+                <span className="text-muted-foreground truncate">
                   {ACTIVITY_FEED[activityIdx].action}
                 </span>
                 <span className="text-muted-foreground/60 ml-auto shrink-0 text-xs">
