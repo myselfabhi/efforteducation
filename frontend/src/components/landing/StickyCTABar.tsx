@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, Phone, X, LogIn } from 'lucide-react';
 import { useAuthModal } from '@/lib/stores/authModalStore';
 
-const WHATSAPP_NUMBER = '+919876543210'; // brand placeholder
+const WHATSAPP_NUMBER = '+919355103155'; // brand placeholder
 const PHONE_NUMBER = '+919876543210';
 
 export function StickyCTABar() {
