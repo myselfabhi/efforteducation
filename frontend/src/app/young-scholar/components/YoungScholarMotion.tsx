@@ -130,8 +130,10 @@ export function YoungScholarMotion() {
                 transition={{ duration: 0.5, delay: 0.15 }}
                 className="mt-5 max-w-xl text-base md:text-lg text-muted-foreground leading-relaxed"
               >
-                A weekend skill-building program for Class 4–8 — public speaking, reasoning,
-                olympiad prep, and current affairs. Twice a week, fully online, just ₹999 a month.
+                Beyond school learning, Young Scholar builds communication skills,
+                 Vedic Maths, reasoning ability, current affairs awareness, 
+                 interview and group discussion skills, and more — building confidence, 
+                critical thinking, and leadership qualities for the future.
               </motion.p>
 
               <motion.div
@@ -157,7 +159,7 @@ export function YoungScholarMotion() {
               </motion.div>
 
               {/* Pricing pill */}
-              <motion.div
+              {/* <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
@@ -165,7 +167,7 @@ export function YoungScholarMotion() {
               >
                 <span className="text-2xl font-bold tracking-tight">₹999</span>
                 <span className="text-xs text-muted-foreground">per month · all-inclusive</span>
-              </motion.div>
+              </motion.div> */}
             </div>
 
             {/* Right — kid-tile grid + floating cards */}
