@@ -13,7 +13,7 @@ interface Stat {
 const STATS: Stat[] = [
   { value: 50000, suffix: '+', label: 'Students taught' },
   { value: 2400, suffix: '+', label: 'Selections in 2025' },
-  { value: 34, suffix: '', label: 'Years of legacy', hint: 'Established 1990' },
+  { value: 34, suffix: '', label: 'Years of legacy', hint: 'Established 1991' },
   { value: 4.8, label: 'Avg rating', hint: 'across 1,200+ reviews' },
 ];
 

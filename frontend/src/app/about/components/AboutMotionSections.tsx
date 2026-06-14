@@ -28,7 +28,7 @@ const VALUES = [
 ];
 
 const TIMELINE = [
-  { year: '1990', title: 'Founded in Delhi', body: 'Started as a single classroom for Banking aspirants.' },
+  { year: '1991', title: 'Founded in Delhi', body: 'Started as a single classroom for Banking aspirants.' },
   { year: '2005', title: 'Expanded to Teaching exams', body: 'Added UGC NET, CTET, and PRT/TGT/PGT coaching.' },
   { year: '2018', title: 'Went online', body: 'First batch of fully online live classes for SSC and Banking.' },
   { year: '2024', title: 'Young Scholar Program', body: 'Launched a weekend program for Class 4–8 learners.' },

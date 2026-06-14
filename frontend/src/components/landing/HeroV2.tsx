@@ -20,7 +20,7 @@ const ROTATING_EXAMS = ['Bank PO', 'SSC CGL', 'CUET', 'UGC NET', 'Railway NTPC']
 const TRUST_STATS = [
   { value: '50K+', label: 'students taught' },
   { value: '95%', label: 'avg. selection rate' },
-  { value: '1990', label: 'trusted since' },
+  { value: '1991', label: 'trusted since' },
 ];
 
 const ACTIVITY_FEED = [

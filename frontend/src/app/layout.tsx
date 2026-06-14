@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     template: "%s | Effort Education"
   },
   description:
-    "Online competitive exam coaching and Young Scholar Program for skill development. Expert guidance in Banking, SSC, Railway, CUET exams and essential life skills. Established since 1990.",
+    "Online competitive exam coaching and Young Scholar Program for skill development. Expert guidance in Banking, SSC, Railway, CUET exams and essential life skills. Established since 1991.",
   keywords: ["competitive exams", "banking coaching", "SSC coaching", "CUET coaching", "entrance exams", "young scholar program", "skill development", "online classes", "live classes"],
   authors: [{ name: "Effort Education" }],
   openGraph: {

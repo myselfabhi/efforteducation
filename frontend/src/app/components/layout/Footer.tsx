@@ -20,7 +20,7 @@ export default function Footer() {
               </h3>
             </div>
             <p className="text-gray-500 text-sm mb-8 leading-snug max-w-md mx-auto font-medium">
-              Empowering students for competitive exams and life skills with precision coaching since 1990.
+              Empowering students for competitive exams and life skills with precision coaching since 1991.
             </p>
             
             {/* Social Links - Centered */}

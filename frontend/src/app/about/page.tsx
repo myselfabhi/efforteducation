@@ -9,7 +9,7 @@ import { AboutMotionSections } from './components/AboutMotionSections';
 export const metadata: Metadata = {
   title: 'About Us — Our Story & Team',
   description:
-    'Effort Education has guided 50,000+ students since 1990. Read our story, mission, and the people behind the platform.',
+    'Effort Education has guided 50,000+ students since 1991. Read our story, mission, and the people behind the platform.',
   openGraph: {
     title: 'About Effort Education',
     description:
