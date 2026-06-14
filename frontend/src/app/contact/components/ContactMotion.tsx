@@ -40,7 +40,7 @@ const CHANNELS = [
 
 const META = [
   { icon: Clock, label: 'Hours', value: 'Mon – Sat · 9 AM – 8 PM IST' },
-  { icon: MapPin, label: 'Format', value: 'Online live · across India & abroad' },
+  { icon: MapPin, label: 'Format', value: 'Online live interactive classes · across India & abroad' },
 ];
 
 export function ContactMotion() {
