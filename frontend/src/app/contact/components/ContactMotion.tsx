@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Phone, MessageCircle, Mail, MapPin, Clock, ArrowRight } from 'lucide-react';
 
-const WHATSAPP = '+919910335093';
+const WHATSAPP = '+919355103155';
 const PHONE = '+919910335093';
 
 const CHANNELS = [
