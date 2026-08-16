@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/lib/stores/authStore';
-import { getSocket } from '@/lib/socket';
+import { getQuizSocket } from '@/lib/quizSocket';
 import LeaderboardScreen from '@/app/quiz/components/LeaderboardScreen';
 import { CheckCircle2, XCircle, Clock, AlertTriangle, Wifi, WifiOff } from 'lucide-react';
 
@@ -75,7 +75,7 @@ export default function QuizPlayScreen() {
     function onVisibilityChange() {
       if (document.visibilityState === 'visible') return;
       if (phaseRef.current !== 'question') return;
-      const socket = getSocket();
+      const socket = getQuizSocket(quizId);
       socket.emit('quiz:focus_lost', {
         quizId,
         questionId: question?.questionId,
@@ -114,7 +114,7 @@ export default function QuizPlayScreen() {
       return;
     }
 
-    const socket = getSocket();
+    const socket = getQuizSocket(quizId);
 
     const onConnect = () => setConnection('live');
     const onDisconnect = () => setConnection('reconnecting');
@@ -267,7 +267,7 @@ export default function QuizPlayScreen() {
         if (grace === 0) setIsLocked(true);
       }
       setAlreadyAnswered(true);
-      const socket = getSocket();
+      const socket = getQuizSocket(quizId);
       socket.emit('answer:submit', {
         quizId,
         questionId: question.questionId,

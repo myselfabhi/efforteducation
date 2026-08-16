@@ -1,0 +1,63 @@
+name = "quiz-backend"
+main = "src/index.ts"
+compatibility_date = "2024-11-27"
+# The account that owns the R2 bucket, Neon/Hyperdrive, and RealtimeKit app.
+# wrangler must be authenticated for THIS account (not a different logged-in one).
+account_id = "5716240fc2e89c57de0c42e7b4d99834"
+# nodejs_compat is required for node-postgres (`pg`) + bcryptjs to run on Workers.
+compatibility_flags = ["nodejs_compat"]
+
+# ── Hyperdrive → Neon Postgres ────────────────────────────────────────────────
+# Create with:
+#   wrangler hyperdrive create quiz-neon --connection-string="postgres://USER:PASS@HOST/DB?sslmode=require"
+# then paste the returned id below. In `wrangler dev`, Hyperdrive uses the
+# localConnectionString (set via WRANGLER_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE
+# env or the .dev.vars DATABASE_URL fallback in src/db.ts).
+[[hyperdrive]]
+binding = "HYPERDRIVE"
+id = "e103226f5b0247f89477d4bae0eafb38"
+
+# ── R2 bucket ─────────────────────────────────────────────────────────────────
+# Native binding is available for server-side object ops. Presigned direct-browser
+# uploads (src/services/storage.ts) use the S3 API via aws4fetch instead, so the
+# R2_* secrets below are what actually power uploads today; this binding is here
+# for future server-side reads/writes.
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "efforteducation-media"
+
+# ── Durable Objects ───────────────────────────────────────────────────────────
+# One QuizRoom instance per live quiz (WebSocket hibernation + alarms + storage),
+# replacing the Socket.IO + Redis quiz engine.
+[[durable_objects.bindings]]
+name = "QUIZ_ROOM"
+class_name = "QuizRoom"
+
+[[durable_objects.bindings]]
+name = "CLASS_ROOM"
+class_name = "ClassRoom"
+
+[[durable_objects.bindings]]
+name = "USER_HUB"
+class_name = "UserHub"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["QuizRoom"]
+
+[[migrations]]
+tag = "v2"
+new_sqlite_classes = ["ClassRoom", "UserHub"]
+
+# ── Non-secret vars ───────────────────────────────────────────────────────────
+# Secrets (JWT_SECRET, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, CLOUDFLARE_API_TOKEN)
+# are set via `wrangler secret put <NAME>` — never commit them here.
+[vars]
+R2_ACCOUNT_ID = "5716240fc2e89c57de0c42e7b4d99834"
+R2_BUCKET = "efforteducation-media"
+R2_PUBLIC_URL = "https://pub-02e10b00249340cd8e55179270357d58.r2.dev"
+CLOUDFLARE_ACCOUNT_ID = "5716240fc2e89c57de0c42e7b4d99834"
+CLOUDFLARE_REALTIMEKIT_APP_ID = "REPLACE_WITH_REALTIMEKIT_APP_ID"
+CLOUDFLARE_REALTIMEKIT_HOST_PRESET = "group_call_host"
+CLOUDFLARE_REALTIMEKIT_PARTICIPANT_PRESET = "group_call_participant"
+FRONTEND_URL = "https://efforteducation.in"

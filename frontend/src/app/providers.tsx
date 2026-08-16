@@ -7,7 +7,7 @@ import { Toaster } from 'sonner';
 import { makeQueryClient } from '@/lib/queryClient';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { useNotificationStore } from '@/lib/stores/notificationStore';
-import { getSocket } from '@/lib/socket';
+import { getUserSocket } from '@/lib/userSocket';
 import { api, type Notification } from '@/lib/api';
 import { AuthModal } from '@/components/auth/AuthModal';
 
@@ -36,8 +36,9 @@ function NotificationsBootstrap() {
       })
       .catch(() => {});
 
-    const socket = getSocket();
-    const handler = (n: Notification) => prepend(n);
+    const socket = getUserSocket();
+    // UserHub sends { type: 'notification:new', notification: <row> }.
+    const handler = (msg: { notification: Notification }) => prepend(msg.notification);
     socket.on('notification:new', handler);
 
     return () => {

@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { Play, Users, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { useAuthStore, dashboardHomeFor } from '@/lib/stores/authStore';
-import { getSocket } from '@/lib/socket';
+import { getQuizSocket } from '@/lib/quizSocket';
 import { api } from '@/lib/api';
 import LeaderboardScreen from '@/app/quiz/components/LeaderboardScreen';
 
@@ -48,7 +48,7 @@ export default function LiveQuizDashboard() {
 
     api.quizzes.get(quizId).then((q) => setQuizTitle(q.title)).catch(() => {});
 
-    const socket = getSocket();
+    const socket = getQuizSocket(quizId);
 
     socket.on('connect', () => setConnected(true));
     socket.on('disconnect', () => setConnected(false));
@@ -123,7 +123,7 @@ export default function LiveQuizDashboard() {
 
   const handleStartQuiz = useCallback(() => {
     setStartLoading(true);
-    const socket = getSocket();
+    const socket = getQuizSocket(quizId);
     socket.emit('quiz:start', { quizId });
     socket.once('quiz:starting', () => setStartLoading(false));
   }, [quizId]);

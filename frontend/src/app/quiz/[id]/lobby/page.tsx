@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/lib/stores/authStore';
-import { getSocket } from '@/lib/socket';
+import { getQuizSocket } from '@/lib/quizSocket';
 import { api } from '@/lib/api';
 import QuizFooter from '@/app/quiz/components/QuizFooter';
 import {
@@ -109,7 +109,7 @@ export default function QuizLobby() {
       return;
     }
 
-    const socket = getSocket();
+    const socket = getQuizSocket(quizId);
 
     const onConnect = () => setConnected(true);
     const onDisconnect = () => setConnected(false);

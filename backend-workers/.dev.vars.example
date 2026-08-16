@@ -1,0 +1,15 @@
+# Copy to `.dev.vars` for `wrangler dev`. Never commit `.dev.vars`.
+# In production these are set with `wrangler secret put <NAME>`.
+
+# Local Postgres connection used by Hyperdrive during `wrangler dev`
+# (point at Neon or a local Postgres). Read as a fallback in src/db.ts.
+DATABASE_URL="postgres://user:pass@localhost:5432/quiz"
+
+JWT_SECRET="dev-secret-change-me"
+
+# R2 S3 credentials (from the R2 API token in the Cloudflare dashboard)
+R2_ACCESS_KEY_ID="..."
+R2_SECRET_ACCESS_KEY="..."
+
+# RealtimeKit — Cloudflare API token with "Realtime Admin" permission
+CLOUDFLARE_API_TOKEN="..."

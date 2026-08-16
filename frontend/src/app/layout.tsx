@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://efforteducation.vercel.app'),
+  metadataBase: new URL('https://efforteducation.in'),
   title: {
     default: "Effort Education - Empowering Tomorrow's Leaders",
     template: "%s | Effort Education"
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://efforteducation.vercel.app",
+    url: "https://efforteducation.in",
     siteName: "Effort Education",
     title: "Effort Education - Empowering Tomorrow's Leaders",
     description: "Online competitive exam coaching and Young Scholar Program for skill development. Expert guidance in Banking, SSC, Railway, CUET exams.",
