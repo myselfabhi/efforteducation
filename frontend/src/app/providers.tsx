@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from 'sonner';
@@ -52,8 +53,20 @@ function NotificationsBootstrap() {
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [client] = useState(() => makeQueryClient());
+  // Theme switching lives only in the dashboard. Force light everywhere else so a
+  // dark preference toggled in the dashboard never leaks into the public/marketing
+  // site (which is designed light-only). usePathname resolves during SSR, so
+  // next-themes bakes the forced theme into its pre-hydration script — no flash.
+  const pathname = usePathname();
+  const isDashboard = pathname?.startsWith('/dashboard') ?? false;
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="light"
+      enableSystem
+      disableTransitionOnChange
+      forcedTheme={isDashboard ? undefined : 'light'}
+    >
       <QueryClientProvider client={client}>
         <AuthHydrator />
         <NotificationsBootstrap />
