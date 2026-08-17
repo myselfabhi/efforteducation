@@ -8,14 +8,14 @@ import { AuthCTA } from '@/components/auth/AuthCTA';
 import { YoungScholarMotion } from './components/YoungScholarMotion';
 
 export const metadata: Metadata = {
-  title: 'Young Scholar Program — Weekend Skill-Building for Class 4–8',
+  title: 'Young Scholar — Confident, Self-Driven Kids · Class 4–8',
   description:
-    'Public speaking, reasoning, olympiad prep, and current affairs — a focused weekend program for young learners aged 8–14. Just ₹999/month.',
+    'Live classes, quizzes kids beg to win, and a weekly report they write themselves. Young Scholar turns Class 4–8 kids into confident, self-driven learners. Book a free demo.',
   openGraph: {
-    title: 'Young Scholar Program — Effort Education',
+    title: 'Young Scholar — Effort Education',
     description:
-      'Weekend program for Class 4–8. Live online sessions, twice a week. Just ₹999/month.',
-    url: 'https://efforteducation.vercel.app/young-scholar',
+      'Where curious Class 4–8 kids become confident, self-driven scholars. Live online, small batches. Book a free demo.',
+    url: 'https://efforteducation.in/young-scholar',
   },
 };
 
