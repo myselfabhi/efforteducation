@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title: course.title,
       description: course.tagline,
-      url: `https://efforteducation.vercel.app/courses/${slug}`,
+      url: `https://efforteducation.in/courses/${slug}`,
     },
   };
 }

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     title: 'Contact Effort Education',
     description:
       'Phone, WhatsApp, email — talk to a senior counsellor. Reply within 30 minutes.',
-    url: 'https://efforteducation.vercel.app/contact',
+    url: 'https://efforteducation.in/contact',
   },
 };
 

@@ -1,8 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { useAuthModal } from '@/lib/stores/authModalStore';
 
 interface Faculty {
   initials: string;
@@ -44,7 +44,6 @@ const FACULTY: Faculty[] = [
 ];
 
 export function FacultySpotlight() {
-  const openAuth = useAuthModal((s) => s.openModal);
   return (
     <section className="py-20 bg-background">
       <div className="container mx-auto max-w-6xl px-6">
@@ -75,26 +74,24 @@ export function FacultySpotlight() {
               <p className="text-xs text-primary font-semibold mt-0.5">{f.subjects}</p>
               <p className="text-xs text-muted-foreground mt-0.5">{f.experience} · teaching</p>
               <p className="text-sm text-muted-foreground mt-3 leading-relaxed">{f.blurb}</p>
-              <button
-                type="button"
-                onClick={() => openAuth('register')}
+              <Link
+                href="/contact"
                 className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity"
               >
-                Book a demo class <ArrowRight className="h-3 w-3" />
-              </button>
+                Book a call <ArrowRight className="h-3 w-3" />
+              </Link>
             </motion.div>
           ))}
         </div>
 
         <div className="text-center">
-          <button
-            type="button"
-            onClick={() => openAuth('register')}
+          <Link
+            href="/contact"
             className="inline-flex items-center gap-2 h-11 px-6 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
           >
-            Book a free demo class
+            Book a call
             <ArrowRight className="h-4 w-4" />
-          </button>
+          </Link>
         </div>
       </div>
     </section>

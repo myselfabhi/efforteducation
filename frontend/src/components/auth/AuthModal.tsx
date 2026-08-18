@@ -10,7 +10,7 @@ import { useAuthStore, dashboardHomeFor } from '@/lib/stores/authStore';
 import { useAuthModal } from '@/lib/stores/authModalStore';
 
 const CLASS_OPTIONS = [
-  'Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10',
+  'Class 4', 'Class 5', 'Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10',
   'Class 11 (Science)', 'Class 11 (Commerce)', 'Class 11 (Arts)',
   'Class 12 (Science)', 'Class 12 (Commerce)', 'Class 12 (Arts)',
   'Dropper / Repeater',

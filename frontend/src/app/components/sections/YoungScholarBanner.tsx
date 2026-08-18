@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowRight, Mic, Brain, Trophy, Sparkles } from 'lucide-react';
-import { useAuthModal } from '@/lib/stores/authModalStore';
 
 const SKILLS = [
   { icon: Mic, label: 'Public Speaking' },
@@ -21,7 +20,6 @@ const AVATAR_GRADIENTS = [
 ];
 
 export default function YoungScholarBanner() {
-  const openAuth = useAuthModal((s) => s.openModal);
   return (
     <section className="py-20 md:py-24 bg-background">
       <div className="container mx-auto max-w-6xl px-6">
@@ -93,13 +91,12 @@ export default function YoungScholarBanner() {
                   Explore the program
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
-                <button
-                  type="button"
-                  onClick={() => openAuth('register')}
+                <Link
+                  href="/contact"
                   className="inline-flex items-center gap-1.5 h-11 px-3 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Book a free demo class
-                </button>
+                  Book a call
+                </Link>
               </div>
             </div>
 

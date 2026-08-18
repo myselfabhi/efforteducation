@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     title: 'About Effort Education',
     description:
       '34+ years of teaching. 50,000+ students. The same focused mission — help serious aspirants crack their exam.',
-    url: 'https://efforteducation.vercel.app/about',
+    url: 'https://efforteducation.in/about',
   },
 };
 

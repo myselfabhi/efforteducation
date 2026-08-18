@@ -119,7 +119,7 @@ export function CourseDetailContent({ course }: { course: Course }) {
                   href="/contact"
                   className="inline-flex items-center gap-1.5 h-12 px-3 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Book a free demo class
+                  Book a call
                 </Link>
               </motion.div>
             </div>
@@ -150,7 +150,7 @@ export function CourseDetailContent({ course }: { course: Course }) {
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-success shrink-0 mt-0.5" strokeWidth={2.2} />
                     <div>
-                      <div className="text-sm font-semibold">Free demo class</div>
+                      <div className="text-sm font-semibold">Free counselling call</div>
                       <div className="text-xs text-muted-foreground">No card. No commitment.</div>
                     </div>
                   </div>

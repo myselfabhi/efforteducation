@@ -31,21 +31,12 @@ export const metadata: Metadata = {
     url: "https://efforteducation.in",
     siteName: "Effort Education",
     title: "Effort Education - Empowering Tomorrow's Leaders",
-    description: "Online competitive exam coaching and Young Scholar Program for skill development. Expert guidance in Banking, SSC, Railway, CUET exams.",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Effort Education"
-      }
-    ]
+    description: "Online competitive exam coaching and Young Scholar Program for skill development. Expert guidance in Banking, SSC, Railway, CUET exams."
   },
   twitter: {
     card: "summary_large_image",
     title: "Effort Education - Empowering Tomorrow's Leaders",
-    description: "Online competitive exam coaching and Young Scholar Program for skill development.",
-    images: ["/og-image.png"]
+    description: "Online competitive exam coaching and Young Scholar Program for skill development."
   }
 };
 

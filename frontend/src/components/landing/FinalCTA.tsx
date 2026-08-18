@@ -24,8 +24,8 @@ export function FinalCTA() {
               Your next selection starts today.
             </h2>
             <p className="mt-4 text-base md:text-lg opacity-90">
-              Join thousands of aspirants already learning live with our faculty. Free demo class
-              before you commit — no questions asked.
+              Join thousands of aspirants already learning live with our faculty. Talk to a
+              counsellor and start with the right batch.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button
