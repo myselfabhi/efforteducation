@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useState } from 'react';
-import { useAuthModal } from '@/lib/stores/authModalStore';
 import {
   ArrowRight,
   ChevronDown,
@@ -77,8 +76,8 @@ const FAQ = [
     a: 'Yes. Batches are capped so every child gets quiz time, speaking time, and individual feedback — not a lecture they watch in silence.',
   },
   {
-    q: 'Can I get a free demo class before paying?',
-    a: 'Absolutely. The first session is always free — no card, no commitment. Book a slot and we’ll send the join link.',
+    q: 'How do we get started?',
+    a: 'Book a call with a counsellor. We’ll explain how the week works, share the schedule, and get your child set up for the next batch.',
   },
   {
     q: 'What if my child misses a class?',
@@ -167,7 +166,6 @@ function WeeklyReportCard() {
 
 export function YoungScholarMotion() {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
-  const openAuth = useAuthModal((s) => s.openModal);
 
   return (
     <>
@@ -221,14 +219,13 @@ export function YoungScholarMotion() {
                 transition={{ duration: 0.5, delay: 0.25 }}
                 className="mt-8 flex flex-wrap items-center gap-3"
               >
-                <button
-                  type="button"
-                  onClick={() => openAuth('register')}
+                <Link
+                  href="/contact"
                   className="group inline-flex items-center gap-2 h-12 px-6 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
                 >
-                  Book a free demo
+                  Book a call
                   <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                </button>
+                </Link>
                 <Link
                   href="#how-it-works"
                   className="inline-flex items-center gap-1.5 h-12 px-3 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
