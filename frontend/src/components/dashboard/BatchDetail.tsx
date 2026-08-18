@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
-import { Video, FileText, ClipboardList, Megaphone, Users, Plus, GraduationCap, Star, X, Loader2, UserCheck, UserX, MailQuestion } from 'lucide-react';
+import { Video, FileText, ClipboardList, Megaphone, Users, Plus, GraduationCap, Star, X, Loader2, UserCheck, UserX, MailQuestion, Trash2, Pin, PinOff } from 'lucide-react';
 import { api, type Batch, type BatchTeacher, type LiveClass, type Material, type Announcement, type AuthUser, type EnrolmentRequest } from '@/lib/api';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { Button } from '@/app/components/ui/button';
@@ -48,6 +48,26 @@ export function BatchDetail({ batchId, canManage, basePath }: Props) {
     enabled: canManage,
   });
   const pendingCount = requestsQ.data?.length ?? 0;
+
+  // Manager controls — wired to existing endpoints. Each mutation refreshes the
+  // relevant query so the roster/list stays in sync (mirrors TeachersManager).
+  const qc = useQueryClient();
+  const cancelClassM = useMutation({
+    mutationFn: (id: number) => api.classes.cancel(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['batch', batchId, 'classes'] }),
+  });
+  const deleteMaterialM = useMutation({
+    mutationFn: (id: number) => api.materials.remove(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['batch', batchId, 'materials'] }),
+  });
+  const pinMaterialM = useMutation({
+    mutationFn: (m: Material) => api.materials.update(m.id, { is_pinned: !m.is_pinned }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['batch', batchId, 'materials'] }),
+  });
+  const removeStudentM = useMutation({
+    mutationFn: (studentId: number) => api.batches.removeStudent(batchId, studentId),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['batch', batchId] }),
+  });
 
   if (batchQ.isLoading) return <p className="text-sm text-muted-foreground">Loading…</p>;
   if (batchQ.error || !batchQ.data) return <p className="text-sm text-destructive">Failed to load batch.</p>;
@@ -120,7 +140,26 @@ export function BatchDetail({ batchId, canManage, basePath }: Props) {
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
               {classesQ.data.map((c) => (
-                <ClassCard key={c.id} cls={c} />
+                <ClassCard
+                  key={c.id}
+                  cls={c}
+                  manageSlot={
+                    canManage && c.status !== 'CANCELLED' && c.status !== 'ENDED' ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (confirm(`Cancel "${c.title}"? Students will no longer see it as upcoming.`)) {
+                            cancelClassM.mutate(c.id);
+                          }
+                        }}
+                        disabled={cancelClassM.isPending}
+                        className="w-full inline-flex items-center justify-center gap-1.5 h-9 rounded-lg border border-border text-xs font-semibold text-muted-foreground hover:text-destructive hover:bg-destructive/10 hover:border-destructive/30 transition disabled:opacity-60"
+                      >
+                        <X className="h-3.5 w-3.5" /> Cancel class
+                      </button>
+                    ) : undefined
+                  }
+                />
               ))}
             </div>
           )}
@@ -143,7 +182,40 @@ export function BatchDetail({ batchId, canManage, basePath }: Props) {
           ) : (
             <div className="grid gap-3 sm:grid-cols-2">
               {materialsQ.data.map((m) => (
-                <MaterialCard key={m.id} material={m} />
+                <MaterialCard
+                  key={m.id}
+                  material={m}
+                  rightSlot={
+                    canManage ? (
+                      <div className="flex items-center gap-0.5 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => pinMaterialM.mutate(m)}
+                          disabled={pinMaterialM.isPending}
+                          className="inline-flex items-center justify-center h-8 w-8 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition disabled:opacity-60"
+                          aria-label={m.is_pinned ? 'Unpin material' : 'Pin material'}
+                          title={m.is_pinned ? 'Unpin' : 'Pin'}
+                        >
+                          {m.is_pinned ? <PinOff className="h-4 w-4" /> : <Pin className="h-4 w-4" />}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (confirm(`Delete "${m.title}"? This can't be undone.`)) {
+                              deleteMaterialM.mutate(m.id);
+                            }
+                          }}
+                          disabled={deleteMaterialM.isPending}
+                          className="inline-flex items-center justify-center h-8 w-8 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition disabled:opacity-60"
+                          aria-label="Delete material"
+                          title="Delete material"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ) : undefined
+                  }
+                />
               ))}
             </div>
           )}
@@ -230,7 +302,25 @@ export function BatchDetail({ batchId, canManage, basePath }: Props) {
               {batch.students?.map((s) => (
                 <li key={s.id} className="text-sm flex items-center justify-between border-b border-border py-1.5 last:border-0">
                   <span>{s.full_name || s.username}</span>
-                  <span className="text-xs text-muted-foreground capitalize">{s.status}</span>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-xs text-muted-foreground capitalize">{s.status}</span>
+                    {canManage && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (confirm(`Remove ${s.full_name || s.username} from this batch?`)) {
+                            removeStudentM.mutate(s.id);
+                          }
+                        }}
+                        disabled={removeStudentM.isPending}
+                        className="inline-flex items-center justify-center h-7 w-7 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition disabled:opacity-60"
+                        aria-label={`Remove ${s.full_name || s.username} from batch`}
+                        title="Remove from batch"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                    )}
+                  </div>
                 </li>
               ))}
               {(!batch.students || batch.students.length === 0) && (

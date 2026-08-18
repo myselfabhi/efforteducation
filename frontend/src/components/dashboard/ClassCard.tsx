@@ -9,6 +9,7 @@ import { Button } from '@/app/components/ui/button';
 
 interface Props {
   cls: LiveClass;
+  manageSlot?: React.ReactNode;
 }
 
 function statusLabel(cls: LiveClass) {
@@ -22,7 +23,7 @@ function statusLabel(cls: LiveClass) {
   return { label: 'Scheduled', tone: 'bg-muted text-muted-foreground' };
 }
 
-export function ClassCard({ cls }: Props) {
+export function ClassCard({ cls, manageSlot }: Props) {
   const [, tick] = useState(0);
   // Re-render every 30s so the countdown stays fresh.
   useEffect(() => {
@@ -79,6 +80,7 @@ export function ClassCard({ cls }: Props) {
               : 'Opens 10 min before'}
           </Button>
         )}
+        {manageSlot}
       </div>
     </div>
   );

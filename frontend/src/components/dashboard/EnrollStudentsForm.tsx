@@ -35,6 +35,10 @@ export function EnrollStudentsForm({ batchId, backHref }: Props) {
     [batchQ.data]
   );
 
+  const capacity = batchQ.data?.capacity ?? 0;
+  const remaining = capacity > 0 ? Math.max(0, capacity - enrolled.size) : Infinity;
+  const atCapacity = picked.size >= remaining;
+
   const filtered = useMemo(() => {
     const all = studentsQ.data ?? [];
     const needle = q.trim().toLowerCase();
@@ -59,6 +63,14 @@ export function EnrollStudentsForm({ batchId, backHref }: Props) {
   });
 
   function toggle(id: number) {
+    if (!picked.has(id) && picked.size >= remaining) {
+      toast.error(
+        capacity > 0
+          ? `This batch holds ${capacity} — ${remaining} seat${remaining === 1 ? '' : 's'} left.`
+          : 'No seats available.'
+      );
+      return;
+    }
     setPicked((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
@@ -81,8 +93,17 @@ export function EnrollStudentsForm({ batchId, backHref }: Props) {
           </p>
         ) : (
           filtered.map((s) => (
-            <label key={s.id} className="flex items-center gap-3 p-3 cursor-pointer hover:bg-secondary/40">
-              <Checkbox checked={picked.has(s.id)} onCheckedChange={() => toggle(s.id)} />
+            <label
+              key={s.id}
+              className={`flex items-center gap-3 p-3 ${
+                !picked.has(s.id) && atCapacity ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-secondary/40'
+              }`}
+            >
+              <Checkbox
+                checked={picked.has(s.id)}
+                onCheckedChange={() => toggle(s.id)}
+                disabled={!picked.has(s.id) && atCapacity}
+              />
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium truncate">{s.full_name || s.username}</p>
                 <p className="text-xs text-muted-foreground truncate">{s.email}</p>
@@ -93,7 +114,14 @@ export function EnrollStudentsForm({ batchId, backHref }: Props) {
       </div>
 
       <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">{picked.size} selected</p>
+        <p className="text-sm text-muted-foreground">
+          {picked.size} selected
+          {capacity > 0 && (
+            <span className="ml-1">
+              · {remaining} of {capacity} seat{capacity === 1 ? '' : 's'} left
+            </span>
+          )}
+        </p>
         <div className="flex gap-2">
           <Button type="button" variant="outline" onClick={() => router.back()}>
             Cancel
