@@ -2,20 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-
-interface Stat {
-  value: number;
-  suffix?: string;
-  label: string;
-  hint?: string;
-}
-
-const STATS: Stat[] = [
-  { value: 50000, suffix: '+', label: 'Students taught' },
-  { value: 2400, suffix: '+', label: 'Selections in 2025' },
-  { value: 34, suffix: '', label: 'Years of legacy', hint: 'Established 1991' },
-  { value: 4.8, label: 'Avg rating', hint: 'across 1,200+ reviews' },
-];
+import { TRUST_STATS } from '@/lib/siteStats';
 
 function Counter({ to, suffix = '' }: { to: number; suffix?: string }) {
   const [n, setN] = useState(0);
@@ -56,7 +43,7 @@ export function StatsStrip() {
     <section className="border-y border-border bg-card/50">
       <div className="container mx-auto max-w-6xl px-6 py-10 md:py-14">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 text-center md:text-left">
-          {STATS.map((s, i) => (
+          {TRUST_STATS.map((s, i) => (
             <motion.div
               key={s.label}
               initial={{ opacity: 0, y: 12 }}

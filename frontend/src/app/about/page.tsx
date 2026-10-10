@@ -5,6 +5,7 @@ import Footer from '../components/layout/Footer';
 import { StickyCTABar } from '@/components/landing/StickyCTABar';
 import { ArrowRight, Compass } from 'lucide-react';
 import { AboutMotionSections } from './components/AboutMotionSections';
+import { TRUST_STATS, formatStat, YEARS_OF_LEGACY } from '@/lib/siteStats';
 
 export const metadata: Metadata = {
   title: 'About Us — Our Story & Team',
@@ -13,17 +14,12 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'About Effort Education',
     description:
-      '34+ years of teaching. 50,000+ students. The same focused mission — help serious aspirants crack their exam.',
+      `${YEARS_OF_LEGACY}+ years of teaching. 50,000+ students. The same focused mission — help serious aspirants crack their exam.`,
     url: 'https://efforteducation.in/about',
   },
 };
 
-const STATS = [
-  { value: '50K+', label: 'students taught' },
-  { value: '95%', label: 'avg. selection rate' },
-  { value: '34', label: 'years of teaching' },
-  { value: '4.9', label: 'avg. rating' },
-];
+const STATS = TRUST_STATS.map((t) => ({ value: formatStat(t), label: t.label.toLowerCase() }));
 
 export default function AboutPage() {
   return (
@@ -50,7 +46,7 @@ export default function AboutPage() {
               long after the lecture ends.
             </h1>
             <p className="mt-6 max-w-2xl text-base md:text-lg text-muted-foreground leading-relaxed">
-              For 34 years, we&rsquo;ve helped serious aspirants crack their exam — Banking, SSC,
+              For {YEARS_OF_LEGACY} years, we&rsquo;ve helped serious aspirants crack their exam — Banking, SSC,
               CUET, NET, and more. Same mission. New platform. Built for how today&rsquo;s students
               actually study.
             </p>

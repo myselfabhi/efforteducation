@@ -10,27 +10,20 @@ import {
   Users,
   Trophy,
   Zap,
-  CheckCircle2,
 } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import { useAuthModal } from '@/lib/stores/authModalStore';
+import { TRUST_STATS, formatStat } from '@/lib/siteStats';
 
 const ROTATING_EXAMS = ['Bank PO', 'SSC CGL', 'CUET', 'UGC NET', 'Railway NTPC'];
 
-const TRUST_STATS = [
-  { value: '50K+', label: 'students taught' },
-  { value: '95%', label: 'avg. selection rate' },
-  { value: '1991', label: 'trusted since' },
-];
+// First three canonical trust stats, formatted for the hero's compact strip.
+const HERO_STATS = TRUST_STATS.slice(0, 3).map((t) => ({
+  value: formatStat(t),
+  label: t.label.toLowerCase(),
+}));
 
-const ACTIVITY_FEED = [
-  { name: 'Aarav', action: 'joined Bank PO batch', when: '2 min ago' },
-  { name: 'Priya', action: 'scored AIR 4 in Quant mock', when: '8 min ago' },
-  { name: 'Rohan', action: 'enrolled in CUET program', when: '14 min ago' },
-  { name: 'Sneha', action: 'cleared SSC CGL 2025', when: '32 min ago' },
-  { name: 'Karan', action: 'started UGC NET prep', when: '47 min ago' },
-];
-
+// Sample data for the product-preview mockup on the right (illustrative UI, not live data).
 const LEADERBOARD = [
   { rank: 1, name: 'Aarav S.', score: 9240, gradient: 'from-amber-200 to-orange-300' },
   { rank: 2, name: 'Priya M.', score: 8870, gradient: 'from-pink-200 to-rose-300' },
@@ -47,7 +40,6 @@ const ATTENDING_AVATARS = [
 
 export function HeroV2() {
   const [examIdx, setExamIdx] = useState(0);
-  const [activityIdx, setActivityIdx] = useState(0);
   const openAuth = useAuthModal((s) => s.openModal);
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -66,13 +58,7 @@ export function HeroV2() {
     const examTimer = setInterval(() => {
       setExamIdx((i) => (i + 1) % ROTATING_EXAMS.length);
     }, 2800);
-    const activityTimer = setInterval(() => {
-      setActivityIdx((i) => (i + 1) % ACTIVITY_FEED.length);
-    }, 3500);
-    return () => {
-      clearInterval(examTimer);
-      clearInterval(activityTimer);
-    };
+    return () => clearInterval(examTimer);
   }, []);
 
   function onMove(e: React.MouseEvent<HTMLElement>) {
@@ -248,7 +234,7 @@ export function HeroV2() {
               transition={{ duration: 0.6, delay: 0.5 }}
               className="mt-12 grid grid-cols-3 max-w-md gap-x-6 gap-y-2 border-t border-border/60 pt-5"
             >
-              {TRUST_STATS.map((s, i) => (
+              {HERO_STATS.map((s, i) => (
                 <motion.div
                   key={s.label}
                   initial={{ opacity: 0, y: 8 }}
@@ -366,7 +352,7 @@ export function HeroV2() {
                 <div className="flex items-center gap-1.5 mb-2">
                   <Trophy className="h-3.5 w-3.5 text-warning" strokeWidth={2.4} />
                   <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">
-                    Live leaderboard
+                    Quiz leaderboard
                   </span>
                 </div>
                 <div className="space-y-1.5">
@@ -406,45 +392,6 @@ export function HeroV2() {
           </motion.div>
         </div>
 
-        {/* Live activity ticker */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.85 }}
-          className="mt-16 md:mt-20 flex items-center gap-3 px-4 py-3 rounded-2xl border border-border/60 bg-card/60 backdrop-blur max-w-2xl"
-        >
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-success/40 animate-ping" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-success" />
-            </span>
-            <span className="text-[11px] uppercase tracking-widest text-muted-foreground font-semibold">
-              Live
-            </span>
-          </div>
-          <div className="h-4 w-px bg-border shrink-0" />
-          <div className="relative flex-1 min-w-0 h-5 overflow-hidden">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activityIdx}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute inset-0 flex items-center gap-2 text-sm whitespace-nowrap"
-              >
-                <CheckCircle2 className="h-3.5 w-3.5 text-success shrink-0" strokeWidth={2.4} />
-                <span className="font-semibold">{ACTIVITY_FEED[activityIdx].name}</span>
-                <span className="text-muted-foreground truncate">
-                  {ACTIVITY_FEED[activityIdx].action}
-                </span>
-                <span className="text-muted-foreground/60 ml-auto shrink-0 text-xs">
-                  {ACTIVITY_FEED[activityIdx].when}
-                </span>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </motion.div>
       </div>
     </section>
   );
