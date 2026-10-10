@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: 'All courses',
   description:
     'Browse every course at Effort Education — Banking, SSC, Railway, CUET, Young Scholar Program and more.',
+  alternates: { canonical: '/courses' },
 };
 
 export default function CoursesIndex() {

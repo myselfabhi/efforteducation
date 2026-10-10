@@ -56,15 +56,15 @@ export default function Testimonials() {
   ];
 
   return (
-    <section className="py-16 bg-slate-50">
+    <section className="py-16 bg-secondary">
       <div className="container mx-auto max-w-6xl px-6">
         
         {/* Section Header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4 tracking-tight uppercase">
-            Our Student <span className="text-red-600">Success Stories</span>
+          <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4 tracking-tight uppercase">
+            Our Student <span className="text-primary">Success Stories</span>
           </h2>
-          <p className="text-base text-gray-500 max-w-2xl mx-auto leading-relaxed font-medium">
+          <p className="text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed font-medium">
             Over three decades of empowering students to achieve their dreams. Join our legacy of excellence.
           </p>
         </div>
@@ -72,8 +72,8 @@ export default function Testimonials() {
         {/* Loading State */}
         {loading && (
           <div className="flex justify-center items-center py-10">
-            <Loader2 className="w-6 h-6 animate-spin text-red-600" />
-            <span className="ml-2.5 text-gray-500 font-medium text-sm">Loading testimonials...</span>
+            <Loader2 className="w-6 h-6 animate-spin text-primary" />
+            <span className="ml-2.5 text-muted-foreground font-medium text-sm">Loading testimonials...</span>
           </div>
         )}
 
@@ -81,32 +81,32 @@ export default function Testimonials() {
         {!loading && (
           <div className="relative">
              {/* Left Fade Gradient */}
-            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-slate-50 to-transparent z-10 hidden md:block" />
+            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-secondary to-transparent z-10 hidden md:block" />
             
             <div className="overflow-hidden">
               <div className="flex animate-scroll-right-to-left py-3">
                 {/* First set of testimonials */}
                 {displayTestimonials.map((testimonial) => (
-                  <Card key={testimonial.id} className="bg-white border border-gray-100 hover:border-red-100 transition-all duration-500 transform hover:-translate-y-1.5 w-72 md:w-[380px] flex-shrink-0 mx-3 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl">
+                  <Card key={testimonial.id} className="bg-card border border-border hover:border-primary/30 transition-all duration-500 transform hover:-translate-y-1.5 w-72 md:w-[380px] flex-shrink-0 mx-3 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl">
                     <CardContent className="p-6 md:p-8">
                       <div className="mb-4">
-                        <Quote className="w-8 h-8 text-red-100 mb-3" />
-                        <p className="text-gray-600 leading-relaxed font-medium text-base italic">
+                        <Quote className="w-8 h-8 text-primary/20 mb-3" />
+                        <p className="text-muted-foreground leading-relaxed font-medium text-base italic">
                           &quot;{testimonial.quote}&quot;
                         </p>
                       </div>
                       
                       <div className="flex items-center space-x-3">
-                        <Avatar className="w-11 h-11 border border-red-50/50">
-                          <AvatarFallback className="bg-gradient-to-br from-red-600 to-red-700 text-white font-black text-base">
+                        <Avatar className="w-11 h-11 border border-primary/20">
+                          <AvatarFallback className="bg-primary text-primary-foreground font-black text-base">
                             {testimonial.initials}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <h4 className="font-bold text-gray-900 text-base">
+                          <h4 className="font-bold text-foreground text-base">
                             {testimonial.name}
                           </h4>
-                          <p className="text-red-600 font-black text-[10px] uppercase tracking-widest">
+                          <p className="text-primary font-black text-[10px] uppercase tracking-widest">
                             {testimonial.role}
                           </p>
                         </div>
@@ -117,26 +117,26 @@ export default function Testimonials() {
                 
                 {/* Duplicate set for seamless continuous loop */}
                 {displayTestimonials.map((testimonial) => (
-                  <Card key={`duplicate-${testimonial.id}`} className="bg-white border border-gray-100 hover:border-red-100 transition-all duration-500 transform hover:-translate-y-1.5 w-72 md:w-[380px] flex-shrink-0 mx-3 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl">
+                  <Card key={`duplicate-${testimonial.id}`} className="bg-card border border-border hover:border-primary/30 transition-all duration-500 transform hover:-translate-y-1.5 w-72 md:w-[380px] flex-shrink-0 mx-3 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl">
                     <CardContent className="p-6 md:p-8">
                       <div className="mb-4">
-                        <Quote className="w-8 h-8 text-red-100 mb-3" />
-                        <p className="text-gray-600 leading-relaxed font-medium text-base italic">
+                        <Quote className="w-8 h-8 text-primary/20 mb-3" />
+                        <p className="text-muted-foreground leading-relaxed font-medium text-base italic">
                           &quot;{testimonial.quote}&quot;
                         </p>
                       </div>
                       
                       <div className="flex items-center space-x-3">
-                        <Avatar className="w-11 h-11 border border-red-50/50">
-                          <AvatarFallback className="bg-gradient-to-br from-red-600 to-red-700 text-white font-black text-base">
+                        <Avatar className="w-11 h-11 border border-primary/20">
+                          <AvatarFallback className="bg-primary text-primary-foreground font-black text-base">
                             {testimonial.initials}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <h4 className="font-bold text-gray-900 text-base">
+                          <h4 className="font-bold text-foreground text-base">
                             {testimonial.name}
                           </h4>
-                          <p className="text-red-600 font-black text-[10px] uppercase tracking-widest">
+                          <p className="text-primary font-black text-[10px] uppercase tracking-widest">
                             {testimonial.role}
                           </p>
                         </div>
@@ -148,7 +148,7 @@ export default function Testimonials() {
             </div>
 
             {/* Right Fade Gradient */}
-            <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-slate-50 to-transparent z-10 hidden md:block" />
+            <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-secondary to-transparent z-10 hidden md:block" />
           </div>
         )}
       </div>

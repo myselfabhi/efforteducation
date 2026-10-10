@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: 'About Us — Our Story & Team',
   description:
     'Effort Education has guided 50,000+ students since 1991. Read our story, mission, and the people behind the platform.',
+  alternates: { canonical: '/about' },
   openGraph: {
     title: 'About Effort Education',
     description:

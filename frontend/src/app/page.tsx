@@ -10,6 +10,20 @@ import { CoursesCatalog } from '@/components/landing/CoursesCatalog';
 import { FacultySpotlight } from '@/components/landing/FacultySpotlight';
 import { FinalCTA } from '@/components/landing/FinalCTA';
 import { StickyCTABar } from '@/components/landing/StickyCTABar';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: { absolute: 'Effort Education — Live Online Coaching for Competitive Exams & Young Scholars' },
+  description:
+    'Live classes, real-time quizzes, and batch notes for Bank PO, SSC, CUET, UGC NET and more — plus the Young Scholar program for kids. Precision coaching since 1991.',
+  alternates: { canonical: '/' },
+  openGraph: {
+    title: 'Effort Education — Live Online Coaching',
+    description:
+      'Live classes, real-time quizzes, and the Young Scholar program for kids. Coaching since 1991.',
+    url: 'https://efforteducation.in',
+  },
+};
 
 export default function Home() {
   return (

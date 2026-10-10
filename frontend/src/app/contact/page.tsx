@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: 'Contact — Free Counselling & Enrollment',
   description:
     'Talk to a senior counsellor. Phone, WhatsApp, email — pick what works. Reply within 30 minutes during working hours.',
+  alternates: { canonical: '/contact' },
   openGraph: {
     title: 'Contact Effort Education',
     description:

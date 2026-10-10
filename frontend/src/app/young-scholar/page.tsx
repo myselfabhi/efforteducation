@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: 'Young Scholar — Confident, Self-Driven Kids · Class 4–8',
   description:
     'Live classes, quizzes kids beg to win, and a weekly report they write themselves. Young Scholar turns Class 4–8 kids into confident, self-driven learners. Book a call to join the next batch.',
+  alternates: { canonical: '/young-scholar' },
   openGraph: {
     title: 'Young Scholar — Effort Education',
     description:

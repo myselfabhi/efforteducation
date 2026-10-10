@@ -404,8 +404,6 @@ export const api = {
     results: (quizId: number) => apiFetch<QuizResults>(`/api/quizzes/${quizId}/results`),
   },
 
-  // Marketing / legacy
-  submitContactForm: (body: Record<string, string | undefined>) =>
-    apiFetchSoft('/api/contact', j(body)),
+  // Marketing
   getTestimonials: () => apiFetchSoft('/api/testimonials'),
 };
