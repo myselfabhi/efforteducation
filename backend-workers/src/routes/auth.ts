@@ -18,6 +18,7 @@ type RegisterBody = {
   full_name?: string;
   phone?: string | null;
   class_grade?: string | null;
+  account_type?: 'parent' | 'student';
 };
 
 type LoginBody = { email: string; password: string };
@@ -25,9 +26,10 @@ type LoginBody = { email: string; password: string };
 // POST /api/auth/register — student self-signup only
 auth.post('/register', validateBody(RegisterStudentSchema), async (c) => {
   try {
-    const { username, email, password, full_name, phone, class_grade } =
+    const { username, email, password, full_name, phone, class_grade, account_type } =
       getValid<RegisterBody>(c);
     const db = c.get('db');
+    const role = account_type === 'parent' ? 'parent' : 'student';
 
     const existing = await db.query(
       'SELECT id FROM users WHERE email = $1 OR username = $2',
@@ -41,9 +43,9 @@ auth.post('/register', validateBody(RegisterStudentSchema), async (c) => {
 
     const result = await db.query(
       `INSERT INTO users (username, email, password_hash, role, full_name, phone, class_grade)
-       VALUES ($1, $2, $3, 'student', $4, $5, $6)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING id, username, email, role, full_name, phone, class_grade, avatar_url, created_at`,
-      [username, email, passwordHash, full_name ?? null, phone ?? null, class_grade ?? null],
+      [username, email, passwordHash, role, full_name ?? null, phone ?? null, class_grade ?? null],
     );
 
     const user = result.rows[0];

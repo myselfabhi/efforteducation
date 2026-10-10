@@ -1,6 +1,6 @@
 import type { Pool } from 'pg';
 
-export type UserRole = 'super_admin' | 'teacher' | 'student' | 'admin' | 'user';
+export type UserRole = 'super_admin' | 'teacher' | 'student' | 'parent' | 'admin' | 'user';
 
 export interface AuthUser {
   id: number;

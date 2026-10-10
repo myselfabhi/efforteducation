@@ -51,6 +51,16 @@ export const RegisterStudentSchema = z.object({
   full_name: z.string().min(2).max(120).optional(),
   phone: Phone,
   class_grade: z.string().max(32).optional().nullable(),
+  account_type: z.enum(['parent', 'student']).optional(),
+});
+
+// A parent creating a child profile. username/password are optional — the API
+// generates them when absent (the child is a real student account underneath).
+export const CreateChildSchema = z.object({
+  full_name: z.string().min(2).max(120),
+  class_grade: z.string().max(32).optional().nullable(),
+  username: Username.optional(),
+  password: Password.optional(),
 });
 
 export const LoginSchema = z.object({
