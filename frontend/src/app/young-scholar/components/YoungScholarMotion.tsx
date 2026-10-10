@@ -220,7 +220,7 @@ export function YoungScholarMotion() {
                 className="mt-8 flex flex-wrap items-center gap-3"
               >
                 <Link
-                  href="/contact"
+                  href="/contact?interest=young-scholar"
                   className="group inline-flex items-center gap-2 h-12 px-6 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
                 >
                   Book a call

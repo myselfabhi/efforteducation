@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Phone, MessageCircle, Mail, MapPin, Clock, ArrowRight } from 'lucide-react';
+import ContactLeadForm from './ContactLeadForm';
 
 const WHATSAPP = '+919355103155';
 const PHONE = '+919910335093';
@@ -85,15 +86,23 @@ export function ContactMotion() {
             transition={{ duration: 0.5, delay: 0.15 }}
             className="mt-5 max-w-xl text-base md:text-lg text-muted-foreground leading-relaxed"
           >
-            Pick the channel that suits you. A 20-minute call with a senior counsellor will
-            clarify your options — courses, schedule, fees, and demo classes.
+            Leave your number and we’ll call you — or reach us directly. A 20-minute call with a
+            senior counsellor clarifies your options: courses, schedule, and how to get started.
           </motion.p>
+        </div>
+      </section>
+
+      {/* Lead form */}
+      <section className="pb-14">
+        <div className="container mx-auto max-w-2xl px-6">
+          <ContactLeadForm whatsapp={WHATSAPP} />
         </div>
       </section>
 
       {/* Channels */}
       <section className="pb-20">
         <div className="container mx-auto max-w-5xl px-6">
+          <p className="text-sm font-semibold text-muted-foreground mb-4">Prefer to reach us directly?</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {CHANNELS.map((c, i) => {
               const Icon = c.icon;
@@ -160,7 +169,7 @@ export function ContactMotion() {
               Not sure which course fits you?
             </h2>
             <p className="mt-3 max-w-xl mx-auto text-muted-foreground">
-              Browse the catalog or book a free counselling call — whichever you prefer.
+              Browse the catalog or book a call — whichever you prefer.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
