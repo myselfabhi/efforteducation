@@ -49,6 +49,10 @@ function navFor(role: UserRole): NavItem[] {
         { href: '/dashboard/teacher/quizzes', label: 'Quizzes', icon: ClipboardList },
         { href: '/dashboard/teacher/announcements', label: 'Announcements', icon: Megaphone },
       ];
+    case 'parent':
+      return [
+        { href: '/dashboard/parent', label: 'My Children', icon: Users },
+      ];
     case 'student':
     case 'user':
     default:

@@ -23,11 +23,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     const isAdmin = user.role === 'super_admin' || user.role === 'admin';
     const isTeacher = user.role === 'teacher';
+    const isParent = user.role === 'parent';
 
     if (pathname.startsWith('/dashboard/admin') && !isAdmin) {
-      router.replace(isTeacher ? '/dashboard/teacher' : '/dashboard/student');
+      router.replace(isParent ? '/dashboard/parent' : isTeacher ? '/dashboard/teacher' : '/dashboard/student');
     } else if (pathname.startsWith('/dashboard/teacher') && !isTeacher && !isAdmin) {
-      router.replace('/dashboard/student');
+      router.replace(isParent ? '/dashboard/parent' : '/dashboard/student');
+    } else if (pathname.startsWith('/dashboard/student') && isParent) {
+      router.replace('/dashboard/parent');
+    } else if (pathname.startsWith('/dashboard/parent') && !isParent && !isAdmin) {
+      router.replace(isTeacher ? '/dashboard/teacher' : '/dashboard/student');
     }
   }, [hasHydrated, isAuthenticated, user, pathname, router]);
 

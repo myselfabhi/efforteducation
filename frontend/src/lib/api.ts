@@ -170,11 +170,22 @@ export interface AuthUser {
   id: number;
   username: string;
   email: string;
-  role: 'super_admin' | 'teacher' | 'student' | 'admin' | 'user';
+  role: 'super_admin' | 'teacher' | 'student' | 'parent' | 'admin' | 'user';
   full_name?: string | null;
   phone?: string | null;
   class_grade?: string | null;
   avatar_url?: string | null;
+}
+
+/** A child profile linked to a parent/guardian account. */
+export interface Child {
+  id: number;
+  username: string;
+  full_name: string | null;
+  class_grade: string | null;
+  avatar_url: string | null;
+  relationship?: string;
+  linked_at?: string;
 }
 
 export interface AuthResponse {
@@ -268,10 +279,18 @@ const del = (): RequestInit => ({ method: 'DELETE' });
 
 export const api = {
   auth: {
-    register: (body: { username: string; email: string; password: string; full_name?: string; phone?: string; class_grade?: string }) =>
+    register: (body: { username: string; email: string; password: string; full_name?: string; phone?: string; class_grade?: string; account_type?: 'parent' | 'student' }) =>
       apiFetch<AuthResponse>('/api/auth/register', j(body)),
     login: (body: { email: string; password: string }) =>
       apiFetch<AuthResponse>('/api/auth/login', j(body)),
+  },
+
+  // Parent / guardian — manage linked child profiles (parent role only).
+  guardian: {
+    listChildren: () => apiFetch<{ children: Child[] }>('/api/guardian/children'),
+    addChild: (body: { full_name: string; class_grade?: string; username?: string; password?: string }) =>
+      apiFetch<{ child: Child }>('/api/guardian/children', j(body)),
+    removeChild: (childId: number) => apiFetch(`/api/guardian/children/${childId}`, del()),
   },
 
   users: {

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type UserRole = 'super_admin' | 'teacher' | 'student' | 'admin' | 'user';
+export type UserRole = 'super_admin' | 'teacher' | 'student' | 'parent' | 'admin' | 'user';
 
 export interface User {
   id: number;
@@ -83,6 +83,8 @@ export function dashboardHomeFor(role: UserRole): string {
       return '/dashboard/admin';
     case 'teacher':
       return '/dashboard/teacher';
+    case 'parent':
+      return '/dashboard/parent';
     case 'student':
     case 'user':
     default:

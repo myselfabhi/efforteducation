@@ -4,9 +4,12 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { User, Mail, Phone, Lock, BookOpen, ArrowRight, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { User, Mail, Phone, Lock, BookOpen, ArrowRight, Eye, EyeOff, Loader2, GraduationCap, Users } from 'lucide-react';
 import { api, ApiError } from '@/lib/api';
 import { useAuthStore, dashboardHomeFor } from '@/lib/stores/authStore';
+import { cn } from '@/lib/utils';
+
+type AccountType = 'student' | 'parent';
 
 const CLASS_OPTIONS = [
   'Class 4', 'Class 5', 'Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10',
@@ -29,9 +32,11 @@ export default function RegisterPage() {
     phone: '',
     class_grade: '',
   });
+  const [accountType, setAccountType] = useState<AccountType>('student');
   const [showPw, setShowPw] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const isParent = accountType === 'parent';
 
   useEffect(() => { hydrate(); }, [hydrate]);
 
@@ -58,7 +63,8 @@ export default function RegisterPage() {
         password: form.password,
         full_name: form.full_name || undefined,
         phone: form.phone || undefined,
-        class_grade: form.class_grade || undefined,
+        class_grade: isParent ? undefined : (form.class_grade || undefined),
+        account_type: accountType,
       });
       login(r.user, r.token);
       toast.success('Account created! Welcome aboard.');
@@ -73,10 +79,35 @@ export default function RegisterPage() {
   return (
     <div className="space-y-6">
       <div className="text-center space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight">Start your journey.</h1>
+        <h1 className="text-2xl font-bold tracking-tight">
+          {isParent ? 'Create a parent account.' : 'Start your journey.'}
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Create a free account to access classes, quizzes, and notes.
+          {isParent
+            ? "Manage your child's classes, progress and schedule from one place."
+            : 'Create a free account to access classes, quizzes, and notes.'}
         </p>
+      </div>
+
+      {/* Account type */}
+      <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-secondary/50 border border-border">
+        {(['student', 'parent'] as const).map((t) => (
+          <button
+            key={t}
+            type="button"
+            onClick={() => setAccountType(t)}
+            aria-pressed={accountType === t}
+            className={cn(
+              'flex items-center justify-center gap-2 h-10 rounded-lg text-sm font-semibold transition-colors',
+              accountType === t
+                ? 'bg-background text-primary shadow-sm'
+                : 'text-muted-foreground hover:text-foreground'
+            )}
+          >
+            {t === 'student' ? <GraduationCap className="h-4 w-4" /> : <Users className="h-4 w-4" />}
+            {t === 'student' ? "I'm a student" : "I'm a parent"}
+          </button>
+        ))}
       </div>
 
       <form onSubmit={onSubmit} className="space-y-4">
@@ -90,7 +121,7 @@ export default function RegisterPage() {
         {/* Full name */}
         <div>
           <label htmlFor="full_name" className="block text-xs font-semibold text-foreground mb-1.5">
-            Full name
+            {isParent ? 'Your name' : 'Full name'}
           </label>
           <div className="relative">
             <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" strokeWidth={2} />
@@ -100,14 +131,14 @@ export default function RegisterPage() {
               required
               value={form.full_name}
               onChange={(e) => set('full_name', e.target.value)}
-              placeholder="Your full name"
+              placeholder={isParent ? 'Parent / guardian name' : 'Your full name'}
               className="w-full h-10 pl-9 pr-3 rounded-lg border border-border bg-background text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
             />
           </div>
         </div>
 
-        {/* Username + Class */}
-        <div className="grid grid-cols-2 gap-3">
+        {/* Username (+ Class, students only) */}
+        <div className={cn('grid gap-3', isParent ? 'grid-cols-1' : 'grid-cols-2')}>
           <div>
             <label htmlFor="username" className="flex items-center justify-between text-xs font-semibold text-foreground mb-1.5">
               <span>Username</span>
@@ -126,27 +157,36 @@ export default function RegisterPage() {
               />
             </div>
           </div>
-          <div>
-            <label htmlFor="class_grade" className="flex items-center justify-between text-xs font-semibold text-foreground mb-1.5">
-              <span>Class / level</span>
-              <span className="text-muted-foreground font-normal">Optional</span>
-            </label>
-            <div className="relative">
-              <BookOpen className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" strokeWidth={2} />
-              <select
-                id="class_grade"
-                value={form.class_grade}
-                onChange={(e) => set('class_grade', e.target.value)}
-                className="w-full h-10 pl-9 pr-3 rounded-lg border border-border bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all appearance-none cursor-pointer"
-              >
-                <option value="">Select…</option>
-                {CLASS_OPTIONS.map((opt) => (
-                  <option key={opt} value={opt}>{opt}</option>
-                ))}
-              </select>
+          {!isParent && (
+            <div>
+              <label htmlFor="class_grade" className="flex items-center justify-between text-xs font-semibold text-foreground mb-1.5">
+                <span>Class / level</span>
+                <span className="text-muted-foreground font-normal">Optional</span>
+              </label>
+              <div className="relative">
+                <BookOpen className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" strokeWidth={2} />
+                <select
+                  id="class_grade"
+                  value={form.class_grade}
+                  onChange={(e) => set('class_grade', e.target.value)}
+                  className="w-full h-10 pl-9 pr-3 rounded-lg border border-border bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all appearance-none cursor-pointer"
+                >
+                  <option value="">Select…</option>
+                  {CLASS_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
+              </div>
             </div>
-          </div>
+          )}
         </div>
+
+        {isParent && (
+          <p className="flex items-start gap-2 text-xs text-muted-foreground bg-secondary/40 border border-border rounded-lg px-3 py-2.5">
+            <Users className="h-4 w-4 shrink-0 mt-px text-primary" strokeWidth={2} />
+            <span>After signing in, you&rsquo;ll add each child&rsquo;s profile from your dashboard.</span>
+          </p>
+        )}
 
         {/* Email */}
         <div>
