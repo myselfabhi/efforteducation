@@ -57,7 +57,7 @@ function navFor(role: UserRole): NavItem[] {
     case 'user':
     default:
       return [
-        { href: '/dashboard/student', label: 'Overview', icon: LayoutDashboard },
+        { href: '/dashboard/student', label: 'Home', icon: LayoutDashboard },
         { href: '/dashboard/student/batches', label: 'My Batches', icon: GraduationCap },
         { href: '/dashboard/student/enrolments', label: 'My Requests', icon: MailQuestion },
         { href: '/dashboard/student/classes', label: 'Live Classes', icon: Video },

@@ -3,194 +3,122 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { format } from 'date-fns';
-import { GraduationCap, Video, FileText, Trophy, Zap, Clock, Play, Crown } from 'lucide-react';
-import { api, type QuizSummary, type QuizLeaderboardRow } from '@/lib/api';
+import { format, isToday, isTomorrow } from 'date-fns';
+import {
+  Video, FileText, Megaphone, Play, Zap, Clock, Calendar, ArrowRight,
+  PenLine, Image as ImageIcon, Trophy, PartyPopper,
+} from 'lucide-react';
+import { api, type QuizSummary, type Announcement, type Material } from '@/lib/api';
 import { useAuthStore } from '@/lib/stores/authStore';
-import { StatCard } from '@/components/dashboard/StatCard';
 import { Button } from '@/app/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface StudentDash {
   batches: Array<{ id: number; name: string; course_title: string; schedule_description: string | null }>;
   upcoming_classes: Array<{ id: number; title: string; scheduled_start: string; status: string; batch_name: string }>;
-  recent_materials: Array<{ id: number; title: string; type: string; created_at: string; batch_name: string }>;
+  recent_materials: Array<{ id: number; title: string; type: Material['type']; created_at: string; batch_name: string }>;
   recent_scores: Array<{ quiz_id: number; total_score: number; rank: number | null; title: string }>;
 }
 
-function LiveCountdown({ scheduledAt }: { scheduledAt: string | null }) {
+type NextClass = StudentDash['upcoming_classes'][number];
+type ClassState = 'live' | 'soon' | 'scheduled' | 'none';
+
+function greeting() {
+  const h = new Date().getHours();
+  if (h < 12) return 'Good morning';
+  if (h < 17) return 'Good afternoon';
+  return 'Good evening';
+}
+
+function firstNameOf(full?: string | null, username?: string) {
+  const n = (full || username || '').trim();
+  return n.split(/\s+/)[0] || 'there';
+}
+
+function classState(nextClass?: NextClass): ClassState {
+  if (!nextClass) return 'none';
+  if (nextClass.status === 'LIVE') return 'live';
+  const mins = (new Date(nextClass.scheduled_start).getTime() - Date.now()) / 60_000;
+  return mins <= 20 ? 'soon' : 'scheduled';
+}
+
+function whenLabel(iso: string) {
+  const d = new Date(iso);
+  if (isToday(d)) return `Today, ${format(d, 'p')}`;
+  if (isTomorrow(d)) return `Tomorrow, ${format(d, 'p')}`;
+  return format(d, 'EEE, MMM d · p');
+}
+
+const MATERIAL_ICON: Record<Material['type'], React.ComponentType<{ className?: string }>> = {
+  pdf: FileText, video_link: Video, image: ImageIcon, doc: FileText, text_note: PenLine,
+};
+
+// ── Live countdown ("12m 03s" / "2h 14m") ─────────────────────────────────────
+function Countdown({ to }: { to: string }) {
   const [label, setLabel] = useState('');
   useEffect(() => {
-    if (!scheduledAt) return;
     const tick = () => {
-      const diff = new Date(scheduledAt).getTime() - Date.now();
-      if (diff <= 0) { setLabel('Starting now'); return; }
+      const diff = new Date(to).getTime() - Date.now();
+      if (diff <= 0) { setLabel('now'); return; }
       const h = Math.floor(diff / 3_600_000);
       const m = Math.floor((diff % 3_600_000) / 60_000);
       const s = Math.floor((diff % 60_000) / 1_000);
-      setLabel(h > 0 ? `${h}h ${m}m` : m > 0 ? `${m}m ${s}s` : `${s}s`);
+      setLabel(h > 0 ? `${h}h ${m}m` : m > 0 ? `${m}m ${String(s).padStart(2, '0')}s` : `${s}s`);
     };
     tick();
     const t = setInterval(tick, 1000);
     return () => clearInterval(t);
-  }, [scheduledAt]);
+  }, [to]);
   return <span className="tabular-nums">{label || '—'}</span>;
 }
 
-function NextQuizCard() {
-  const { data } = useQuery({
-    queryKey: ['quizzes', 'student', 'next'],
-    queryFn: () => api.quizzes.list() as Promise<QuizSummary[]>,
-  });
-  const live = data?.find((q) => q.status === 'LIVE');
-  const upcoming = !live && data?.find((q) => q.status === 'UPCOMING' && q.scheduled_at);
-  const featured = live || upcoming;
-  if (!featured) return null;
-  const isLive = featured.status === 'LIVE';
-  return (
-    <Link
-      href={`/quiz/${featured.id}/lobby`}
-      className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-5 rounded-2xl border transition-colors ${
-        isLive
-          ? 'border-success/40 bg-success/5 hover:bg-success/10'
-          : 'border-info/30 bg-info/5 hover:bg-info/10'
-      }`}
-    >
-      <div className="min-w-0">
-        <div className="flex items-center gap-2 mb-1">
-          {isLive ? (
-            <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-widest font-semibold text-success">
-              <Zap className="h-3 w-3" /> Live now
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-widest font-semibold text-info">
-              <Clock className="h-3 w-3" /> Starts in <LiveCountdown scheduledAt={featured.scheduled_at} />
-            </span>
-          )}
-        </div>
-        <h2 className="text-base font-bold truncate">{featured.title}</h2>
-        <p className="text-xs text-muted-foreground mt-0.5">
-          {featured.question_count != null && `${featured.question_count} questions`}
-          {featured.creator_name && ` · By ${featured.creator_name}`}
-        </p>
-      </div>
-      <span
-        className={`shrink-0 inline-flex items-center gap-1.5 h-9 px-4 rounded-lg text-sm font-semibold ${
-          isLive
-            ? 'bg-success text-success-foreground'
-            : 'bg-info/10 text-info border border-info/30'
-        }`}
-      >
-        <Play className="h-3.5 w-3.5" />
-        {isLive ? 'Join now' : 'Open lobby'}
-      </span>
-    </Link>
-  );
-}
-
-export default function StudentDashboard() {
+// Class Hub — the student/child home: what to do now this week (loop).
+export default function StudentClassHub() {
+  const user = useAuthStore((s) => s.user);
   const { data, isLoading, error } = useQuery({
     queryKey: ['dashboard', 'student'],
     queryFn: () => api.dashboard.student() as Promise<StudentDash>,
   });
 
+  const name = firstNameOf(user?.full_name, user?.username);
+  const batches = data?.batches ?? [];
+  const primaryBatch = batches[0];
+  const nextClass = data?.upcoming_classes?.[0];
+  const state = classState(nextClass);
+
+  const subline =
+    state === 'live' ? 'Your class is live — jump in.'
+    : state === 'soon' ? 'Your class is about to start.'
+    : state === 'scheduled' ? "Here's what's coming up this week."
+    : "Here's your week at a glance.";
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Hi 👋</h1>
-        <p className="text-muted-foreground">Here&rsquo;s what&rsquo;s coming up for you.</p>
-      </div>
+      <header>
+        <h1 className="text-3xl font-bold tracking-tight">
+          {greeting()}, {name} <span className="inline-block">👋</span>
+        </h1>
+        <p className="text-muted-foreground">{subline}</p>
+      </header>
 
-      <NextQuizCard />
-
-      {error && <p className="text-sm text-destructive">Failed to load.</p>}
-      {isLoading && <p className="text-sm text-muted-foreground">Loading…</p>}
+      {error && <p className="text-sm text-destructive">Couldn&rsquo;t load your hub. Please refresh.</p>}
+      {isLoading && <HubSkeleton />}
 
       {data && (
         <>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatCard label="My batches" value={data.batches.length} icon={<GraduationCap className="h-5 w-5" />} />
-            <StatCard label="Upcoming classes" value={data.upcoming_classes.length} icon={<Video className="h-5 w-5" />} accent="blue" />
-            <StatCard label="New materials" value={data.recent_materials.length} icon={<FileText className="h-5 w-5" />} accent="amber" />
-            <StatCard label="Recent quizzes" value={data.recent_scores.length} icon={<Trophy className="h-5 w-5" />} accent="emerald" />
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-6">
-            <section className="rounded-2xl border border-border bg-card p-5">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-semibold">Next classes</h2>
-                <Link href="/dashboard/student/classes" className="text-sm text-primary hover:underline">All classes</Link>
+          {batches.length === 0 ? (
+            <NotEnrolled />
+          ) : (
+            <>
+              <ClassHero nextClass={nextClass} state={state} />
+              <WeeklyLoop state={state} />
+              <QuizSpotlight batchId={primaryBatch?.id} />
+              <div className="grid gap-6 lg:grid-cols-2">
+                <MaterialsCard materials={data.recent_materials} />
+                <AnnouncementsCard batch={primaryBatch} />
               </div>
-              {data.upcoming_classes.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No classes scheduled.</p>
-              ) : (
-                <ul className="space-y-3">
-                  {data.upcoming_classes.map((c) => (
-                    <li key={c.id} className="flex items-center justify-between border-b border-border pb-3 last:border-0 last:pb-0">
-                      <div className="min-w-0">
-                        <p className="font-medium truncate">{c.title}</p>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {c.batch_name} · {format(new Date(c.scheduled_start), 'PP p')}
-                        </p>
-                      </div>
-                      <Button asChild size="sm" variant={c.status === 'LIVE' ? 'default' : 'outline'}>
-                        <Link href={`/dashboard/classes/${c.id}`}>
-                          {c.status === 'LIVE' ? 'Join' : 'Open'}
-                        </Link>
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </section>
-
-            <section className="rounded-2xl border border-border bg-card p-5">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-semibold">My batches</h2>
-                <Link href="/dashboard/student/batches" className="text-sm text-primary hover:underline">All batches</Link>
-              </div>
-              {data.batches.length === 0 ? (
-                <p className="text-sm text-muted-foreground">You&rsquo;re not enrolled in any batches yet.</p>
-              ) : (
-                <ul className="space-y-3">
-                  {data.batches.map((b) => (
-                    <li key={b.id} className="border-b border-border pb-3 last:border-0 last:pb-0">
-                      <Link href={`/dashboard/student/batches/${b.id}`} className="block hover:underline">
-                        <p className="font-medium truncate">{b.name}</p>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {b.course_title}{b.schedule_description ? ` · ${b.schedule_description}` : ''}
-                        </p>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </section>
-          </div>
-
-          {data.recent_scores.length > 0 && (
-            <div className="grid lg:grid-cols-2 gap-6">
-              <section className="rounded-2xl border border-border bg-card p-5">
-                <h2 className="font-semibold mb-4">Recent quiz scores</h2>
-                <ul className="divide-y divide-border">
-                  {data.recent_scores.map((s) => (
-                    <li key={s.quiz_id} className="flex items-center justify-between py-2">
-                      <Link
-                        href={`/quiz/${s.quiz_id}/results`}
-                        className="truncate hover:underline"
-                      >
-                        {s.title}
-                      </Link>
-                      <span className="text-sm shrink-0 ml-3">
-                        <span className="font-semibold">{s.total_score}</span>
-                        {s.rank && <span className="text-muted-foreground"> · rank #{s.rank}</span>}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-
-              <TopOfClassWidget mostRecentQuizId={data.recent_scores[0].quiz_id} />
-            </div>
+              {data.recent_scores.length > 0 && <RecentScores scores={data.recent_scores} />}
+            </>
           )}
         </>
       )}
@@ -198,74 +126,309 @@ export default function StudentDashboard() {
   );
 }
 
-function TopOfClassWidget({ mostRecentQuizId }: { mostRecentQuizId: number }) {
-  const me = useAuthStore((s) => s.user);
-  const { data, isLoading } = useQuery({
-    queryKey: ['quiz', mostRecentQuizId, 'leaderboard'],
-    queryFn: () => api.quizzes.leaderboard(mostRecentQuizId) as Promise<QuizLeaderboardRow[]>,
-    staleTime: 60_000,
-  });
+// ── This week's class — the hero ──────────────────────────────────────────────
+function ClassHero({ nextClass, state }: { nextClass?: NextClass; state: ClassState }) {
+  if (state === 'none' || !nextClass) {
+    return (
+      <section className="rounded-2xl border border-dashed border-border bg-card p-6">
+        <div className="flex items-center gap-3 text-muted-foreground">
+          <Calendar className="h-5 w-5" />
+          <div>
+            <p className="font-semibold text-foreground">No class scheduled yet</p>
+            <p className="text-sm">Your next session will show up here as soon as your teacher sets it.</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const isLive = state === 'live';
+  const isSoon = state === 'soon';
+  const accent = isLive
+    ? 'border-success/40 bg-success/5'
+    : isSoon
+      ? 'border-warning/40 bg-warning/5'
+      : 'border-info/30 bg-info/5';
+
+  return (
+    <section className={cn('rounded-2xl border p-6', accent)}>
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <div className="mb-2 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest">
+            {isLive ? (
+              <span className="inline-flex items-center gap-1.5 text-success">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-success" />
+                </span>
+                Live now
+              </span>
+            ) : isSoon ? (
+              <span className="inline-flex items-center gap-1.5 text-warning">
+                <Zap className="h-3.5 w-3.5" /> Starting in <Countdown to={nextClass.scheduled_start} />
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 text-info">
+                <Clock className="h-3.5 w-3.5" /> This week&rsquo;s class
+              </span>
+            )}
+          </div>
+          <h2 className="truncate text-xl font-bold">{nextClass.title}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {nextClass.batch_name}
+            {!isLive && <> · {whenLabel(nextClass.scheduled_start)}</>}
+          </p>
+        </div>
+
+        <Button
+          asChild
+          size="lg"
+          variant={isLive || isSoon ? 'default' : 'outline'}
+          className={cn('shrink-0', isLive && 'bg-success text-success-foreground hover:bg-success/90')}
+        >
+          <Link href={`/dashboard/classes/${nextClass.id}`}>
+            <Play className="h-4 w-4" />
+            {isLive ? 'Join live class' : isSoon ? 'Join class' : 'Open classroom'}
+          </Link>
+        </Button>
+      </div>
+    </section>
+  );
+}
+
+// ── The weekly loop: Class → Quiz → Report ────────────────────────────────────
+function WeeklyLoop({ state }: { state: ClassState }) {
+  const steps = [
+    {
+      icon: Video,
+      label: 'Live class',
+      status: state === 'live' ? 'Live now' : state === 'soon' ? 'Starting soon' : state === 'scheduled' ? 'Coming up' : 'This week',
+      active: state === 'live' || state === 'soon',
+    },
+    {
+      icon: Zap,
+      label: 'McD Quiz',
+      status: 'Beat your best',
+      active: false,
+    },
+    {
+      icon: PenLine,
+      label: 'Weekly report',
+      status: 'Coming soon',
+      active: false,
+      soon: true,
+    },
+  ];
 
   return (
     <section className="rounded-2xl border border-border bg-card p-5">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <Crown className="h-5 w-5 text-warning" />
-          <h2 className="font-semibold">Top of the class</h2>
-        </div>
-        <Link
-          href={`/quiz/${mostRecentQuizId}/results`}
-          className="text-sm text-primary hover:underline"
-        >
-          See full
-        </Link>
-      </div>
-      {isLoading && <p className="text-sm text-muted-foreground">Loading…</p>}
-      {data && data.length === 0 && (
-        <p className="text-sm text-muted-foreground">No scores yet.</p>
-      )}
-      {data && data.length > 0 && (
-        <ul className="space-y-2">
-          {data.slice(0, 5).map((row, i) => {
-            const isMe = row.user_id === me?.id;
-            return (
-              <li
-                key={row.user_id}
-                className={`flex items-center justify-between rounded-lg px-3 py-2 ${
-                  isMe ? 'bg-primary/5 border border-primary/20' : 'bg-secondary/30'
-                }`}
+      <h3 className="mb-4 text-xs font-semibold uppercase tracking-widest text-muted-foreground">Your weekly loop</h3>
+      <ol className="grid gap-3 sm:grid-cols-3">
+        {steps.map((s, i) => {
+          const Icon = s.icon;
+          return (
+            <li
+              key={s.label}
+              className={cn(
+                'relative flex items-center gap-3 rounded-xl border p-3.5',
+                s.active ? 'border-primary/30 bg-primary/5' : 'border-border bg-secondary/30'
+              )}
+            >
+              <span
+                className={cn(
+                  'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-sm font-bold',
+                  s.active ? 'bg-primary/15 text-primary' : 'bg-background text-muted-foreground'
+                )}
               >
-                <div className="flex items-center gap-3 min-w-0">
-                  <span
-                    className={`inline-flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold ${
-                      i === 0
-                        ? 'bg-warning/15 text-warning'
-                        : i === 1
-                          ? 'bg-muted text-foreground'
-                          : i === 2
-                            ? 'bg-info/10 text-info'
-                            : 'bg-secondary text-muted-foreground'
-                    }`}
-                  >
-                    {i + 1}
+                <Icon className="h-5 w-5" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold leading-tight">{s.label}</p>
+                <p className={cn('text-xs', s.soon ? 'text-muted-foreground/70' : 'text-muted-foreground')}>
+                  {s.status}
+                </p>
+              </div>
+              <span className="absolute right-3 top-3 text-[10px] font-bold text-muted-foreground/50">
+                {i + 1}
+              </span>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  );
+}
+
+// ── Play the McD Quiz ─────────────────────────────────────────────────────────
+function QuizSpotlight({ batchId }: { batchId?: number }) {
+  const { data } = useQuery({
+    queryKey: ['quizzes', 'student', 'hub', batchId ?? 'all'],
+    queryFn: () => api.quizzes.list(batchId) as Promise<QuizSummary[]>,
+  });
+  const live = data?.find((q) => q.status === 'LIVE');
+  const upcoming = !live && data?.find((q) => q.status === 'UPCOMING' && q.scheduled_at);
+  const featured = live || upcoming;
+  if (!featured) return null;
+  const isLive = featured.status === 'LIVE';
+
+  return (
+    <Link
+      href={`/quiz/${featured.id}/lobby`}
+      className={cn(
+        'flex items-center justify-between gap-3 rounded-2xl border p-5 transition-colors',
+        isLive ? 'border-success/40 bg-success/5 hover:bg-success/10' : 'border-info/30 bg-info/5 hover:bg-info/10'
+      )}
+    >
+      <div className="min-w-0">
+        <div className="mb-1 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest">
+          {isLive ? <span className="text-success">Quiz live now</span> : <span className="text-info">Quiz ready</span>}
+        </div>
+        <h3 className="truncate text-base font-bold">{featured.title}</h3>
+        <p className="mt-0.5 text-xs text-muted-foreground">
+          {featured.question_count != null && `${featured.question_count} questions · `}Try to beat your best score
+        </p>
+      </div>
+      <span
+        className={cn(
+          'inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg px-4 text-sm font-semibold',
+          isLive ? 'bg-success text-success-foreground' : 'border border-info/30 bg-info/10 text-info'
+        )}
+      >
+        <Play className="h-3.5 w-3.5" /> {isLive ? 'Play now' : 'Open lobby'}
+      </span>
+    </Link>
+  );
+}
+
+// ── This week's materials ─────────────────────────────────────────────────────
+function MaterialsCard({ materials }: { materials: StudentDash['recent_materials'] }) {
+  return (
+    <section className="rounded-2xl border border-border bg-card p-5">
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="font-semibold">Latest materials</h3>
+        <Link href="/dashboard/student/materials" className="text-sm text-primary hover:underline">View all</Link>
+      </div>
+      {materials.length === 0 ? (
+        <p className="text-sm text-muted-foreground">Nothing new yet — notes and worksheets land here after class.</p>
+      ) : (
+        <ul className="space-y-3">
+          {materials.map((m) => {
+            const Icon = MATERIAL_ICON[m.type] ?? FileText;
+            return (
+              <li key={m.id}>
+                <Link
+                  href="/dashboard/student/materials"
+                  className="flex items-center gap-3 rounded-lg -mx-2 px-2 py-1.5 hover:bg-secondary/50"
+                >
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-muted-foreground">
+                    <Icon className="h-4 w-4" />
                   </span>
-                  <span className="truncate text-sm">
-                    {row.full_name || row.username}
-                    {isMe && (
-                      <span className="ml-2 text-[10px] uppercase tracking-widest text-primary font-semibold">
-                        You
-                      </span>
-                    )}
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-medium">{m.title}</span>
+                    <span className="block truncate text-xs text-muted-foreground">
+                      {m.batch_name} · {format(new Date(m.created_at), 'MMM d')}
+                    </span>
                   </span>
-                </div>
-                <span className="text-sm font-semibold tabular-nums shrink-0">
-                  {row.total_score.toLocaleString()}
-                </span>
+                </Link>
               </li>
             );
           })}
         </ul>
       )}
     </section>
+  );
+}
+
+// ── From your teacher (announcements) ─────────────────────────────────────────
+function AnnouncementsCard({ batch }: { batch?: StudentDash['batches'][number] }) {
+  const { data } = useQuery({
+    queryKey: ['announcements', 'batch', batch?.id],
+    queryFn: () => api.announcements.listForBatch(batch!.id) as Promise<Announcement[]>,
+    enabled: !!batch,
+  });
+  const items = (data ?? []).slice(0, 3);
+
+  return (
+    <section className="rounded-2xl border border-border bg-card p-5">
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="flex items-center gap-2 font-semibold">
+          <Megaphone className="h-4 w-4 text-primary" /> From your teacher
+        </h3>
+        {batch && (
+          <Link href={`/dashboard/student/batches/${batch.id}`} className="text-sm text-primary hover:underline">
+            Open batch
+          </Link>
+        )}
+      </div>
+      {items.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No announcements yet.</p>
+      ) : (
+        <ul className="space-y-3">
+          {items.map((a) => (
+            <li key={a.id} className="border-b border-border pb-3 last:border-0 last:pb-0">
+              <p className="truncate text-sm font-medium">{a.title}</p>
+              <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">{a.body}</p>
+              <p className="mt-1 text-[11px] text-muted-foreground/70">
+                {a.poster_name ? `${a.poster_name} · ` : ''}{format(new Date(a.created_at), 'MMM d')}
+              </p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+// ── Recent quiz scores (compact) ──────────────────────────────────────────────
+function RecentScores({ scores }: { scores: StudentDash['recent_scores'] }) {
+  return (
+    <section className="rounded-2xl border border-border bg-card p-5">
+      <div className="mb-4 flex items-center gap-2">
+        <Trophy className="h-4 w-4 text-warning" />
+        <h3 className="font-semibold">Recent quiz scores</h3>
+      </div>
+      <ul className="divide-y divide-border">
+        {scores.map((s) => (
+          <li key={s.quiz_id} className="flex items-center justify-between py-2">
+            <Link href={`/quiz/${s.quiz_id}/results`} className="truncate hover:underline">{s.title}</Link>
+            <span className="ml-3 shrink-0 text-sm">
+              <span className="font-semibold">{s.total_score.toLocaleString()}</span>
+              {s.rank && <span className="text-muted-foreground"> · rank #{s.rank}</span>}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+// ── Empty / loading states ────────────────────────────────────────────────────
+function NotEnrolled() {
+  return (
+    <section className="rounded-2xl border border-dashed border-border bg-card p-10 text-center">
+      <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+        <PartyPopper className="h-6 w-6" />
+      </div>
+      <h2 className="font-semibold">You&rsquo;re all set up!</h2>
+      <p className="mx-auto mt-1 max-w-sm text-sm text-muted-foreground">
+        You&rsquo;re not in a batch yet. Once your counsellor adds you, your class, quizzes and materials will appear right here.
+      </p>
+      <Button asChild variant="outline" className="mt-5">
+        <Link href="/dashboard/student/batches">Browse batches <ArrowRight className="h-4 w-4" /></Link>
+      </Button>
+    </section>
+  );
+}
+
+function HubSkeleton() {
+  return (
+    <div className="space-y-6">
+      <div className="h-28 animate-pulse rounded-2xl border border-border bg-card" />
+      <div className="h-24 animate-pulse rounded-2xl border border-border bg-card" />
+      <div className="grid gap-6 lg:grid-cols-2">
+        <div className="h-40 animate-pulse rounded-2xl border border-border bg-card" />
+        <div className="h-40 animate-pulse rounded-2xl border border-border bg-card" />
+      </div>
+    </div>
   );
 }
