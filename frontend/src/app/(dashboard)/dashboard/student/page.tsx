@@ -6,9 +6,9 @@ import { useQuery } from '@tanstack/react-query';
 import { format, isToday, isTomorrow } from 'date-fns';
 import {
   Video, FileText, Megaphone, Play, Zap, Clock, Calendar, ArrowRight,
-  PenLine, Image as ImageIcon, Trophy, PartyPopper, CheckCircle2,
+  PenLine, Image as ImageIcon, Trophy, PartyPopper, CheckCircle2, Star,
 } from 'lucide-react';
-import { api, type QuizSummary, type Announcement, type Material } from '@/lib/api';
+import { api, type QuizSummary, type Announcement, type Material, type PointsSummary } from '@/lib/api';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { Button } from '@/app/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -84,6 +84,10 @@ export default function StudentClassHub() {
     queryFn: () => api.reports.current(),
   });
   const reportDone = !!reportData?.report;
+  const { data: pointsData } = useQuery({
+    queryKey: ['points', 'me'],
+    queryFn: () => api.points.me(),
+  });
 
   const name = firstNameOf(user?.full_name, user?.username);
   const batches = data?.batches ?? [];
@@ -105,6 +109,8 @@ export default function StudentClassHub() {
         </h1>
         <p className="text-muted-foreground">{subline}</p>
       </header>
+
+      {pointsData && <ScholarPointsCard summary={pointsData} />}
 
       {error && <p className="text-sm text-destructive">Couldn&rsquo;t load your hub. Please refresh.</p>}
       {isLoading && <HubSkeleton />}
@@ -128,6 +134,36 @@ export default function StudentClassHub() {
         </>
       )}
     </div>
+  );
+}
+
+// ── Scholar Points — cumulative effort/progress ───────────────────────────────
+function ScholarPointsCard({ summary }: { summary: PointsSummary }) {
+  const count = (reason: string) => summary.by_reason.find((r) => r.reason === reason)?.count ?? 0;
+  const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+  const parts = [
+    count('class_attended') && plural(count('class_attended'), 'class', 'classes'),
+    count('weekly_report') && plural(count('weekly_report'), 'report', 'reports'),
+    count('quiz_completed') && plural(count('quiz_completed'), 'quiz', 'quizzes'),
+  ].filter(Boolean) as string[];
+
+  return (
+    <section className="flex items-center gap-4 rounded-2xl border border-warning/30 bg-warning/5 p-5">
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-warning/15 text-warning">
+        <Star className="h-6 w-6" />
+      </div>
+      <div className="min-w-0">
+        <p className="text-2xl font-bold leading-none">
+          {summary.total.toLocaleString()}{' '}
+          <span className="text-base font-semibold text-muted-foreground">Scholar Points</span>
+        </p>
+        <p className="mt-1.5 text-sm text-muted-foreground">
+          {parts.length
+            ? `Earned from ${parts.join(' · ')}`
+            : 'Join a class, play a quiz or write your report to start earning.'}
+        </p>
+      </div>
+    </section>
   );
 }
 

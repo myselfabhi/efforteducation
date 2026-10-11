@@ -217,6 +217,12 @@ export interface BatchReportRow {
   submitted_at: string | null;
 }
 
+/** Cumulative Scholar (effort) Points — total + a per-reason breakdown. */
+export interface PointsSummary {
+  total: number;
+  by_reason: Array<{ reason: string; count: number; points: number }>;
+}
+
 /** A child profile linked to a parent/guardian account. */
 export interface Child {
   id: number;
@@ -344,6 +350,12 @@ export const api = {
     comment: (reportId: number, comment: string) =>
       apiFetch<{ report: WeeklyReport }>(`/api/reports/${reportId}/comment`, patch({ comment })),
     forChild: (childId: number) => apiFetch<{ reports: WeeklyReport[] }>(`/api/reports/child/${childId}`),
+  },
+
+  // Scholar (effort) points — cumulative, rewards participation.
+  points: {
+    me: () => apiFetch<PointsSummary>('/api/points/me'),
+    forChild: (childId: number) => apiFetch<PointsSummary>(`/api/points/child/${childId}`),
   },
 
   users: {
