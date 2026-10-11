@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
   UserPlus, Trash2, GraduationCap, Loader2, KeyRound, ChevronDown, X,
-  Star, Check, Video, Zap, PenLine, MessageCircleHeart, Sparkles,
+  Star, Check, Video, Zap, PenLine, MessageCircleHeart, Sparkles, Heart,
 } from 'lucide-react';
 import { api, ApiError, type GuardianWeekChild } from '@/lib/api';
 import { Button } from '@/app/components/ui/button';
@@ -109,6 +109,16 @@ function WeeklyChildCard({ child }: { child: GuardianWeekChild }) {
     },
   });
 
+  const parentCheered = !!report?.parent_cheered_at;
+  const cheer = useMutation({
+    mutationFn: () => api.reports.parentCheer(report!.id),
+    onSuccess: ({ report: r }) => {
+      qc.invalidateQueries({ queryKey: ['guardian', 'week'] });
+      if (r.parent_cheered_at) toast.success(`You cheered ${child.full_name || 'your child'}'s report 💛`);
+    },
+    onError: (err) => toast.error(err instanceof ApiError ? err.message : 'Could not send. Try again.'),
+  });
+
   return (
     <section className="flex flex-col rounded-2xl border border-border bg-card p-5">
       {/* header */}
@@ -145,21 +155,40 @@ function WeeklyChildCard({ child }: { child: GuardianWeekChild }) {
       {/* their own words */}
       <div className="mt-4 flex-1">
         {report ? (
-          <div className="rounded-xl bg-secondary/40 p-4">
-            <div className="mb-1.5 flex items-center gap-2 text-xs font-medium text-muted-foreground">
-              In their words
-              {report.mood != null && <span className="text-base leading-none" aria-label={`Mood ${report.mood} of 5`}>{MOODS[report.mood - 1]}</span>}
-            </div>
-            <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/90">
-              {report.went_well?.trim() || report.next_goal?.trim() || report.tricky?.trim() || 'Report written 🎉'}
-            </p>
-            {(report.teacher_comment || report.cheered_at) && (
-              <p className="mt-2.5 inline-flex items-center gap-1.5 text-xs font-medium text-primary">
-                {report.cheered_at ? <Sparkles className="h-3.5 w-3.5" /> : <MessageCircleHeart className="h-3.5 w-3.5" />}
-                {report.teacher_comment ? 'Teacher replied' : 'Teacher cheered'}
+          <>
+            <div className="rounded-xl bg-secondary/40 p-4">
+              <div className="mb-1.5 flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                In their words
+                {report.mood != null && <span className="text-base leading-none" aria-label={`Mood ${report.mood} of 5`}>{MOODS[report.mood - 1]}</span>}
+              </div>
+              <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/90">
+                {report.went_well?.trim() || report.next_goal?.trim() || report.tricky?.trim() || 'Report written 🎉'}
               </p>
-            )}
-          </div>
+              {(report.teacher_comment || report.cheered_at) && (
+                <p className="mt-2.5 inline-flex items-center gap-1.5 text-xs font-medium text-primary">
+                  {report.cheered_at ? <Sparkles className="h-3.5 w-3.5" /> : <MessageCircleHeart className="h-3.5 w-3.5" />}
+                  {report.teacher_comment ? 'Teacher replied' : 'Teacher cheered'}
+                </p>
+              )}
+            </div>
+            <button
+              onClick={() => cheer.mutate()}
+              disabled={cheer.isPending}
+              className={cn(
+                'mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors',
+                parentCheered
+                  ? 'bg-primary/10 text-primary'
+                  : 'border border-border text-muted-foreground hover:border-primary/40 hover:text-foreground'
+              )}
+            >
+              {cheer.isPending ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Heart className={cn('h-3.5 w-3.5', parentCheered && 'fill-current')} />
+              )}
+              {parentCheered ? 'You cheered this 💛' : 'Cheer this'}
+            </button>
+          </>
         ) : (
           <p className="rounded-xl bg-secondary/30 p-4 text-sm text-muted-foreground">
             No report yet this week — there&rsquo;s still time. 🌱

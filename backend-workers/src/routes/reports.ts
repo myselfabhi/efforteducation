@@ -196,6 +196,44 @@ reports.patch('/:id/comment', requireAuth, roleGuard('super_admin', 'teacher'), 
   return c.json({ report: r.rows[0] });
 });
 
+// ── Parent: one-tap cheer on their child's report ─────────────────────────────
+reports.post('/:id/parent-cheer', requireAuth, roleGuard('parent', 'super_admin'), async (c) => {
+  const db = c.get('db');
+  const user = c.get('user')!;
+  const id = parseInt(c.req.param('id') ?? '', 10);
+  if (Number.isNaN(id)) return c.json({ error: 'invalid id' }, 400);
+
+  const r0 = await db.query('SELECT * FROM weekly_reports WHERE id = $1', [id]);
+  const report = r0.rows[0];
+  if (!report) return c.json({ error: 'not_found' }, 404);
+
+  if (user.role !== 'super_admin') {
+    const link = await db.query(
+      'SELECT 1 FROM guardian_students WHERE guardian_id = $1 AND student_id = $2',
+      [user.id, report.student_id],
+    );
+    if (link.rows.length === 0) return c.json({ error: 'Not your child' }, 403);
+  }
+
+  const clearing = !!report.parent_cheered_at;
+  const r = await db.query(
+    `UPDATE weekly_reports
+        SET parent_cheered_at = ${clearing ? 'NULL' : 'NOW()'},
+            parent_cheered_by = ${clearing ? 'NULL' : '$2'}
+      WHERE id = $1 RETURNING *`,
+    clearing ? [report.id] : [report.id, user.id],
+  );
+  if (!clearing) {
+    await notifyUser(c.env, db, {
+      userId: report.student_id,
+      type: 'parent_cheer',
+      title: `${user.full_name || 'Your family'} cheered your weekly report 💛`,
+      linkUrl: '/dashboard/student/report',
+    }).catch(() => {});
+  }
+  return c.json({ report: r.rows[0] });
+});
+
 // ── Parent: a linked child's reports ──────────────────────────────────────────
 reports.get('/child/:childId', requireAuth, roleGuard('parent', 'super_admin'), async (c) => {
   const db = c.get('db');

@@ -193,6 +193,8 @@ export interface WeeklyReport {
   commented_at: string | null;
   cheered_by: number | null;
   cheered_at: string | null;
+  parent_cheered_at: string | null;
+  parent_cheered_by: number | null;
   created_at: string;
   updated_at: string;
   teacher_name?: string | null;
@@ -235,6 +237,7 @@ export interface GuardianWeekChild {
     mood: number | null;
     teacher_comment: string | null;
     cheered_at: string | null;
+    parent_cheered_at: string | null;
     created_at: string;
   } | null;
 }
@@ -372,6 +375,8 @@ export const api = {
     cheer: (reportId: number) => apiFetch<{ report: WeeklyReport }>(`/api/reports/${reportId}/cheer`, { method: 'POST' }),
     comment: (reportId: number, comment: string) =>
       apiFetch<{ report: WeeklyReport }>(`/api/reports/${reportId}/comment`, patch({ comment })),
+    parentCheer: (reportId: number) =>
+      apiFetch<{ report: WeeklyReport }>(`/api/reports/${reportId}/parent-cheer`, { method: 'POST' }),
     forChild: (childId: number) => apiFetch<{ reports: WeeklyReport[] }>(`/api/reports/child/${childId}`),
   },
 

@@ -44,7 +44,7 @@ guardian.get('/week', async (c) => {
       [kid.id],
     );
     const rep = await db.query(
-      `SELECT id, went_well, tricky, next_goal, mood, teacher_comment, cheered_at, created_at
+      `SELECT id, went_well, tricky, next_goal, mood, teacher_comment, cheered_at, parent_cheered_at, created_at
          FROM weekly_reports WHERE student_id = $1 AND week_start = ${WEEK_START}`,
       [kid.id],
     );

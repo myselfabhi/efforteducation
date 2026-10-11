@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Loader2, Send, Sparkles, PartyPopper, Pencil, MessageCircleHeart } from 'lucide-react';
+import { Loader2, Send, Sparkles, PartyPopper, Pencil, MessageCircleHeart, Heart } from 'lucide-react';
 import { api, ApiError, type WeeklyReport } from '@/lib/api';
 import { Button } from '@/app/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -178,6 +178,12 @@ function SubmittedView({ report, onEdit }: { report: WeeklyReport; onEdit: () =>
           <p className="text-sm text-muted-foreground">Nice reflecting. You can tweak it any time this week.</p>
         </div>
       </div>
+
+      {report.parent_cheered_at && (
+        <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 text-sm font-medium text-primary">
+          <Heart className="h-4 w-4 fill-current" /> Your family cheered this! 💛
+        </div>
+      )}
 
       {answered.map((p) => (
         <div key={p.key} className="rounded-2xl border border-border bg-card p-5">
