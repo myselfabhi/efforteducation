@@ -143,26 +143,7 @@ export const courses: Record<string, Course> = {
         ]
       }
     ],
-    testimonials: [
-      {
-        quote: 'The structured approach and expert guidance helped me clear IBPS PO in my first attempt. The mock tests were incredibly close to the actual exam pattern. Forever grateful to the faculty for their constant support.',
-        name: 'Priya Sharma',
-        role: 'Selected, IBPS PO 2025',
-        initials: 'PS'
-      },
-      {
-        quote: 'I was struggling with Quantitative Aptitude before joining this program. The shortcut techniques and daily practice sessions helped me improve significantly. Scored 48/50 in QA in the final exam!',
-        name: 'Rajesh Kumar',
-        role: 'Selected, SBI PO 2024',
-        initials: 'RK'
-      },
-      {
-        quote: 'The interview preparation module was exceptional. Mock interviews with detailed feedback helped me gain confidence. The faculty\'s dedication and comprehensive study material made all the difference.',
-        name: 'Anjali Patel',
-        role: 'Selected, IBPS SO (IT Officer) 2024',
-        initials: 'AP'
-      }
-    ]
+    testimonials: []
   },
   
   'lic-gic': {
@@ -239,14 +220,7 @@ export const courses: Record<string, Course> = {
         ]
       }
     ],
-    testimonials: [
-      {
-        quote: 'The specialized insurance awareness classes were the best part. I could easily answer 25+ questions in the mains exam. Highly recommend Effort Education for insurance aspirants.',
-        name: 'Sandeep Tiwari',
-        role: 'Selected, LIC AAO 2024',
-        initials: 'ST'
-      }
-    ]
+    testimonials: []
   },
 
   'dsssb': {
@@ -356,26 +330,7 @@ export const courses: Record<string, Course> = {
         ]
       }
     ],
-    testimonials: [
-      {
-        quote: 'Cracked DSSSB TGT in my second attempt thanks to this program. The pedagogy section was covered so thoroughly that even complex topics became easy to understand. Highly recommend for all teaching aspirants!',
-        name: 'Meera Singh',
-        role: 'Selected, DSSSB TGT 2025',
-        initials: 'MS'
-      },
-      {
-        quote: 'The Delhi-specific GK module was incredibly helpful. The faculty understood the exam pattern inside out and provided focused preparation. The mock tests closely resembled the actual examination.',
-        name: 'Vikram Yadav',
-        role: 'Selected, DSSSB PGT 2024',
-        initials: 'VY'
-      },
-      {
-        quote: 'As a working professional, the flexible online classes helped me prepare effectively. The recorded sessions were a lifesaver. Now I am a proud government teacher in Delhi!',
-        name: 'Sunita Rao',
-        role: 'Selected, DSSSB PRT 2024',
-        initials: 'SR'
-      }
-    ]
+    testimonials: []
   },
 
   'prt-tgt-pgt': {
@@ -466,26 +421,7 @@ export const courses: Record<string, Course> = {
         ]
       }
     ],
-    testimonials: [
-      {
-        quote: 'Selected as TGT Mathematics in KVS through this program. The faculty\'s expertise in pedagogy and subject knowledge is unmatched. The mock interviews prepared me thoroughly for the final selection.',
-        name: 'Deepak Sharma',
-        role: 'Selected, KVS TGT 2025',
-        initials: 'DS'
-      },
-      {
-        quote: 'The comprehensive coverage of all topics helped me crack multiple exams - KVS, NVS and my state TET. The Perspectives on Education section was particularly well-structured.',
-        name: 'Kavita Verma',
-        role: 'Selected, NVS PGT 2024',
-        initials: 'KV'
-      },
-      {
-        quote: 'Coming from a science background, the computer literacy module was crucial. The faculty made complex concepts simple and practical. Now teaching in a Kendriya Vidyalaya!',
-        name: 'Arun Mishra',
-        role: 'Selected, KVS PRT 2024',
-        initials: 'AM'
-      }
-    ]
+    testimonials: []
   },
 
   'ctet-tet': {
@@ -578,26 +514,7 @@ export const courses: Record<string, Course> = {
         ]
       }
     ],
-    testimonials: [
-      {
-        quote: 'Cleared CTET in my first attempt with 98/150 marks! The pedagogy section was explained so well that even complex theories became easy. The language teaching methodology was particularly helpful.',
-        name: 'Neha Gupta',
-        role: 'Qualified CTET 2025 (Paper 1 & 2)',
-        initials: 'NG'
-      },
-      {
-        quote: 'I had attempted CTET twice before but failed. This program changed my approach completely. The focus on understanding concepts rather than rote learning made all the difference. Now teaching in a KVS school!',
-        name: 'Suresh Patel',
-        role: 'Qualified CTET & Selected at DSSSB 2024',
-        initials: 'SP'
-      },
-      {
-        quote: 'The mock tests were incredibly close to the actual exam pattern. The detailed feedback helped me identify my weak areas. Scored 110/150 in Paper 1 and 105/150 in Paper 2!',
-        name: 'Lakshmi Devi',
-        role: 'Qualified CTET Paper 1 & 2, 2025',
-        initials: 'LD'
-      }
-    ]
+    testimonials: []
   },
 
   'ugc-net-jrf': {
@@ -692,26 +609,7 @@ export const courses: Record<string, Course> = {
         ]
       }
     ],
-    testimonials: [
-      {
-        quote: 'Cleared UGC NET with JRF in my first attempt! The Paper 1 preparation was exceptional - every unit was covered in depth. The research methodology module gave me a solid foundation for my PhD journey.',
-        name: 'Dr. Amit Kumar',
-        role: 'Qualified UGC NET JRF 2025',
-        initials: 'AK'
-      },
-      {
-        quote: 'The answer writing practice sessions were invaluable. The faculty\'s feedback helped me improve my writing style significantly. Now an Assistant Professor at a central university!',
-        name: 'Dr. Sneha Reddy',
-        role: 'Qualified UGC NET & Assistant Professor 2024',
-        initials: 'SR'
-      },
-      {
-        quote: 'Working professionals need flexible learning options. The recorded lectures and weekend batches helped me prepare without affecting my job. Scored 180/200 in Paper 2 (Commerce)!',
-        name: 'Ravi Shankar',
-        role: 'Qualified UGC NET Paper 2 (Commerce) 2024',
-        initials: 'RS'
-      }
-    ]
+    testimonials: []
   },
 
   'interview-prep': {
@@ -792,26 +690,7 @@ export const courses: Record<string, Course> = {
         ]
       }
     ],
-    testimonials: [
-      {
-        quote: 'Appeared for 4 bank interviews before joining this program. After the mock interview sessions and feedback, I cleared my 5th interview and got selected as PO in SBI! The transformation was remarkable.',
-        name: 'Rahul Verma',
-        role: 'Selected, SBI PO 2025',
-        initials: 'RV'
-      },
-      {
-        quote: 'The mock interviews were conducted exactly like real UPSC interviews. The board feedback was so authentic that I felt prepared for every possible question. Scored 185/275 in my final interview!',
-        name: 'Priya Nair',
-        role: 'Selected, UPSC CSE 2024',
-        initials: 'PN'
-      },
-      {
-        quote: 'As a first-generation government employee, I had no idea how to present myself. This program taught me everything - from dressing to speaking. The mock sessions built my confidence manifold.',
-        name: 'Mohammed Ali',
-        role: 'Selected, SSC CGL 2024',
-        initials: 'MA'
-      }
-    ]
+    testimonials: []
   },
 
   'hotel-management': {
@@ -920,26 +799,7 @@ export const courses: Record<string, Course> = {
         ]
       }
     ],
-    testimonials: [
-      {
-        quote: 'Secured AIR 245 in NCHMCT JEE and got admission in IHM Mumbai! The service sector aptitude module was exceptionally well-designed. It really helped me understand what the hospitality industry expects.',
-        name: 'Arjun Mehta',
-        role: 'Selected, IHM Mumbai 2025',
-        initials: 'AM'
-      },
-      {
-        quote: 'From a non-English medium background, I was worried about the English section. The faculty made grammar accessible and fun. Scored 38/45 in English - couldn\'t have done it without this program!',
-        name: 'Priya Singh',
-        role: 'Selected, IHM Bangalore 2024',
-        initials: 'PS'
-      },
-      {
-        quote: 'The mock tests were exactly like the actual exam. Practicing under timed conditions helped me manage my time better. Now interning at a 5-star hotel in Dubai!',
-        name: 'Rahul Joshi',
-        role: 'Selected, IHM Chennai 2024',
-        initials: 'RJ'
-      }
-    ]
+    testimonials: []
   },
 
   'cuet': {
@@ -1024,20 +884,7 @@ export const courses: Record<string, Course> = {
         ]
       }
     ],
-    testimonials: [
-      {
-        quote: 'The domain-specific prep for Physics and Math was amazing. The teachers made sure I understood every NCERT concept. Got into Delhi University thanks to Effort Education!',
-        name: 'Aryan Singh',
-        role: 'Admitted to DU (Hansraj College)',
-        initials: 'AS'
-      },
-      {
-        quote: 'The General Test section seemed tough at first, but the shortcut tricks for reasoning and numerical ability helped me finish way before time. Highly recommend for CUET aspirants.',
-        name: 'Riya Kapoor',
-        role: 'Admitted to BHU',
-        initials: 'RK'
-      }
-    ]
+    testimonials: []
   }
 };
 

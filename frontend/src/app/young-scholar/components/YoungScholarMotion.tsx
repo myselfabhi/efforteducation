@@ -58,13 +58,10 @@ const LADDER = [
   { stage: 'Elite', body: 'The advanced track — harder quizzes, deeper topics, and the confidence to lead a room.' },
 ];
 
-// PLACEHOLDERS — near-verbatim from the +Ve Traits parent chat. Attributed
-// generically for now; get parent consent + real attribution before publishing.
-const TESTIMONIALS = [
-  { quote: 'My daughter treats the McD Quiz like an Oscar — she counts down to it all week.', who: 'Parent of a Class 6 Scholar' },
-  { quote: 'It wouldn’t have been possible without your mentorship and guidance. The support throughout the journey meant a lot.', who: 'Parent of a Class 8 Elite' },
-  { quote: 'Thank you, sir — I truly appreciate your constant support and encouragement.', who: 'Parent of a Class 7 Scholar' },
-];
+// Real, consented parent testimonials go here. Empty until we have parent
+// consent on record (minors) — the "Parent voices" section below hides while
+// this is empty, so we never show unconsented or fabricated quotes.
+const TESTIMONIALS: { quote: string; who: string }[] = [];
 
 const FAQ = [
   {
@@ -450,7 +447,8 @@ export function YoungScholarMotion() {
         </div>
       </section>
 
-      {/* ── Parent voices ────────────────────────────────────────────────── */}
+      {/* ── Parent voices (hidden until we have consented testimonials) ────── */}
+      {TESTIMONIALS.length > 0 && (
       <section className="py-20 bg-secondary/30">
         <div className="container mx-auto max-w-6xl px-6">
           <div className="max-w-xl mb-10">
@@ -482,6 +480,7 @@ export function YoungScholarMotion() {
           </div>
         </div>
       </section>
+      )}
 
       {/* ── FAQ ──────────────────────────────────────────────────────────── */}
       <section className="py-20 bg-background">
