@@ -10,7 +10,9 @@ export type NotificationType =
   | 'announcement'
   | 'enrolment_requested'
   | 'enrolment_approved'
-  | 'enrolment_declined';
+  | 'enrolment_declined'
+  | 'weekly_report'
+  | 'weekly_report_feedback';
 
 export interface CreateNotificationInput {
   userId: number;

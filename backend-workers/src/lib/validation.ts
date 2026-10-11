@@ -68,6 +68,21 @@ export const LoginSchema = z.object({
   password: z.string().min(1),
 });
 
+// A child's weekly reflection. Every field is optional at the schema level; the
+// handler rejects a report where all three prompts are blank.
+export const WeeklyReportSchema = z.object({
+  went_well: z.string().max(2000).optional().nullable(),
+  tricky: z.string().max(2000).optional().nullable(),
+  next_goal: z.string().max(2000).optional().nullable(),
+  mood: z.number().int().min(1).max(5).optional().nullable(),
+  photo_url: z.string().url().max(1000).optional().nullable(),
+});
+
+// A teacher's written comment on a report.
+export const ReportCommentSchema = z.object({
+  comment: z.string().min(1).max(2000),
+});
+
 export const InviteUserSchema = z.object({
   username: Username,
   email: Email,

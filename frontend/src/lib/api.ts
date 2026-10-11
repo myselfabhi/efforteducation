@@ -177,6 +177,46 @@ export interface AuthUser {
   avatar_url?: string | null;
 }
 
+/** A child's weekly reflection (+ any teacher feedback). */
+export interface WeeklyReport {
+  id: number;
+  student_id: number;
+  batch_id: number | null;
+  week_start: string;
+  went_well: string | null;
+  tricky: string | null;
+  next_goal: string | null;
+  mood: number | null;
+  photo_url: string | null;
+  teacher_comment: string | null;
+  commented_by: number | null;
+  commented_at: string | null;
+  cheered_by: number | null;
+  cheered_at: string | null;
+  created_at: string;
+  updated_at: string;
+  teacher_name?: string | null;
+  batch_name?: string | null;
+}
+
+/** A teacher-review row: one active student, with this week's report or null. */
+export interface BatchReportRow {
+  student_id: number;
+  student_name: string | null;
+  student_username: string;
+  avatar_url: string | null;
+  report_id: number | null;
+  went_well: string | null;
+  tricky: string | null;
+  next_goal: string | null;
+  mood: number | null;
+  photo_url: string | null;
+  teacher_comment: string | null;
+  cheered_at: string | null;
+  commented_at: string | null;
+  submitted_at: string | null;
+}
+
 /** A child profile linked to a parent/guardian account. */
 export interface Child {
   id: number;
@@ -291,6 +331,19 @@ export const api = {
     addChild: (body: { full_name: string; class_grade?: string; username?: string; password?: string }) =>
       apiFetch<{ child: Child }>('/api/guardian/children', j(body)),
     removeChild: (childId: number) => apiFetch(`/api/guardian/children/${childId}`, del()),
+  },
+
+  // Weekly reports — the Young Scholar reflection + teacher feedback.
+  reports: {
+    current: () => apiFetch<{ report: WeeklyReport | null }>('/api/reports/me/current'),
+    mine: () => apiFetch<{ reports: WeeklyReport[] }>('/api/reports/me'),
+    submit: (body: { went_well?: string; tricky?: string; next_goal?: string; mood?: number | null; photo_url?: string }) =>
+      apiFetch<{ report: WeeklyReport }>('/api/reports', j(body)),
+    forBatch: (batchId: number) => apiFetch<{ students: BatchReportRow[] }>(`/api/reports/batch/${batchId}`),
+    cheer: (reportId: number) => apiFetch<{ report: WeeklyReport }>(`/api/reports/${reportId}/cheer`, { method: 'POST' }),
+    comment: (reportId: number, comment: string) =>
+      apiFetch<{ report: WeeklyReport }>(`/api/reports/${reportId}/comment`, patch({ comment })),
+    forChild: (childId: number) => apiFetch<{ reports: WeeklyReport[] }>(`/api/reports/child/${childId}`),
   },
 
   users: {

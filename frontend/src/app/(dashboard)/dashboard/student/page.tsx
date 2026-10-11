@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { format, isToday, isTomorrow } from 'date-fns';
 import {
   Video, FileText, Megaphone, Play, Zap, Clock, Calendar, ArrowRight,
-  PenLine, Image as ImageIcon, Trophy, PartyPopper,
+  PenLine, Image as ImageIcon, Trophy, PartyPopper, CheckCircle2,
 } from 'lucide-react';
 import { api, type QuizSummary, type Announcement, type Material } from '@/lib/api';
 import { useAuthStore } from '@/lib/stores/authStore';
@@ -79,6 +79,11 @@ export default function StudentClassHub() {
     queryKey: ['dashboard', 'student'],
     queryFn: () => api.dashboard.student() as Promise<StudentDash>,
   });
+  const { data: reportData } = useQuery({
+    queryKey: ['reports', 'current'],
+    queryFn: () => api.reports.current(),
+  });
+  const reportDone = !!reportData?.report;
 
   const name = firstNameOf(user?.full_name, user?.username);
   const batches = data?.batches ?? [];
@@ -111,7 +116,7 @@ export default function StudentClassHub() {
           ) : (
             <>
               <ClassHero nextClass={nextClass} state={state} />
-              <WeeklyLoop state={state} />
+              <WeeklyLoop state={state} reportDone={reportDone} />
               <QuizSpotlight batchId={primaryBatch?.id} />
               <div className="grid gap-6 lg:grid-cols-2">
                 <MaterialsCard materials={data.recent_materials} />
@@ -197,26 +202,28 @@ function ClassHero({ nextClass, state }: { nextClass?: NextClass; state: ClassSt
 }
 
 // ── The weekly loop: Class → Quiz → Report ────────────────────────────────────
-function WeeklyLoop({ state }: { state: ClassState }) {
+function WeeklyLoop({ state, reportDone }: { state: ClassState; reportDone: boolean }) {
   const steps = [
     {
       icon: Video,
       label: 'Live class',
       status: state === 'live' ? 'Live now' : state === 'soon' ? 'Starting soon' : state === 'scheduled' ? 'Coming up' : 'This week',
       active: state === 'live' || state === 'soon',
+      href: undefined as string | undefined,
     },
     {
       icon: Zap,
       label: 'McD Quiz',
       status: 'Beat your best',
       active: false,
+      href: undefined,
     },
     {
-      icon: PenLine,
+      icon: reportDone ? CheckCircle2 : PenLine,
       label: 'Weekly report',
-      status: 'Coming soon',
-      active: false,
-      soon: true,
+      status: reportDone ? 'Done 🎉' : 'Write it',
+      active: reportDone,
+      href: '/dashboard/student/report',
     },
   ];
 
@@ -226,14 +233,8 @@ function WeeklyLoop({ state }: { state: ClassState }) {
       <ol className="grid gap-3 sm:grid-cols-3">
         {steps.map((s, i) => {
           const Icon = s.icon;
-          return (
-            <li
-              key={s.label}
-              className={cn(
-                'relative flex items-center gap-3 rounded-xl border p-3.5',
-                s.active ? 'border-primary/30 bg-primary/5' : 'border-border bg-secondary/30'
-              )}
-            >
+          const inner = (
+            <>
               <span
                 className={cn(
                   'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-sm font-bold',
@@ -244,13 +245,23 @@ function WeeklyLoop({ state }: { state: ClassState }) {
               </span>
               <div className="min-w-0">
                 <p className="text-sm font-semibold leading-tight">{s.label}</p>
-                <p className={cn('text-xs', s.soon ? 'text-muted-foreground/70' : 'text-muted-foreground')}>
-                  {s.status}
-                </p>
+                <p className="text-xs text-muted-foreground">{s.status}</p>
               </div>
-              <span className="absolute right-3 top-3 text-[10px] font-bold text-muted-foreground/50">
-                {i + 1}
-              </span>
+              <span className="absolute right-3 top-3 text-[10px] font-bold text-muted-foreground/50">{i + 1}</span>
+            </>
+          );
+          const cls = cn(
+            'relative flex items-center gap-3 rounded-xl border p-3.5 transition-colors',
+            s.active ? 'border-primary/30 bg-primary/5' : 'border-border bg-secondary/30',
+            s.href && 'hover:border-primary/40 hover:bg-primary/5'
+          );
+          return (
+            <li key={s.label}>
+              {s.href ? (
+                <Link href={s.href} className={cls}>{inner}</Link>
+              ) : (
+                <div className={cls}>{inner}</div>
+              )}
             </li>
           );
         })}

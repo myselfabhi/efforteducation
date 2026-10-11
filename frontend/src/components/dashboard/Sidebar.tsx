@@ -20,6 +20,7 @@ import {
   ChevronsRight,
   X,
   MailQuestion,
+  NotebookPen,
 } from 'lucide-react';
 
 interface NavItem {
@@ -47,6 +48,7 @@ function navFor(role: UserRole): NavItem[] {
         { href: '/dashboard/teacher/classes', label: 'Live Classes', icon: Video },
         { href: '/dashboard/teacher/materials', label: 'Materials', icon: FileText },
         { href: '/dashboard/teacher/quizzes', label: 'Quizzes', icon: ClipboardList },
+        { href: '/dashboard/teacher/reports', label: 'Reports', icon: NotebookPen },
         { href: '/dashboard/teacher/announcements', label: 'Announcements', icon: Megaphone },
       ];
     case 'parent':
@@ -58,6 +60,7 @@ function navFor(role: UserRole): NavItem[] {
     default:
       return [
         { href: '/dashboard/student', label: 'Home', icon: LayoutDashboard },
+        { href: '/dashboard/student/report', label: 'Weekly Report', icon: NotebookPen },
         { href: '/dashboard/student/batches', label: 'My Batches', icon: GraduationCap },
         { href: '/dashboard/student/enrolments', label: 'My Requests', icon: MailQuestion },
         { href: '/dashboard/student/classes', label: 'Live Classes', icon: Video },
