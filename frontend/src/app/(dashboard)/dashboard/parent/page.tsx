@@ -6,8 +6,9 @@ import { toast } from 'sonner';
 import {
   UserPlus, Trash2, GraduationCap, Loader2, KeyRound, ChevronDown, X,
   Star, Check, Video, Zap, PenLine, MessageCircleHeart, Sparkles, Heart,
+  CheckCircle2, Copy,
 } from 'lucide-react';
-import { api, ApiError, type GuardianWeekChild } from '@/lib/api';
+import { api, ApiError, type GuardianWeekChild, type Child } from '@/lib/api';
 import { Button } from '@/app/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -226,6 +227,8 @@ function AddChildForm({ onDone }: { onDone: () => void }) {
   const [form, setForm] = useState({ full_name: '', class_grade: '', username: '', password: '' });
   const [showLogin, setShowLogin] = useState(false);
   const [showPw, setShowPw] = useState(false);
+  const [created, setCreated] = useState<Child | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const mutation = useMutation({
     mutationFn: () =>
@@ -237,17 +240,73 @@ function AddChildForm({ onDone }: { onDone: () => void }) {
       }),
     onSuccess: ({ child }) => {
       qc.invalidateQueries({ queryKey: ['guardian', 'week'] });
-      toast.success(
-        showLogin && form.username
-          ? `${child.full_name || 'Child'} added — they can sign in as "${child.username}".`
-          : `${child.full_name || 'Child'} added to your account.`
-      );
-      onDone();
+      // When the parent gave the child a login, show the sign-in details (login
+      // is by email, so they need the derived address — not the username alone).
+      if (showLogin && form.username.trim()) {
+        setCreated(child);
+      } else {
+        toast.success(`${child.full_name || 'Child'} added to your account.`);
+        onDone();
+      }
     },
     onError: (err) => {
       toast.error(err instanceof ApiError ? err.message : 'Could not add child. Please try again.');
     },
   });
+
+  async function copyEmail() {
+    if (!created?.email) return;
+    try {
+      await navigator.clipboard.writeText(created.email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // clipboard blocked — the email is on screen to copy manually
+    }
+  }
+
+  // After adding a child with a login, show how they sign in.
+  if (created) {
+    return (
+      <div className="space-y-4 rounded-2xl border border-success/40 bg-success/5 p-5">
+        <div className="flex items-start gap-3">
+          <CheckCircle2 className="h-6 w-6 shrink-0 text-success" />
+          <div>
+            <p className="font-semibold">{created.full_name || 'Child'} added!</p>
+            <p className="text-sm text-muted-foreground">
+              Here&rsquo;s how they sign in on their own device. Share these with your child.
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-3 rounded-xl border border-border bg-card p-4">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Sign-in email</p>
+            <div className="mt-1 flex items-center gap-2">
+              <code className="min-w-0 flex-1 truncate rounded-md bg-secondary px-2.5 py-1.5 font-mono text-sm">
+                {created.email}
+              </code>
+              <button
+                type="button"
+                onClick={copyEmail}
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-border px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:border-primary/40 hover:text-foreground"
+              >
+                {copied ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
+                {copied ? 'Copied' : 'Copy'}
+              </button>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Password: <strong className="text-foreground">the one you just set.</strong> Keep it somewhere safe.
+          </p>
+        </div>
+
+        <div className="flex justify-end">
+          <Button onClick={onDone}>Done</Button>
+        </div>
+      </div>
+    );
+  }
 
   function set<K extends keyof typeof form>(key: K, value: string) {
     setForm((s) => ({ ...s, [key]: value }));

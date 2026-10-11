@@ -27,6 +27,7 @@ const STATIC_ORIGINS = [
   'http://localhost:3000',
   'http://localhost:3001',
   'http://localhost:3002',
+  'http://localhost:3100', // the project's dev server port (.claude/launch.json)
 ];
 
 // CORS on API routes only — the WebSocket route (/ws/*) upgrades to a 101 and

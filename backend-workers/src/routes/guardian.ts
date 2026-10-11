@@ -92,11 +92,12 @@ guardian.post('/children', validateBody(CreateChildSchema), async (c) => {
     getValid<CreateChildBody>(c);
 
   // A child is a real user (so it can enrol, attend, take quizzes). It doesn't
-  // need a real inbox, so the email is an internal placeholder; username is a
-  // login the parent can share, and the password is random until the parent sets one.
+  // need a real inbox — the login email is derived from the username on a
+  // non-routable domain, and returned so the parent can see how the child signs
+  // in (login is by email). The password is random until the parent sets one.
   const slug = full_name.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 18) || 'scholar';
   const username = usernameInput || `${slug}_${Math.random().toString(36).slice(2, 8)}`;
-  const email = `child.${user.id}.${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}@child.efforteducation.in`;
+  const email = `${username}@child.efforteducation.in`;
   const password = passwordInput || Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
   const passwordHash = await bcrypt.hash(password, 12);
 
@@ -111,7 +112,7 @@ guardian.post('/children', validateBody(CreateChildSchema), async (c) => {
     const ins = await client.query(
       `INSERT INTO users (username, email, password_hash, role, full_name, class_grade)
        VALUES ($1, $2, $3, 'student', $4, $5)
-       RETURNING id, username, full_name, class_grade, avatar_url`,
+       RETURNING id, username, email, full_name, class_grade, avatar_url`,
       [username, email, passwordHash, full_name, class_grade ?? null],
     );
     const child = ins.rows[0];

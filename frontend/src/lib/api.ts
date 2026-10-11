@@ -252,6 +252,7 @@ export interface PointsSummary {
 export interface Child {
   id: number;
   username: string;
+  email?: string;
   full_name: string | null;
   class_grade: string | null;
   avatar_url: string | null;
