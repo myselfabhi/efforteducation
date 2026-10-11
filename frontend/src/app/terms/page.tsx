@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: { url: 'https://efforteducation.in/terms' },
 };
 
-const CONTACT_EMAIL = 'admissions@efforteducation.com';
+const CONTACT_EMAIL = 'efforteducation@gmail.com';
 
 export default function TermsPage() {
   return (
@@ -19,7 +19,7 @@ export default function TermsPage() {
         <article className="container mx-auto max-w-3xl px-6 pt-32 md:pt-36 pb-20">
           <p className="text-xs uppercase tracking-widest text-primary font-semibold">Legal</p>
           <h1 className="mt-3 text-4xl md:text-5xl font-black tracking-tight">Terms of Service</h1>
-          <p className="mt-3 text-sm text-muted-foreground">Last updated 10 October 2026</p>
+          <p className="mt-3 text-sm text-muted-foreground">Last updated 11 October 2026</p>
 
           <div
             className="mt-10 space-y-9 text-[15px] leading-relaxed text-muted-foreground
@@ -30,9 +30,10 @@ export default function TermsPage() {
           >
             <section>
               <p>
-                These Terms govern your use of the <strong>Effort Education</strong> website and
-                services. By accessing the site, enquiring, or enrolling, you agree to these Terms. If
-                you don&rsquo;t agree, please don&rsquo;t use the service.
+                These Terms govern your use of the website and services of{' '}
+                <strong>Effort Education Pvt. Ltd.</strong> (&ldquo;Effort Education&rdquo;,
+                &ldquo;we&rdquo;, &ldquo;us&rdquo;). By accessing the site, enquiring, or enrolling, you
+                agree to these Terms. If you don&rsquo;t agree, please don&rsquo;t use the service.
               </p>
             </section>
 

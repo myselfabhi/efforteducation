@@ -84,7 +84,7 @@ export default function Footer() {
 
         <div className="mt-12 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">
-            © {year} Effort Education. All rights reserved.
+            © {year} Effort Education Pvt. Ltd. All rights reserved.
           </p>
           <div className="flex items-center gap-6 text-xs">
             <Link href="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: { url: 'https://efforteducation.in/privacy' },
 };
 
-const CONTACT_EMAIL = 'admissions@efforteducation.com';
+const CONTACT_EMAIL = 'efforteducation@gmail.com';
 
 export default function PrivacyPage() {
   return (
@@ -19,7 +19,7 @@ export default function PrivacyPage() {
         <article className="container mx-auto max-w-3xl px-6 pt-32 md:pt-36 pb-20">
           <p className="text-xs uppercase tracking-widest text-primary font-semibold">Legal</p>
           <h1 className="mt-3 text-4xl md:text-5xl font-black tracking-tight">Privacy Policy</h1>
-          <p className="mt-3 text-sm text-muted-foreground">Last updated 10 October 2026</p>
+          <p className="mt-3 text-sm text-muted-foreground">Last updated 11 October 2026</p>
 
           <div
             className="mt-10 space-y-9 text-[15px] leading-relaxed text-muted-foreground
@@ -30,10 +30,11 @@ export default function PrivacyPage() {
           >
             <section>
               <p>
-                This Privacy Policy explains how <strong>Effort Education</strong> (&ldquo;we&rdquo;,
-                &ldquo;us&rdquo;) collects, uses, shares, and protects your personal information when
-                you visit efforteducation.in, enquire about our programs, or enrol as a student. By
-                using our website or services, you agree to the practices described here.
+                This Privacy Policy explains how <strong>Effort Education Pvt. Ltd.</strong>{' '}
+                (&ldquo;Effort Education&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;) collects, uses,
+                shares, and protects your personal information when you visit efforteducation.in,
+                enquire about our programs, or enrol as a student. By using our website or services,
+                you agree to the practices described here.
               </p>
             </section>
 
@@ -135,6 +136,19 @@ export default function PrivacyPage() {
               <p>
                 We may update this policy from time to time. We&rsquo;ll post the revised version here
                 with a new &ldquo;last updated&rdquo; date.
+              </p>
+            </section>
+
+            <section>
+              <h2>Grievance redressal</h2>
+              <p>
+                If you have a concern or complaint about how your personal information is handled
+                &mdash; including under India&rsquo;s Digital Personal Data Protection Act, 2023 &mdash;
+                you can raise it by emailing{' '}
+                <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. We will acknowledge your
+                grievance and work to resolve it within a reasonable time. The contact details of a
+                designated Grievance Officer will be published here as our data-protection processes
+                are formalised.
               </p>
             </section>
 

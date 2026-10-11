@@ -31,8 +31,8 @@ const CHANNELS = [
   {
     icon: Mail,
     label: 'Email',
-    value: 'admissions@efforteducation.com',
-    href: 'mailto:admissions@efforteducation.com',
+    value: 'efforteducation@gmail.com',
+    href: 'mailto:efforteducation@gmail.com',
     accent: 'text-info',
     bg: 'bg-info/10',
     cta: 'Send a message',
