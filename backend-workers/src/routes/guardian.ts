@@ -3,11 +3,63 @@ import bcrypt from 'bcryptjs';
 import type { AppContext } from '../types';
 import { requireAuth, roleGuard } from '../middleware/auth';
 import { validateBody, getValid, CreateChildSchema } from '../lib/validation';
+import { reconcilePoints } from '../services/points';
 
 const guardian = new Hono<AppContext>();
 
 // All guardian routes are for a signed-in parent (super_admin may manage too).
 guardian.use('*', requireAuth, roleGuard('parent', 'super_admin'));
+
+// Monday of the current ISO week, IST — "this week" for the weekly card.
+const WEEK_START = `date_trunc('week', (NOW() AT TIME ZONE 'Asia/Kolkata'))::date`;
+
+// GET /api/guardian/week — a glanceable weekly card per linked child:
+// did they show up (attended / quiz), what did they learn (this week's report),
+// how are they doing (cumulative Scholar Points).
+guardian.get('/week', async (c) => {
+  const user = c.get('user')!;
+  const db = c.get('db');
+
+  const kids = await db.query(
+    `SELECT u.id, u.username, u.full_name, u.class_grade, u.avatar_url
+       FROM guardian_students gs
+       JOIN users u ON u.id = gs.student_id
+      WHERE gs.guardian_id = $1 AND u.deleted_at IS NULL
+      ORDER BY gs.created_at ASC`,
+    [user.id],
+  );
+
+  const children = [];
+  for (const kid of kids.rows) {
+    // Keep points current even if the child hasn't opened their hub this week.
+    await reconcilePoints(db, kid.id);
+
+    const stats = await db.query(
+      `SELECT
+         (SELECT COALESCE(SUM(points), 0)::INT FROM effort_points WHERE user_id = $1) AS points_total,
+         EXISTS (SELECT 1 FROM live_class_attendance
+                  WHERE user_id = $1 AND joined_at AT TIME ZONE 'Asia/Kolkata' >= ${WEEK_START}) AS attended,
+         EXISTS (SELECT 1 FROM scores
+                  WHERE user_id = $1 AND created_at AT TIME ZONE 'Asia/Kolkata' >= ${WEEK_START}) AS quiz_done`,
+      [kid.id],
+    );
+    const rep = await db.query(
+      `SELECT id, went_well, tricky, next_goal, mood, teacher_comment, cheered_at, created_at
+         FROM weekly_reports WHERE student_id = $1 AND week_start = ${WEEK_START}`,
+      [kid.id],
+    );
+
+    children.push({
+      ...kid,
+      points_total: stats.rows[0].points_total,
+      attended: stats.rows[0].attended,
+      quiz_done: stats.rows[0].quiz_done,
+      report: rep.rows[0] ?? null,
+    });
+  }
+
+  return c.json({ children });
+});
 
 type CreateChildBody = {
   full_name: string;

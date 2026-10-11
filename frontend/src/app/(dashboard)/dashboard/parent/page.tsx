@@ -4,15 +4,17 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
-  UserPlus, Trash2, GraduationCap, Loader2, KeyRound, ChevronDown, X, User,
+  UserPlus, Trash2, GraduationCap, Loader2, KeyRound, ChevronDown, X,
+  Star, Check, Video, Zap, PenLine, MessageCircleHeart, Sparkles,
 } from 'lucide-react';
-import { api, ApiError, type Child } from '@/lib/api';
+import { api, ApiError, type GuardianWeekChild } from '@/lib/api';
 import { Button } from '@/app/components/ui/button';
 import { cn } from '@/lib/utils';
 
 const CHILD_CLASS_OPTIONS = [
   'Class 4', 'Class 5', 'Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10', 'Other',
 ];
+const MOODS = ['😞', '😕', '😐', '🙂', '🤩'];
 
 function initialsOf(name: string | null, username: string) {
   const base = (name || username).trim();
@@ -20,24 +22,21 @@ function initialsOf(name: string | null, username: string) {
   return ((parts[0]?.[0] || '') + (parts[1]?.[0] || '')).toUpperCase() || base.slice(0, 2).toUpperCase();
 }
 
-// Parent hub — add, list and unlink child profiles.
+// Parent dashboard — glanceable weekly card per child, plus add / unlink.
 export default function ParentDashboard() {
   const { data, isLoading, error } = useQuery({
-    queryKey: ['guardian', 'children'],
-    queryFn: () => api.guardian.listChildren(),
+    queryKey: ['guardian', 'week'],
+    queryFn: () => api.guardian.week(),
   });
   const children = data?.children ?? [];
-
   const [adding, setAdding] = useState(false);
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">My children</h1>
-          <p className="text-muted-foreground">
-            Add a profile for each child, then enrol them in a batch.
-          </p>
+          <p className="text-muted-foreground">How your children are doing this week.</p>
         </div>
         {!adding && children.length > 0 && (
           <Button onClick={() => setAdding(true)} className="self-start sm:self-auto">
@@ -49,11 +48,9 @@ export default function ParentDashboard() {
       {adding && <AddChildForm onDone={() => setAdding(false)} />}
 
       {error && (
-        <p className="text-sm text-destructive">
-          Couldn&rsquo;t load your children. Please refresh and try again.
-        </p>
+        <p className="text-sm text-destructive">Couldn&rsquo;t load this week. Please refresh and try again.</p>
       )}
-      {isLoading && <p className="text-sm text-muted-foreground">Loading…</p>}
+      {isLoading && <div className="h-48 animate-pulse rounded-2xl border border-border bg-card" />}
 
       {!isLoading && !error && children.length === 0 && !adding && (
         <div className="rounded-2xl border border-dashed border-border bg-card p-10 text-center">
@@ -62,7 +59,7 @@ export default function ParentDashboard() {
           </div>
           <h2 className="font-semibold">No children added yet</h2>
           <p className="mx-auto mt-1 max-w-sm text-sm text-muted-foreground">
-            Add your first child to start enrolling them in Young Scholar batches and track their progress.
+            Add your first child to start tracking their classes, quizzes and weekly reports here.
           </p>
           <Button onClick={() => setAdding(true)} className="mt-5">
             <UserPlus className="h-4 w-4" /> Add your first child
@@ -71,13 +68,127 @@ export default function ParentDashboard() {
       )}
 
       {children.length > 0 && (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 lg:grid-cols-2">
           {children.map((child) => (
-            <ChildCard key={child.id} child={child} />
+            <WeeklyChildCard key={child.id} child={child} />
           ))}
         </div>
       )}
     </div>
+  );
+}
+
+function StatusPill({ icon: Icon, label, done }: { icon: React.ComponentType<{ className?: string }>; label: string; done: boolean }) {
+  return (
+    <span
+      className={cn(
+        'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium',
+        done ? 'bg-success/10 text-success' : 'bg-secondary text-muted-foreground'
+      )}
+    >
+      {done ? <Check className="h-3.5 w-3.5" /> : <Icon className="h-3.5 w-3.5 opacity-60" />}
+      {label}
+    </span>
+  );
+}
+
+function WeeklyChildCard({ child }: { child: GuardianWeekChild }) {
+  const qc = useQueryClient();
+  const [confirming, setConfirming] = useState(false);
+  const report = child.report;
+
+  const remove = useMutation({
+    mutationFn: () => api.guardian.removeChild(child.id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['guardian', 'week'] });
+      toast.success(`${child.full_name || 'Child'} removed from your account.`);
+    },
+    onError: (err) => {
+      toast.error(err instanceof ApiError ? err.message : 'Could not remove. Please try again.');
+      setConfirming(false);
+    },
+  });
+
+  return (
+    <section className="flex flex-col rounded-2xl border border-border bg-card p-5">
+      {/* header */}
+      <div className="flex items-start gap-3">
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+          {child.avatar_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={child.avatar_url} alt="" className="h-11 w-11 rounded-full object-cover" />
+          ) : (
+            initialsOf(child.full_name, child.username)
+          )}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-semibold">{child.full_name || child.username}</p>
+          {child.class_grade && (
+            <span className="mt-0.5 inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+              <GraduationCap className="h-3 w-3" /> {child.class_grade}
+            </span>
+          )}
+        </div>
+        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-warning/10 px-2.5 py-1 text-xs font-semibold text-warning">
+          <Star className="h-3.5 w-3.5" /> {child.points_total.toLocaleString()}
+        </span>
+      </div>
+
+      {/* this week */}
+      <p className="mt-4 mb-2 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">This week</p>
+      <div className="flex flex-wrap gap-2">
+        <StatusPill icon={Video} label="Attended" done={child.attended} />
+        <StatusPill icon={Zap} label="Quiz" done={child.quiz_done} />
+        <StatusPill icon={PenLine} label="Report" done={!!report} />
+      </div>
+
+      {/* their own words */}
+      <div className="mt-4 flex-1">
+        {report ? (
+          <div className="rounded-xl bg-secondary/40 p-4">
+            <div className="mb-1.5 flex items-center gap-2 text-xs font-medium text-muted-foreground">
+              In their words
+              {report.mood != null && <span className="text-base leading-none" aria-label={`Mood ${report.mood} of 5`}>{MOODS[report.mood - 1]}</span>}
+            </div>
+            <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/90">
+              {report.went_well?.trim() || report.next_goal?.trim() || report.tricky?.trim() || 'Report written 🎉'}
+            </p>
+            {(report.teacher_comment || report.cheered_at) && (
+              <p className="mt-2.5 inline-flex items-center gap-1.5 text-xs font-medium text-primary">
+                {report.cheered_at ? <Sparkles className="h-3.5 w-3.5" /> : <MessageCircleHeart className="h-3.5 w-3.5" />}
+                {report.teacher_comment ? 'Teacher replied' : 'Teacher cheered'}
+              </p>
+            )}
+          </div>
+        ) : (
+          <p className="rounded-xl bg-secondary/30 p-4 text-sm text-muted-foreground">
+            No report yet this week — there&rsquo;s still time. 🌱
+          </p>
+        )}
+      </div>
+
+      {/* footer: unlink */}
+      <div className="mt-4 flex items-center justify-end border-t border-border pt-3">
+        {confirming ? (
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground">Remove from your account?</span>
+            <Button size="sm" variant="destructive" onClick={() => remove.mutate()} disabled={remove.isPending}>
+              {remove.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : 'Remove'}
+            </Button>
+            <Button size="sm" variant="ghost" onClick={() => setConfirming(false)} disabled={remove.isPending}>
+              Cancel
+            </Button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setConfirming(true)}
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-destructive"
+          >
+            <Trash2 className="h-3.5 w-3.5" /> Remove
+          </button>
+        )}
+      </div>
+    </section>
   );
 }
 
@@ -96,7 +207,7 @@ function AddChildForm({ onDone }: { onDone: () => void }) {
         password: showLogin && form.password ? form.password : undefined,
       }),
     onSuccess: ({ child }) => {
-      qc.invalidateQueries({ queryKey: ['guardian', 'children'] });
+      qc.invalidateQueries({ queryKey: ['guardian', 'week'] });
       toast.success(
         showLogin && form.username
           ? `${child.full_name || 'Child'} added — they can sign in as "${child.username}".`
@@ -126,10 +237,7 @@ function AddChildForm({ onDone }: { onDone: () => void }) {
     'w-full h-10 px-3 rounded-lg border border-border bg-background text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all';
 
   return (
-    <form
-      onSubmit={onSubmit}
-      className="rounded-2xl border border-border bg-card p-5 space-y-4"
-    >
+    <form onSubmit={onSubmit} className="rounded-2xl border border-border bg-card p-5 space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="font-semibold">Add a child</h2>
         <button
@@ -248,87 +356,12 @@ function AddChildForm({ onDone }: { onDone: () => void }) {
         </Button>
         <Button type="submit" disabled={mutation.isPending}>
           {mutation.isPending ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" /> Adding…
-            </>
+            <><Loader2 className="h-4 w-4 animate-spin" /> Adding…</>
           ) : (
-            <>
-              <UserPlus className="h-4 w-4" /> Add child
-            </>
+            <><UserPlus className="h-4 w-4" /> Add child</>
           )}
         </Button>
       </div>
     </form>
-  );
-}
-
-function ChildCard({ child }: { child: Child }) {
-  const qc = useQueryClient();
-  const [confirming, setConfirming] = useState(false);
-
-  const remove = useMutation({
-    mutationFn: () => api.guardian.removeChild(child.id),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['guardian', 'children'] });
-      toast.success(`${child.full_name || 'Child'} removed from your account.`);
-    },
-    onError: (err) => {
-      toast.error(err instanceof ApiError ? err.message : 'Could not remove. Please try again.');
-      setConfirming(false);
-    },
-  });
-
-  return (
-    <div className="rounded-2xl border border-border bg-card p-5">
-      <div className="flex items-start gap-3">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
-          {child.avatar_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={child.avatar_url} alt="" className="h-11 w-11 rounded-full object-cover" />
-          ) : (
-            initialsOf(child.full_name, child.username)
-          )}
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="font-semibold truncate">{child.full_name || child.username}</p>
-          <div className="mt-1 flex flex-wrap items-center gap-2">
-            {child.class_grade && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
-                <GraduationCap className="h-3 w-3" /> {child.class_grade}
-              </span>
-            )}
-            <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-              <User className="h-3 w-3" /> {child.username}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-4 flex items-center justify-end border-t border-border pt-3">
-        {confirming ? (
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">Remove from your account?</span>
-            <Button
-              size="sm"
-              variant="destructive"
-              onClick={() => remove.mutate()}
-              disabled={remove.isPending}
-            >
-              {remove.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : 'Remove'}
-            </Button>
-            <Button size="sm" variant="ghost" onClick={() => setConfirming(false)} disabled={remove.isPending}>
-              Cancel
-            </Button>
-          </div>
-        ) : (
-          <button
-            onClick={() => setConfirming(true)}
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-destructive transition-colors"
-          >
-            <Trash2 className="h-3.5 w-3.5" /> Remove
-          </button>
-        )}
-      </div>
-    </div>
   );
 }

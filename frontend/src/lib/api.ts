@@ -217,6 +217,28 @@ export interface BatchReportRow {
   submitted_at: string | null;
 }
 
+/** A child's glanceable weekly card for the parent dashboard. */
+export interface GuardianWeekChild {
+  id: number;
+  username: string;
+  full_name: string | null;
+  class_grade: string | null;
+  avatar_url: string | null;
+  points_total: number;
+  attended: boolean;
+  quiz_done: boolean;
+  report: {
+    id: number;
+    went_well: string | null;
+    tricky: string | null;
+    next_goal: string | null;
+    mood: number | null;
+    teacher_comment: string | null;
+    cheered_at: string | null;
+    created_at: string;
+  } | null;
+}
+
 /** Cumulative Scholar (effort) Points — total + a per-reason breakdown. */
 export interface PointsSummary {
   total: number;
@@ -334,6 +356,7 @@ export const api = {
   // Parent / guardian — manage linked child profiles (parent role only).
   guardian: {
     listChildren: () => apiFetch<{ children: Child[] }>('/api/guardian/children'),
+    week: () => apiFetch<{ children: GuardianWeekChild[] }>('/api/guardian/week'),
     addChild: (body: { full_name: string; class_grade?: string; username?: string; password?: string }) =>
       apiFetch<{ child: Child }>('/api/guardian/children', j(body)),
     removeChild: (childId: number) => apiFetch(`/api/guardian/children/${childId}`, del()),
