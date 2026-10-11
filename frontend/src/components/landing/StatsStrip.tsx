@@ -42,7 +42,7 @@ export function StatsStrip() {
   return (
     <section className="border-y border-border bg-card/50">
       <div className="container mx-auto max-w-6xl px-6 py-10 md:py-14">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 text-center md:text-left">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 md:gap-8 text-center md:text-left">
           {TRUST_STATS.map((s, i) => (
             <motion.div
               key={s.label}

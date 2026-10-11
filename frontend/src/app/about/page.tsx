@@ -53,7 +53,7 @@ export default function AboutPage() {
             </p>
 
             {/* Stats strip */}
-            <div className="mt-12 grid grid-cols-2 md:grid-cols-4 max-w-2xl gap-x-6 gap-y-2 border-t border-border/60 pt-6">
+            <div className="mt-12 grid grid-cols-3 max-w-2xl gap-x-6 gap-y-2 border-t border-border/60 pt-6">
               {STATS.map((s) => (
                 <div key={s.label}>
                   <div className="text-2xl md:text-3xl font-bold tracking-tight">{s.value}</div>
