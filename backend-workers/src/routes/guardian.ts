@@ -5,6 +5,7 @@ import { requireAuth, roleGuard } from '../middleware/auth';
 import { validateBody, getValid, CreateChildSchema } from '../lib/validation';
 import { reconcilePoints } from '../services/points';
 import { computeStreak } from '../services/progress';
+import { isValidAvatar } from '../lib/avatars';
 
 const guardian = new Hono<AppContext>();
 
@@ -133,6 +134,34 @@ guardian.post('/children', validateBody(CreateChildSchema), async (c) => {
   } finally {
     client.release();
   }
+});
+
+// PATCH /api/guardian/children/:childId/avatar — set a linked child's character.
+guardian.patch('/children/:childId/avatar', async (c) => {
+  const user = c.get('user')!;
+  const db = c.get('db');
+  const childId = parseInt(c.req.param('childId') ?? '', 10);
+  if (Number.isNaN(childId)) return c.json({ error: 'invalid childId' }, 400);
+
+  const body = await c.req.json<{ avatar?: unknown }>().catch(() => ({}) as { avatar?: unknown });
+  const avatar = body.avatar === undefined ? null : body.avatar;
+  if (!isValidAvatar(avatar)) return c.json({ error: 'Invalid avatar' }, 400);
+
+  if (user.role !== 'super_admin') {
+    const link = await db.query(
+      'SELECT 1 FROM guardian_students WHERE guardian_id = $1 AND student_id = $2',
+      [user.id, childId],
+    );
+    if (link.rows.length === 0) return c.json({ error: 'Not your child' }, 403);
+  }
+
+  const r = await db.query(
+    `UPDATE users SET avatar_url = $1 WHERE id = $2 AND role = 'student'
+       RETURNING id, username, full_name, class_grade, avatar_url`,
+    [avatar, childId],
+  );
+  if (r.rows.length === 0) return c.json({ error: 'Child not found' }, 404);
+  return c.json({ child: r.rows[0] });
 });
 
 // DELETE /api/guardian/children/:childId — unlink a child from this parent.

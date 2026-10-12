@@ -6,22 +6,18 @@ import { toast } from 'sonner';
 import {
   UserPlus, Trash2, GraduationCap, Loader2, KeyRound, ChevronDown, X,
   Star, Check, Video, Zap, PenLine, MessageCircleHeart, Sparkles, Heart,
-  CheckCircle2, Copy,
+  CheckCircle2, Copy, Pencil,
 } from 'lucide-react';
 import { api, ApiError, type GuardianWeekChild, type Child } from '@/lib/api';
 import { Button } from '@/app/components/ui/button';
+import { ScholarAvatar } from '@/components/dashboard/ScholarAvatar';
+import { AvatarPicker } from '@/components/dashboard/AvatarPicker';
 import { cn } from '@/lib/utils';
 
 const CHILD_CLASS_OPTIONS = [
   'Class 4', 'Class 5', 'Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10', 'Other',
 ];
 const MOODS = ['😞', '😕', '😐', '🙂', '🤩'];
-
-function initialsOf(name: string | null, username: string) {
-  const base = (name || username).trim();
-  const parts = base.split(/\s+/);
-  return ((parts[0]?.[0] || '') + (parts[1]?.[0] || '')).toUpperCase() || base.slice(0, 2).toUpperCase();
-}
 
 // Parent dashboard — glanceable weekly card per child, plus add / unlink.
 export default function ParentDashboard() {
@@ -96,7 +92,17 @@ function StatusPill({ icon: Icon, label, done }: { icon: React.ComponentType<{ c
 function WeeklyChildCard({ child }: { child: GuardianWeekChild }) {
   const qc = useQueryClient();
   const [confirming, setConfirming] = useState(false);
+  const [editingAvatar, setEditingAvatar] = useState(false);
   const report = child.report;
+
+  const setAvatar = useMutation({
+    mutationFn: (key: string | null) => api.guardian.setChildAvatar(child.id, key),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['guardian', 'week'] });
+      setEditingAvatar(false);
+    },
+    onError: (err) => toast.error(err instanceof ApiError ? err.message : 'Could not update character'),
+  });
 
   const remove = useMutation({
     mutationFn: () => api.guardian.removeChild(child.id),
@@ -124,14 +130,18 @@ function WeeklyChildCard({ child }: { child: GuardianWeekChild }) {
     <section className="flex flex-col rounded-2xl border border-border bg-card p-5">
       {/* header */}
       <div className="flex items-start gap-3">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
-          {child.avatar_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={child.avatar_url} alt="" className="h-11 w-11 rounded-full object-cover" />
-          ) : (
-            initialsOf(child.full_name, child.username)
-          )}
-        </div>
+        <button
+          type="button"
+          onClick={() => setEditingAvatar((v) => !v)}
+          className="group relative shrink-0 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/40 focus:ring-offset-2 focus:ring-offset-background"
+          aria-label="Change character"
+          title="Change character"
+        >
+          <ScholarAvatar value={child.avatar_url} name={child.full_name} username={child.username} size={44} />
+          <span className="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full border border-card bg-secondary text-muted-foreground group-hover:text-foreground">
+            <Pencil className="h-2.5 w-2.5" />
+          </span>
+        </button>
         <div className="min-w-0 flex-1">
           <p className="truncate font-semibold">{child.full_name || child.username}</p>
           {child.class_grade && (
@@ -151,6 +161,23 @@ function WeeklyChildCard({ child }: { child: GuardianWeekChild }) {
           )}
         </div>
       </div>
+
+      {/* change character */}
+      {editingAvatar && (
+        <div className="mt-4 rounded-xl border border-border bg-secondary/30 p-4">
+          <div className="mb-2.5 flex items-center justify-between">
+            <p className="text-xs font-semibold text-muted-foreground">
+              Pick a character for {child.full_name || child.username}
+            </p>
+            {setAvatar.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />}
+          </div>
+          <AvatarPicker
+            value={child.avatar_url}
+            onSelect={(k) => setAvatar.mutate(k)}
+            disabled={setAvatar.isPending}
+          />
+        </div>
+      )}
 
       {/* this week */}
       <p className="mt-4 mb-2 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">This week</p>

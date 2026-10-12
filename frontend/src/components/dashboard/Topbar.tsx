@@ -8,21 +8,11 @@ import { useAuthStore } from '@/lib/stores/authStore';
 import { useUiStore } from '@/lib/stores/uiStore';
 import { NotificationBell } from './NotificationBell';
 import { ChangePasswordDialog } from './ChangePasswordDialog';
-import { Avatar, AvatarFallback } from '@/app/components/ui/avatar';
+import { ScholarAvatar } from './ScholarAvatar';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/app/components/ui/dropdown-menu';
-
-function initials(s?: string | null) {
-  if (!s) return '?';
-  return s
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((p) => p[0]?.toUpperCase())
-    .join('');
-}
 
 export function Topbar() {
   const router = useRouter();
@@ -68,14 +58,16 @@ export function Topbar() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className="ml-2 rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+              className="ml-2 rounded-full transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
               aria-label="Open profile menu"
             >
-              <Avatar className="h-8 w-8 cursor-pointer hover:opacity-90 transition">
-                <AvatarFallback className="text-xs bg-primary/10 text-primary font-semibold">
-                  {initials(user.full_name || user.username)}
-                </AvatarFallback>
-              </Avatar>
+              <ScholarAvatar
+                value={user.avatar_url}
+                name={user.full_name}
+                username={user.username}
+                size={32}
+                className="cursor-pointer"
+              />
             </button>
           </DropdownMenuTrigger>
 

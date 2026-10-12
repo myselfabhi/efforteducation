@@ -9,6 +9,7 @@ import {
   validateBody,
   getValid,
 } from '../lib/validation';
+import { isValidAvatar } from '../lib/avatars';
 
 const users = new Hono<AppContext>();
 
@@ -78,6 +79,26 @@ users.patch('/me', requireAuth, validateBody(UpdateProfileSchema), async (c) => 
   } catch (err) {
     console.error('PATCH /me error', err);
     return c.json({ error: 'Failed to update profile' }, 500);
+  }
+});
+
+// PATCH /api/users/me/avatar — pick a preset character (any role; mainly kids).
+// Separate from PATCH /me because that one requires avatar_url to be a URL;
+// here we accept a preset key, or null to go back to initials.
+users.patch('/me/avatar', requireAuth, async (c) => {
+  const body = await c.req.json<{ avatar?: unknown }>().catch(() => ({}) as { avatar?: unknown });
+  const avatar = body.avatar === undefined ? null : body.avatar;
+  if (!isValidAvatar(avatar)) return c.json({ error: 'Invalid avatar' }, 400);
+  try {
+    const db = c.get('db');
+    const r = await db.query(
+      `UPDATE users SET avatar_url = $1 WHERE id = $2 RETURNING ${PUBLIC_FIELDS}`,
+      [avatar, c.get('user')!.id],
+    );
+    return c.json(r.rows[0]);
+  } catch (err) {
+    console.error('PATCH /me/avatar error', err);
+    return c.json({ error: 'Failed to update avatar' }, 500);
   }
 });
 

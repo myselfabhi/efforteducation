@@ -6,6 +6,8 @@ import { toast } from 'sonner';
 import { api, ApiError, type AuthUser } from '@/lib/api';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { PageHeader } from '@/components/dashboard/PageHeader';
+import { ScholarAvatar } from '@/components/dashboard/ScholarAvatar';
+import { AvatarPicker } from '@/components/dashboard/AvatarPicker';
 import { Button } from '@/app/components/ui/button';
 import { Input } from '@/app/components/ui/input';
 import { Label } from '@/app/components/ui/label';
@@ -15,10 +17,10 @@ export default function ProfilePage() {
   const user = useAuthStore((s) => s.user);
   const setUser = useAuthStore((s) => s.setUser);
 
+  const [avatar, setAvatar] = useState<string | null>(user?.avatar_url ?? null);
   const [form, setForm] = useState({
     full_name: user?.full_name ?? '',
     phone: user?.phone ?? '',
-    avatar_url: user?.avatar_url ?? '',
     class_grade: user?.class_grade ?? '',
     bio: '',
   });
@@ -31,11 +33,11 @@ export default function ProfilePage() {
       .then((u) => {
         if (cancelled) return;
         const me = u as AuthUser & { bio?: string };
+        setAvatar(me.avatar_url ?? null);
         setForm((s) => ({
           ...s,
           full_name: me.full_name ?? s.full_name,
           phone: me.phone ?? s.phone,
-          avatar_url: me.avatar_url ?? s.avatar_url,
           class_grade: me.class_grade ?? s.class_grade,
           bio: me.bio ?? '',
         }));
@@ -46,12 +48,21 @@ export default function ProfilePage() {
     };
   }, []);
 
+  // Picking a character saves immediately so it shows up everywhere at once.
+  const saveAvatar = useMutation({
+    mutationFn: (key: string | null) => api.users.setAvatar(key),
+    onSuccess: (u, key) => {
+      setAvatar(key);
+      if (user) setUser({ ...user, avatar_url: key });
+    },
+    onError: (err) => toast.error(err instanceof ApiError ? err.message : 'Could not update character'),
+  });
+
   const save = useMutation({
     mutationFn: () =>
       api.users.updateMe({
         full_name: form.full_name || undefined,
         phone: form.phone || undefined,
-        avatar_url: form.avatar_url || undefined,
         class_grade: form.class_grade || undefined,
         bio: form.bio || undefined,
       }),
@@ -69,9 +80,27 @@ export default function ProfilePage() {
 
   if (!user) return null;
 
+  const isYoungScholar = user.role === 'student' || user.role === 'user';
+
   return (
     <div className="max-w-xl">
       <PageHeader title="Profile" description={`Signed in as ${user.email}`} />
+
+      {/* Character picker */}
+      <section className="mb-8 rounded-2xl border border-border bg-card p-5">
+        <div className="flex items-center gap-4">
+          <ScholarAvatar value={avatar} name={form.full_name} username={user.username} size={56} />
+          <div className="min-w-0">
+            <h2 className="font-semibold">{isYoungScholar ? 'Your character' : 'Your avatar'}</h2>
+            <p className="text-sm text-muted-foreground">
+              {isYoungScholar ? 'Pick a character to show across your hub.' : 'Pick an avatar shown across the app.'}
+            </p>
+          </div>
+        </div>
+        <div className="mt-4">
+          <AvatarPicker value={avatar} onSelect={(k) => saveAvatar.mutate(k)} disabled={saveAvatar.isPending} />
+        </div>
+      </section>
 
       <form
         onSubmit={(e) => {
@@ -88,12 +117,8 @@ export default function ProfilePage() {
           <Label htmlFor="phone">Phone</Label>
           <Input id="phone" value={form.phone} onChange={(e) => set('phone', e.target.value)} />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="avatar_url">Avatar URL</Label>
-          <Input id="avatar_url" type="url" value={form.avatar_url} onChange={(e) => set('avatar_url', e.target.value)} />
-        </div>
 
-        {(user.role === 'student' || user.role === 'user') && (
+        {isYoungScholar && (
           <div className="space-y-2">
             <Label htmlFor="class_grade">Class / level</Label>
             <Input id="class_grade" value={form.class_grade} onChange={(e) => set('class_grade', e.target.value)} />

@@ -377,6 +377,8 @@ export const api = {
     addChild: (body: { full_name: string; class_grade?: string; username?: string; password?: string }) =>
       apiFetch<{ child: Child }>('/api/guardian/children', j(body)),
     removeChild: (childId: number) => apiFetch(`/api/guardian/children/${childId}`, del()),
+    setChildAvatar: (childId: number, avatar: string | null) =>
+      apiFetch<{ child: Child }>(`/api/guardian/children/${childId}/avatar`, patch({ avatar })),
   },
 
   // Weekly reports — the Young Scholar reflection + teacher feedback.
@@ -404,6 +406,7 @@ export const api = {
     me: () => apiFetch('/api/users/me'),
     updateMe: (body: Partial<{ full_name: string; phone: string; avatar_url: string; bio: string; class_grade: string }>) =>
       apiFetch('/api/users/me', patch(body)),
+    setAvatar: (avatar: string | null) => apiFetch<AuthUser>('/api/users/me/avatar', patch({ avatar })),
     changePassword: (body: { current_password: string; new_password: string }) =>
       apiFetch('/api/users/me/password', patch(body)),
     list: (role?: 'super_admin' | 'teacher' | 'student') =>

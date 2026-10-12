@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { Loader2, Sparkles, Send, NotebookPen } from 'lucide-react';
 import { api, ApiError, type BatchReportRow } from '@/lib/api';
 import { Button } from '@/app/components/ui/button';
+import { ScholarAvatar } from '@/components/dashboard/ScholarAvatar';
 import { cn } from '@/lib/utils';
 
 interface TeacherDash {
@@ -94,12 +95,6 @@ export default function TeacherReportsPage() {
   );
 }
 
-function initialsOf(name: string | null, username: string) {
-  const base = (name || username).trim();
-  const parts = base.split(/\s+/);
-  return ((parts[0]?.[0] || '') + (parts[1]?.[0] || '')).toUpperCase() || base.slice(0, 2).toUpperCase();
-}
-
 function ReportReviewCard({ row, batchId }: { row: BatchReportRow; batchId: number }) {
   const qc = useQueryClient();
   const [comment, setComment] = useState(row.teacher_comment ?? '');
@@ -122,9 +117,7 @@ function ReportReviewCard({ row, batchId }: { row: BatchReportRow; batchId: numb
   return (
     <section className="rounded-2xl border border-border bg-card p-5">
       <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
-          {initialsOf(row.student_name, row.student_username)}
-        </div>
+        <ScholarAvatar value={row.avatar_url} name={row.student_name} username={row.student_username} size={40} />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <p className="font-semibold truncate">{row.student_name || row.student_username}</p>
