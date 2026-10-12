@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import type { AppContext } from '../types';
 import { requireAuth, roleGuard } from '../middleware/auth';
 import { reconcileAndSummarize } from '../services/points';
+import { getStreakAndBadges } from '../services/progress';
 
 const points = new Hono<AppContext>();
 
@@ -10,7 +11,8 @@ points.get('/me', requireAuth, roleGuard('student', 'super_admin'), async (c) =>
   const db = c.get('db');
   const user = c.get('user')!;
   const summary = await reconcileAndSummarize(db, user.id);
-  return c.json(summary);
+  const extras = await getStreakAndBadges(db, user.id, summary);
+  return c.json({ ...summary, ...extras });
 });
 
 // ── Parent: a linked child's Scholar Points ───────────────────────────────────
@@ -29,7 +31,8 @@ points.get('/child/:childId', requireAuth, roleGuard('parent', 'super_admin'), a
   }
 
   const summary = await reconcileAndSummarize(db, childId);
-  return c.json(summary);
+  const extras = await getStreakAndBadges(db, childId, summary);
+  return c.json({ ...summary, ...extras });
 });
 
 export default points;

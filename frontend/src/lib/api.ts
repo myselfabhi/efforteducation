@@ -240,12 +240,25 @@ export interface GuardianWeekChild {
     parent_cheered_at: string | null;
     created_at: string;
   } | null;
+  /** Consecutive weeks of participation (with a one-week safety valve). */
+  streak: number;
 }
 
-/** Cumulative Scholar (effort) Points — total + a per-reason breakdown. */
+/** A collectible earned through participation — shown on the child's hub. */
+export interface Badge {
+  key: string;
+  label: string;
+  emoji: string;
+  earned: boolean;
+}
+
+/** Cumulative Scholar (effort) Points — total + a per-reason breakdown,
+ *  plus the gamification layer: participation streak and badges. */
 export interface PointsSummary {
   total: number;
   by_reason: Array<{ reason: string; count: number; points: number }>;
+  streak: number;
+  badges: Badge[];
 }
 
 /** A child profile linked to a parent/guardian account. */

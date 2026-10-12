@@ -140,9 +140,16 @@ function WeeklyChildCard({ child }: { child: GuardianWeekChild }) {
             </span>
           )}
         </div>
-        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-warning/10 px-2.5 py-1 text-xs font-semibold text-warning">
-          <Star className="h-3.5 w-3.5" /> {child.points_total.toLocaleString()}
-        </span>
+        <div className="flex shrink-0 flex-col items-end gap-1.5">
+          <span className="inline-flex items-center gap-1 rounded-full bg-warning/10 px-2.5 py-1 text-xs font-semibold text-warning">
+            <Star className="h-3.5 w-3.5" /> {child.points_total.toLocaleString()}
+          </span>
+          {child.streak > 0 && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-warning/10 px-2.5 py-1 text-xs font-semibold text-warning">
+              🔥 {child.streak === 1 ? '1 week' : `${child.streak} weeks`}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* this week */}

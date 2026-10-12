@@ -137,7 +137,15 @@ export default function StudentClassHub() {
   );
 }
 
-// ── Scholar Points — cumulative effort/progress ───────────────────────────────
+// ── Scholar Points + streak + badges — the gamification layer ─────────────────
+function StreakChip({ streak }: { streak: number }) {
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full bg-warning/15 px-2.5 py-1 text-xs font-semibold text-warning">
+      🔥 {streak === 1 ? '1 week' : `${streak}-week streak`}
+    </span>
+  );
+}
+
 function ScholarPointsCard({ summary }: { summary: PointsSummary }) {
   const count = (reason: string) => summary.by_reason.find((r) => r.reason === reason)?.count ?? 0;
   const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
@@ -147,22 +155,56 @@ function ScholarPointsCard({ summary }: { summary: PointsSummary }) {
     count('quiz_completed') && plural(count('quiz_completed'), 'quiz', 'quizzes'),
   ].filter(Boolean) as string[];
 
+  const badges = summary.badges ?? [];
+  const earned = badges.filter((b) => b.earned).length;
+
   return (
-    <section className="flex items-center gap-4 rounded-2xl border border-warning/30 bg-warning/5 p-5">
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-warning/15 text-warning">
-        <Star className="h-6 w-6" />
+    <section className="rounded-2xl border border-warning/30 bg-warning/5 p-5">
+      <div className="flex items-start gap-4">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-warning/15 text-warning">
+          <Star className="h-6 w-6" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+            <p className="text-2xl font-bold leading-none">
+              {summary.total.toLocaleString()}{' '}
+              <span className="text-base font-semibold text-muted-foreground">Scholar Points</span>
+            </p>
+            {summary.streak > 0 && <StreakChip streak={summary.streak} />}
+          </div>
+          <p className="mt-1.5 text-sm text-muted-foreground">
+            {parts.length
+              ? `Earned from ${parts.join(' · ')}`
+              : 'Join a class, play a quiz or write your report to start earning.'}
+          </p>
+        </div>
       </div>
-      <div className="min-w-0">
-        <p className="text-2xl font-bold leading-none">
-          {summary.total.toLocaleString()}{' '}
-          <span className="text-base font-semibold text-muted-foreground">Scholar Points</span>
-        </p>
-        <p className="mt-1.5 text-sm text-muted-foreground">
-          {parts.length
-            ? `Earned from ${parts.join(' · ')}`
-            : 'Join a class, play a quiz or write your report to start earning.'}
-        </p>
-      </div>
+
+      {badges.length > 0 && (
+        <div className="mt-4 border-t border-warning/20 pt-4">
+          <div className="mb-2.5 flex items-center justify-between">
+            <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Badges</h3>
+            <span className="text-xs text-muted-foreground">{earned} of {badges.length}</span>
+          </div>
+          <ul className="flex flex-wrap gap-2">
+            {badges.map((b) => (
+              <li
+                key={b.key}
+                className={cn(
+                  'inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors',
+                  b.earned
+                    ? 'border-warning/40 bg-warning/10 text-foreground'
+                    : 'border-dashed border-border text-muted-foreground/60'
+                )}
+                title={b.earned ? `Earned: ${b.label}` : `Locked: ${b.label}`}
+              >
+                <span className={cn(!b.earned && 'opacity-40 grayscale')}>{b.emoji}</span>
+                {b.label}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </section>
   );
 }

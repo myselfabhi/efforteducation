@@ -4,6 +4,7 @@ import type { AppContext } from '../types';
 import { requireAuth, roleGuard } from '../middleware/auth';
 import { validateBody, getValid, CreateChildSchema } from '../lib/validation';
 import { reconcilePoints } from '../services/points';
+import { computeStreak } from '../services/progress';
 
 const guardian = new Hono<AppContext>();
 
@@ -48,6 +49,7 @@ guardian.get('/week', async (c) => {
          FROM weekly_reports WHERE student_id = $1 AND week_start = ${WEEK_START}`,
       [kid.id],
     );
+    const streak = await computeStreak(db, kid.id);
 
     children.push({
       ...kid,
@@ -55,6 +57,7 @@ guardian.get('/week', async (c) => {
       attended: stats.rows[0].attended,
       quiz_done: stats.rows[0].quiz_done,
       report: rep.rows[0] ?? null,
+      streak,
     });
   }
 
