@@ -14,6 +14,7 @@ const CreateQuizSchema = z.object({
   batch_id: z.number().int().positive().optional().nullable(),
   is_practice: z.boolean().optional(),
   answer_grace_period_ms: z.number().int().min(0).max(10_000).optional(),
+  skill_id: z.number().int().positive().optional().nullable(),
 });
 
 const AddQuestionSchema = z.object({
@@ -57,13 +58,14 @@ async function userCanReadQuiz(db: Pool, userId: number, role: string, quizId: n
 // POST /api/quizzes — Create quiz (super_admin or teacher of batch)
 quiz.post('/', requireAuth, roleGuard('super_admin', 'teacher'), validateBody(CreateQuizSchema), async (c) => {
   try {
-    const { title, description, scheduled_at, batch_id, is_practice, answer_grace_period_ms } = getValid<{
+    const { title, description, scheduled_at, batch_id, is_practice, answer_grace_period_ms, skill_id } = getValid<{
       title: string;
       description?: string | null;
       scheduled_at?: string | null;
       batch_id?: number | null;
       is_practice?: boolean;
       answer_grace_period_ms?: number;
+      skill_id?: number | null;
     }>(c);
     const db = c.get('db');
     const user = c.get('user')!;
@@ -78,10 +80,10 @@ quiz.post('/', requireAuth, roleGuard('super_admin', 'teacher'), validateBody(Cr
     const grace = Math.max(0, Math.min(10_000, Number(answer_grace_period_ms ?? 3000)));
 
     const result = await db.query(
-      `INSERT INTO quizzes (title, description, created_by, status, scheduled_at, batch_id, is_practice, answer_grace_period_ms)
-       VALUES ($1, $2, $3, 'DRAFT', $4, $5, $6, $7)
+      `INSERT INTO quizzes (title, description, created_by, status, scheduled_at, batch_id, is_practice, answer_grace_period_ms, skill_id)
+       VALUES ($1, $2, $3, 'DRAFT', $4, $5, $6, $7, $8)
        RETURNING *`,
-      [title, description || null, user.id, scheduled_at || null, batch_id || null, !!is_practice, grace],
+      [title, description || null, user.id, scheduled_at || null, batch_id || null, !!is_practice, grace, skill_id || null],
     );
     return c.json(result.rows[0], 201);
   } catch (err) {

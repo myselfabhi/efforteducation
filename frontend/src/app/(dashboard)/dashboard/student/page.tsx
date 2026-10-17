@@ -11,6 +11,7 @@ import {
 import { api, type QuizSummary, type Announcement, type Material, type PointsSummary } from '@/lib/api';
 import { useAuthStore } from '@/lib/stores/authStore';
 import { Button } from '@/app/components/ui/button';
+import { MasteryCard } from '@/components/dashboard/MasteryCard';
 import { cn } from '@/lib/utils';
 
 interface StudentDash {
@@ -88,6 +89,10 @@ export default function StudentClassHub() {
     queryKey: ['points', 'me'],
     queryFn: () => api.points.me(),
   });
+  const { data: masteryData } = useQuery({
+    queryKey: ['mastery', 'me'],
+    queryFn: () => api.mastery.me(),
+  });
 
   const name = firstNameOf(user?.full_name, user?.username);
   const batches = data?.batches ?? [];
@@ -124,6 +129,7 @@ export default function StudentClassHub() {
               <ClassHero nextClass={nextClass} state={state} />
               <WeeklyLoop state={state} reportDone={reportDone} />
               <QuizSpotlight batchId={primaryBatch?.id} />
+              {masteryData && <MasteryCard skills={masteryData.skills} />}
               <div className="grid gap-6 lg:grid-cols-2">
                 <MaterialsCard materials={data.recent_materials} />
                 <AnnouncementsCard batch={primaryBatch} />

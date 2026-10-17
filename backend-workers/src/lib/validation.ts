@@ -178,6 +178,15 @@ export const VerifyPaymentSchema = z.object({
   razorpay_signature: z.string().min(4).max(255),
 });
 
+// ── Skills (mastery) ──────────────────────────────────────────────────────────
+export const CreateSkillSchema = z.object({
+  name: z.string().min(2).max(80),
+  emoji: z.string().max(8).optional().nullable(),
+  description: z.string().max(2000).optional().nullable(),
+  sort_order: z.number().int().optional().nullable(),
+  active: z.boolean().optional(),
+});
+
 export const SignedUploadSchema = z.object({
   filename: z.string().min(1).max(255),
   content_type: z.string().min(1).max(120),

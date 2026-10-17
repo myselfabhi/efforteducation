@@ -113,6 +113,19 @@ export interface CheckoutOrder {
   plan_name: string; student_name: string | null; name: string | null; email: string;
 }
 
+// ── Skills & mastery ──────────────────────────────────────────────────────────
+export interface Skill {
+  id: number; key: string; name: string; emoji: string | null;
+  description: string | null; sort_order: number; active: boolean;
+}
+
+/** A child's mastery of one skill, derived from quiz accuracy. */
+export interface SkillMastery {
+  skill_id: number; key: string; name: string; emoji: string | null;
+  quizzes: number; accuracy_pct: number | null;
+  level: number; level_label: string; trend: number; // -1/0/1
+}
+
 export interface Batch {
   id: number; course_id: number; name: string;
   start_date: string; end_date: string | null;
@@ -332,6 +345,8 @@ export interface QuizSummary {
   is_practice: boolean;
   /** Per-quiz answer-change grace window in ms (migration 007). Defaults to 3000. */
   answer_grace_period_ms?: number;
+  /** The skill this quiz measures (migration 014), for mastery. */
+  skill_id?: number | null;
   creator_name?: string;
   question_count?: number;
 }
@@ -479,6 +494,21 @@ export const api = {
       apiFetch<{ ok: boolean; enrolled: boolean }>('/api/payments/verify', j(body)),
   },
 
+  // Skills taxonomy (admin) + a quiz's skill tag.
+  skills: {
+    list: () => apiFetch<Skill[]>('/api/skills'),
+    listAdmin: () => apiFetch<Skill[]>('/api/skills?all=1'),
+    create: (body: { name: string; emoji?: string | null; description?: string | null; sort_order?: number; active?: boolean }) =>
+      apiFetch<Skill>('/api/skills', j(body)),
+    update: (id: number, body: Partial<Skill>) => apiFetch<Skill>(`/api/skills/${id}`, patch(body)),
+    remove: (id: number) => apiFetch(`/api/skills/${id}`, del()),
+  },
+  // Skill mastery derived from quiz performance.
+  mastery: {
+    me: () => apiFetch<{ skills: SkillMastery[] }>('/api/mastery/me'),
+    forChild: (childId: number) => apiFetch<{ skills: SkillMastery[] }>(`/api/mastery/child/${childId}`),
+  },
+
   courses: {
     list: () => apiFetch<Course[]>('/api/courses'),
     listAdmin: () => apiFetch<Course[]>('/api/courses/admin'),
@@ -581,7 +611,7 @@ export const api = {
     list: (batch_id?: number) =>
       apiFetch<QuizSummary[]>(`/api/quizzes${batch_id ? `?batch_id=${batch_id}` : ''}`),
     get: (id: number) => apiFetch<QuizDetail>(`/api/quizzes/${id}`),
-    create: (body: { title: string; description?: string; scheduled_at?: string; batch_id?: number; is_practice?: boolean; answer_grace_period_ms?: number }) =>
+    create: (body: { title: string; description?: string; scheduled_at?: string; batch_id?: number; is_practice?: boolean; answer_grace_period_ms?: number; skill_id?: number | null }) =>
       apiFetch<QuizSummary>('/api/quizzes', j(body)),
     addQuestion: (
       quizId: number,

@@ -13,6 +13,7 @@ import { Button } from '@/app/components/ui/button';
 import { ScholarAvatar } from '@/components/dashboard/ScholarAvatar';
 import { AvatarPicker } from '@/components/dashboard/AvatarPicker';
 import { SeatOffers } from '@/components/dashboard/SeatOffers';
+import { CompactMastery } from '@/components/dashboard/MasteryCard';
 import { cn } from '@/lib/utils';
 
 const CHILD_CLASS_OPTIONS = [
@@ -97,6 +98,11 @@ function WeeklyChildCard({ child }: { child: GuardianWeekChild }) {
   const [confirming, setConfirming] = useState(false);
   const [editingAvatar, setEditingAvatar] = useState(false);
   const report = child.report;
+
+  const { data: mastery } = useQuery({
+    queryKey: ['mastery', 'child', child.id],
+    queryFn: () => api.mastery.forChild(child.id),
+  });
 
   const setAvatar = useMutation({
     mutationFn: (key: string | null) => api.guardian.setChildAvatar(child.id, key),
@@ -233,6 +239,8 @@ function WeeklyChildCard({ child }: { child: GuardianWeekChild }) {
           </p>
         )}
       </div>
+
+      {mastery && <CompactMastery skills={mastery.skills} />}
 
       {/* footer: unlink */}
       <div className="mt-4 flex items-center justify-end border-t border-border pt-3">

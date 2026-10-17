@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { api, ApiError, type QuizSummary } from '@/lib/api';
 import { Button } from '@/app/components/ui/button';
@@ -34,6 +34,9 @@ export function CreateQuizForm({
     scheduled_at: '',
   });
   const [isPractice, setIsPractice] = useState(false);
+  const [skillId, setSkillId] = useState('');
+
+  const { data: skills } = useQuery({ queryKey: ['skills'], queryFn: () => api.skills.list() });
 
   const create = useMutation({
     mutationFn: () =>
@@ -43,6 +46,7 @@ export function CreateQuizForm({
         scheduled_at: form.scheduled_at || undefined,
         batch_id: isPractice ? undefined : batchId,
         is_practice: isPractice ? true : undefined,
+        skill_id: skillId ? parseInt(skillId, 10) : null,
       }) as Promise<QuizSummary>,
     onSuccess: (q) => {
       qc.invalidateQueries({ queryKey: ['quizzes'] });
@@ -75,6 +79,21 @@ export function CreateQuizForm({
       <div className="space-y-2">
         <Label htmlFor="description">Description (optional)</Label>
         <Textarea id="description" rows={3} value={form.description} onChange={(e) => set('description', e.target.value)} placeholder="What does this quiz cover?" />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="skill">Skill (optional)</Label>
+        <select
+          id="skill"
+          value={skillId}
+          onChange={(e) => setSkillId(e.target.value)}
+          className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+        >
+          <option value="">No skill — won&rsquo;t count toward mastery</option>
+          {(skills ?? []).map((s) => (
+            <option key={s.id} value={s.id}>{s.emoji ? `${s.emoji} ` : ''}{s.name}</option>
+          ))}
+        </select>
+        <p className="text-xs text-muted-foreground">Tag the skill this quiz measures so it feeds a child&rsquo;s mastery.</p>
       </div>
       <div className="space-y-2">
         <Label htmlFor="scheduled_at">Schedule (optional)</Label>
