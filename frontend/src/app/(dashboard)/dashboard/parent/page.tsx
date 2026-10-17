@@ -12,6 +12,7 @@ import { api, ApiError, type GuardianWeekChild, type Child } from '@/lib/api';
 import { Button } from '@/app/components/ui/button';
 import { ScholarAvatar } from '@/components/dashboard/ScholarAvatar';
 import { AvatarPicker } from '@/components/dashboard/AvatarPicker';
+import { SeatOffers } from '@/components/dashboard/SeatOffers';
 import { cn } from '@/lib/utils';
 
 const CHILD_CLASS_OPTIONS = [
@@ -43,6 +44,8 @@ export default function ParentDashboard() {
       </div>
 
       {adding && <AddChildForm onDone={() => setAdding(false)} />}
+
+      <SeatOffers />
 
       {error && (
         <p className="text-sm text-destructive">Couldn&rsquo;t load this week. Please refresh and try again.</p>

@@ -14,6 +14,7 @@ import {
   ClipboardList,
   Megaphone,
   FileText,
+  CreditCard,
   Settings,
   LogOut,
   ChevronsLeft,
@@ -40,6 +41,7 @@ function navFor(role: UserRole): NavItem[] {
         { href: '/dashboard/admin/batches', label: 'Batches', icon: GraduationCap },
         { href: '/dashboard/admin/classes', label: 'Live Classes', icon: Video },
         { href: '/dashboard/admin/quizzes', label: 'Quizzes', icon: ClipboardList },
+        { href: '/dashboard/admin/plans', label: 'Billing', icon: CreditCard },
       ];
     case 'teacher':
       return [

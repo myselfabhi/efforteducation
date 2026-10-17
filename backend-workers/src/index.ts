@@ -16,6 +16,9 @@ import dashboardRoutes from './routes/dashboard';
 import guardianRoutes from './routes/guardian';
 import reportsRoutes from './routes/reports';
 import pointsRoutes from './routes/points';
+import plansRoutes from './routes/plans';
+import offersRoutes from './routes/offers';
+import paymentsRoutes from './routes/payments';
 
 const app = new Hono<AppContext>();
 
@@ -112,6 +115,9 @@ app.route('/api/dashboard', dashboardRoutes);
 app.route('/api/guardian', guardianRoutes);
 app.route('/api/reports', reportsRoutes);
 app.route('/api/points', pointsRoutes);
+app.route('/api/plans', plansRoutes);
+app.route('/api/offers', offersRoutes);
+app.route('/api/payments', paymentsRoutes);
 
 // Health check
 app.get('/api/health', (c) => c.json({ status: 'ok', timestamp: new Date().toISOString() }));

@@ -155,6 +155,29 @@ export const CreateAnnouncementSchema = z.object({
   is_pinned: z.boolean().optional(),
 });
 
+// ── Checkout / payments ───────────────────────────────────────────────────────
+export const CreatePlanSchema = z.object({
+  name: z.string().min(2).max(160),
+  description: z.string().max(2000).optional().nullable(),
+  amount_paise: z.number().int().positive().max(100_000_000), // ≤ ₹10,00,000
+  interval_label: z.string().max(40).optional().nullable(),
+  course_id: z.number().int().positive().optional().nullable(),
+  active: z.boolean().optional(),
+});
+
+export const CreateOfferSchema = z.object({
+  student_id: z.number().int().positive(),
+  plan_id: z.number().int().positive(),
+  batch_id: z.number().int().positive().optional().nullable(),
+  note: z.string().max(2000).optional().nullable(),
+});
+
+export const VerifyPaymentSchema = z.object({
+  razorpay_order_id: z.string().min(4).max(64),
+  razorpay_payment_id: z.string().min(4).max(64),
+  razorpay_signature: z.string().min(4).max(255),
+});
+
 export const SignedUploadSchema = z.object({
   filename: z.string().min(1).max(255),
   content_type: z.string().min(1).max(120),

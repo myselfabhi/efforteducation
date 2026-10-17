@@ -13,3 +13,11 @@ R2_SECRET_ACCESS_KEY="..."
 
 # RealtimeKit — Cloudflare API token with "Realtime Admin" permission
 CLOUDFLARE_API_TOKEN="..."
+
+# Razorpay checkout. With the secret set, checkout is live; set keys in prod with
+# `wrangler secret put RAZORPAY_KEY_ID` / `..._KEY_SECRET`.
+# RAZORPAY_KEY_ID="rzp_test_xxxxxxxx"
+# RAZORPAY_KEY_SECRET="..."
+# Local-only: run checkout in STUB mode (fake orders, nothing charged). Must be an
+# explicit opt-in — NEVER set this in production.
+RAZORPAY_STUB="1"

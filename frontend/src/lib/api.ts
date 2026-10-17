@@ -76,6 +76,43 @@ export interface Course {
   created_at: string; updated_at: string;
 }
 
+// ── Checkout / payments ───────────────────────────────────────────────────────
+export interface Plan {
+  id: number; name: string; description: string | null;
+  amount_paise: number; currency: string; interval_label: string | null;
+  course_id: number | null; course_title?: string | null;
+  active: boolean; created_at: string; updated_at: string;
+}
+
+/** A child (with a linked parent) an admin can offer a plan to. */
+export interface OfferCandidate {
+  student_id: number; student_name: string | null; student_username: string;
+  class_grade: string | null; guardian_id: number; guardian_name: string | null; guardian_email: string;
+}
+
+/** An offer in the admin overview list. */
+export interface AdminOffer {
+  id: number; status: 'offered' | 'paid' | 'cancelled'; note: string | null;
+  created_at: string; paid_at: string | null;
+  student_name: string | null; student_username: string; guardian_name: string | null;
+  batch_name: string | null; plan_name: string; amount_paise: number; currency: string;
+}
+
+/** An offer the paying parent sees (something to pay for). */
+export interface MyOffer {
+  id: number; status: string; note: string | null; created_at: string;
+  student_id: number; student_name: string | null; student_username: string;
+  batch_id: number | null; batch_name: string | null;
+  plan_id: number; plan_name: string; plan_description: string | null;
+  amount_paise: number; currency: string; interval_label: string | null;
+}
+
+export interface CheckoutOrder {
+  order_id: string; amount_paise: number; currency: string;
+  stub: boolean; key_id: string | null;
+  plan_name: string; student_name: string | null; name: string | null; email: string;
+}
+
 export interface Batch {
   id: number; course_id: number; name: string;
   start_date: string; end_date: string | null;
@@ -418,6 +455,28 @@ export const api = {
     remove: (id: number) => apiFetch(`/api/users/${id}`, del()),
     myEnrolmentRequests: () =>
       apiFetch<EnrolmentRequest[]>('/api/users/me/enrolment-requests'),
+  },
+
+  // Checkout — plans (admin), offers (admin assigns + parent sees), payments.
+  plans: {
+    list: () => apiFetch<Plan[]>('/api/plans'),
+    create: (body: { name: string; description?: string | null; amount_paise: number; interval_label?: string | null; course_id?: number | null; active?: boolean }) =>
+      apiFetch<Plan>('/api/plans', j(body)),
+    update: (id: number, body: Partial<Plan>) => apiFetch<Plan>(`/api/plans/${id}`, patch(body)),
+    remove: (id: number) => apiFetch(`/api/plans/${id}`, del()),
+  },
+  offers: {
+    candidates: () => apiFetch<{ candidates: OfferCandidate[] }>('/api/offers/candidates'),
+    listAdmin: () => apiFetch<{ offers: AdminOffer[] }>('/api/offers'),
+    create: (body: { student_id: number; plan_id: number; batch_id?: number | null; note?: string | null }) =>
+      apiFetch('/api/offers', j(body)),
+    cancel: (id: number) => apiFetch(`/api/offers/${id}`, del()),
+    mine: () => apiFetch<{ offers: MyOffer[]; payments_enabled: boolean }>('/api/offers/mine'),
+  },
+  payments: {
+    order: (offer_id: number) => apiFetch<CheckoutOrder>('/api/payments/order', j({ offer_id })),
+    verify: (body: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) =>
+      apiFetch<{ ok: boolean; enrolled: boolean }>('/api/payments/verify', j(body)),
   },
 
   courses: {

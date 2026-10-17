@@ -27,6 +27,12 @@ export interface Env {
   R2_ACCESS_KEY_ID: string;
   R2_SECRET_ACCESS_KEY: string;
   CLOUDFLARE_API_TOKEN: string;
+  // Razorpay. With KEY_SECRET set, checkout is live. With neither key nor the
+  // explicit RAZORPAY_STUB flag, checkout is disabled (fails closed). RAZORPAY_STUB
+  // ('1'|'true') turns on local stub mode — never set it in production.
+  RAZORPAY_KEY_ID?: string;
+  RAZORPAY_KEY_SECRET?: string;
+  RAZORPAY_STUB?: string;
 
   // Vars
   R2_ACCOUNT_ID: string;
