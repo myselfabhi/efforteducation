@@ -13,7 +13,8 @@ export type NotificationType =
   | 'enrolment_declined'
   | 'weekly_report'
   | 'weekly_report_feedback'
-  | 'parent_cheer';
+  | 'parent_cheer'
+  | 'lead_received';
 
 export interface CreateNotificationInput {
   userId: number;

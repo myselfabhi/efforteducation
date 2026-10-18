@@ -16,6 +16,7 @@ import {
   FileText,
   CreditCard,
   Target,
+  Inbox,
   Settings,
   LogOut,
   ChevronsLeft,
@@ -37,6 +38,7 @@ function navFor(role: UserRole): NavItem[] {
     case 'admin':
       return [
         { href: '/dashboard/admin', label: 'Overview', icon: LayoutDashboard },
+        { href: '/dashboard/admin/admissions', label: 'Admissions', icon: Inbox },
         { href: '/dashboard/admin/users', label: 'Users', icon: Users },
         { href: '/dashboard/admin/courses', label: 'Courses', icon: BookOpen },
         { href: '/dashboard/admin/batches', label: 'Batches', icon: GraduationCap },

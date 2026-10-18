@@ -191,6 +191,26 @@ export interface EnrolmentRequest {
   batch_name?: string;
   course_title?: string;
   course_slug?: string;
+  // cross-batch queue adds capacity context
+  capacity?: number | null;
+  enrolled_count?: number;
+}
+
+/** A captured "Book a call" lead (ops tooling). */
+export interface Lead {
+  id: number;
+  name: string;
+  phone: string;
+  email: string | null;
+  interest: string | null;
+  message: string | null;
+  source: string;
+  status: 'new' | 'contacted' | 'converted' | 'closed';
+  note: string | null;
+  handled_by: number | null;
+  handler_name?: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface PublicBatch {
@@ -507,6 +527,21 @@ export const api = {
   mastery: {
     me: () => apiFetch<{ skills: SkillMastery[] }>('/api/mastery/me'),
     forChild: (childId: number) => apiFetch<{ skills: SkillMastery[] }>(`/api/mastery/child/${childId}`),
+  },
+
+  // Ops: captured "Book a call" leads. submit() is public (marketing form).
+  leads: {
+    submit: (body: { name: string; phone: string; email?: string; interest?: string; message?: string; source?: string }) =>
+      apiFetch<{ ok: boolean; id: number }>('/api/leads', j(body)),
+    list: (status: 'new' | 'contacted' | 'converted' | 'closed' | 'all' = 'all') =>
+      apiFetch<{ leads: Lead[] }>(`/api/leads?status=${status}`),
+    update: (id: number, body: { status?: Lead['status']; note?: string }) =>
+      apiFetch<Lead>(`/api/leads/${id}`, patch(body)),
+  },
+  // Ops: cross-batch enrolment-request queue (actions reuse api.batches.decideEnrolmentRequest).
+  enrolments: {
+    queue: (status: 'pending' | 'approved' | 'declined' | 'cancelled' | 'all' = 'pending') =>
+      apiFetch<{ requests: EnrolmentRequest[] }>(`/api/enrolment-requests?status=${status}`),
   },
 
   courses: {

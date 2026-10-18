@@ -3,6 +3,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { motion } from 'framer-motion';
 import { Send, CheckCircle2 } from 'lucide-react';
+import { api } from '@/lib/api';
 
 const INTERESTS = [
   { value: 'Young Scholar (Class 4–8)', label: 'Young Scholar (Class 4–8)' },
@@ -49,6 +50,11 @@ export default function ContactLeadForm({ whatsapp }: { whatsapp: string }) {
       return;
     }
     setError('');
+    // Capture the lead so it's saved for the team even if they never hit send in
+    // WhatsApp. Fire-and-forget — must not block (or delay) the popup below.
+    api.leads
+      .submit({ name: n, phone: ph, interest, message: message.trim() || undefined, source: 'contact_form' })
+      .catch(() => {});
     const lines = [
       'Hi Effort Education! I’d like to book a call.',
       `Name: ${n}`,

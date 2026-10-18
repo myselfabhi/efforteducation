@@ -178,6 +178,16 @@ export const VerifyPaymentSchema = z.object({
   razorpay_signature: z.string().min(4).max(255),
 });
 
+// ── Leads (contact form capture) ──────────────────────────────────────────────
+export const CreateLeadSchema = z.object({
+  name: z.string().min(2).max(160),
+  phone: z.string().min(7).max(40),
+  email: z.string().email().max(255).optional().nullable(),
+  interest: z.string().max(80).optional().nullable(),
+  message: z.string().max(2000).optional().nullable(),
+  source: z.string().max(40).optional().nullable(),
+});
+
 // ── Skills (mastery) ──────────────────────────────────────────────────────────
 export const CreateSkillSchema = z.object({
   name: z.string().min(2).max(80),

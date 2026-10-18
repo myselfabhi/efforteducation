@@ -21,6 +21,8 @@ import offersRoutes from './routes/offers';
 import paymentsRoutes from './routes/payments';
 import skillsRoutes from './routes/skills';
 import masteryRoutes from './routes/mastery';
+import leadsRoutes from './routes/leads';
+import enrolmentsRoutes from './routes/enrolments';
 
 const app = new Hono<AppContext>();
 
@@ -122,6 +124,8 @@ app.route('/api/offers', offersRoutes);
 app.route('/api/payments', paymentsRoutes);
 app.route('/api/skills', skillsRoutes);
 app.route('/api/mastery', masteryRoutes);
+app.route('/api/leads', leadsRoutes);
+app.route('/api/enrolment-requests', enrolmentsRoutes);
 
 // Health check
 app.get('/api/health', (c) => c.json({ status: 'ok', timestamp: new Date().toISOString() }));
