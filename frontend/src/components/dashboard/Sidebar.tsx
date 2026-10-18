@@ -17,6 +17,7 @@ import {
   CreditCard,
   Target,
   Inbox,
+  Film,
   Settings,
   LogOut,
   ChevronsLeft,
@@ -70,6 +71,7 @@ function navFor(role: UserRole): NavItem[] {
         { href: '/dashboard/student/batches', label: 'My Batches', icon: GraduationCap },
         { href: '/dashboard/student/enrolments', label: 'My Requests', icon: MailQuestion },
         { href: '/dashboard/student/classes', label: 'Live Classes', icon: Video },
+        { href: '/dashboard/student/recordings', label: 'Recordings', icon: Film },
         { href: '/dashboard/student/materials', label: 'Materials', icon: FileText },
         { href: '/dashboard/student/quizzes', label: 'Quizzes', icon: ClipboardList },
       ];

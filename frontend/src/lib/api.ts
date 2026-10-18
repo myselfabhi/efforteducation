@@ -196,6 +196,17 @@ export interface EnrolmentRequest {
   enrolled_count?: number;
 }
 
+/** A class recording the student can watch back. */
+export interface Recording {
+  id: number;
+  title: string;
+  recording_url: string;
+  scheduled_start: string;
+  ended_at: string | null;
+  batch_name: string;
+  course_title: string;
+}
+
 /** A captured "Book a call" lead (ops tooling). */
 export interface Lead {
   id: number;
@@ -527,6 +538,11 @@ export const api = {
   mastery: {
     me: () => apiFetch<{ skills: SkillMastery[] }>('/api/mastery/me'),
     forChild: (childId: number) => apiFetch<{ skills: SkillMastery[] }>(`/api/mastery/child/${childId}`),
+  },
+
+  // Class recordings the student can watch back.
+  recordings: {
+    mine: () => apiFetch<{ recordings: Recording[] }>('/api/recordings/mine'),
   },
 
   // Ops: captured "Book a call" leads. submit() is public (marketing form).

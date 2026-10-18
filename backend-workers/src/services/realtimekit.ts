@@ -73,6 +73,23 @@ export async function addParticipant(
   });
 }
 
+export interface RtkRecording {
+  id: string;
+  status?: string;
+}
+
+/**
+ * Start recording a meeting. RealtimeKit auto-stops when the room is empty for a
+ * minute, the session ends, or max_seconds is hit — so there's no explicit stop.
+ * Requires recording to be enabled on the RealtimeKit app (Realtime Admin token).
+ */
+export async function startRecording(env: Env, meetingId: string, maxSeconds = 14400): Promise<RtkRecording> {
+  return rtkFetch<RtkRecording>(env, `${base(env)}/recordings`, {
+    method: 'POST',
+    body: JSON.stringify({ meeting_id: meetingId, max_seconds: maxSeconds }),
+  });
+}
+
 export function presets(env: Env) {
   return {
     host: env.CLOUDFLARE_REALTIMEKIT_HOST_PRESET || 'group_call_host',

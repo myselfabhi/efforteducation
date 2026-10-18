@@ -14,7 +14,8 @@ export type NotificationType =
   | 'weekly_report'
   | 'weekly_report_feedback'
   | 'parent_cheer'
-  | 'lead_received';
+  | 'lead_received'
+  | 'recording_ready';
 
 export interface CreateNotificationInput {
   userId: number;

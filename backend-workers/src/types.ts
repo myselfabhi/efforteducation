@@ -33,6 +33,9 @@ export interface Env {
   RAZORPAY_KEY_ID?: string;
   RAZORPAY_KEY_SECRET?: string;
   RAZORPAY_STUB?: string;
+  // Shared secret in the RealtimeKit recording webhook URL (?token=…). When set,
+  // the webhook endpoint requires it; leave unset only in local dev.
+  RTK_WEBHOOK_SECRET?: string;
 
   // Vars
   R2_ACCOUNT_ID: string;

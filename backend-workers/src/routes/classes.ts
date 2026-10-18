@@ -239,6 +239,32 @@ classes.post('/classes/:id/join', requireAuth, async (c) => {
             presetName: isTeacher ? rtk.presets(c.env).host : rtk.presets(c.env).participant,
           });
           credentials.realtimekit = { authToken: auth.token, meetingId };
+
+          // Auto-record once, when the teacher takes the class live. The claim
+          // UPDATE makes concurrent teacher joins start at most one recording;
+          // any failure (e.g. recording not enabled on the app) is non-fatal.
+          if (isTeacher && status === 'LIVE') {
+            const claim = await db.query(
+              `UPDATE live_classes SET recording_status = 'STARTING'
+                WHERE id = $1 AND recording_id IS NULL AND recording_status IS NULL
+                RETURNING id`,
+              [id],
+            );
+            if (claim.rows.length > 0) {
+              try {
+                const rec = await rtk.startRecording(c.env, meetingId);
+                await db.query(
+                  `UPDATE live_classes SET recording_id = $1, recording_status = 'RECORDING' WHERE id = $2`,
+                  [rec.id, id],
+                );
+              } catch (recErr) {
+                console.error('[realtimekit] start recording failed', recErr);
+                await db
+                  .query(`UPDATE live_classes SET recording_status = NULL WHERE id = $1 AND recording_status = 'STARTING'`, [id])
+                  .catch(() => {});
+              }
+            }
+          }
         }
       } catch (rtkErr) {
         console.error('[realtimekit] failed to mint token, falling back to CF Calls path', rtkErr);

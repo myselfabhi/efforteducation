@@ -23,6 +23,8 @@ import skillsRoutes from './routes/skills';
 import masteryRoutes from './routes/mastery';
 import leadsRoutes from './routes/leads';
 import enrolmentsRoutes from './routes/enrolments';
+import recordingsRoutes from './routes/recordings';
+import webhooksRoutes from './routes/webhooks';
 
 const app = new Hono<AppContext>();
 
@@ -126,6 +128,8 @@ app.route('/api/skills', skillsRoutes);
 app.route('/api/mastery', masteryRoutes);
 app.route('/api/leads', leadsRoutes);
 app.route('/api/enrolment-requests', enrolmentsRoutes);
+app.route('/api/recordings', recordingsRoutes);
+app.route('/api/webhooks', webhooksRoutes);
 
 // Health check
 app.get('/api/health', (c) => c.json({ status: 'ok', timestamp: new Date().toISOString() }));
