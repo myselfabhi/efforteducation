@@ -547,7 +547,7 @@ export const api = {
 
   // Ops: captured "Book a call" leads. submit() is public (marketing form).
   leads: {
-    submit: (body: { name: string; phone: string; email?: string; interest?: string; message?: string; source?: string }) =>
+    submit: (body: { name: string; phone: string; email?: string; interest?: string; message?: string; source?: string; company?: string }) =>
       apiFetch<{ ok: boolean; id: number }>('/api/leads', j(body)),
     list: (status: 'new' | 'contacted' | 'converted' | 'closed' | 'all' = 'all') =>
       apiFetch<{ leads: Lead[] }>(`/api/leads?status=${status}`),

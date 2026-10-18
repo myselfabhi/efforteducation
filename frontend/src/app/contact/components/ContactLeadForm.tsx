@@ -20,6 +20,7 @@ export default function ContactLeadForm({ whatsapp }: { whatsapp: string }) {
   const [phone, setPhone] = useState('');
   const [interest, setInterest] = useState(INTERESTS[2].value);
   const [message, setMessage] = useState('');
+  const [company, setCompany] = useState(''); // honeypot — stays empty for real users
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
 
@@ -53,7 +54,7 @@ export default function ContactLeadForm({ whatsapp }: { whatsapp: string }) {
     // Capture the lead so it's saved for the team even if they never hit send in
     // WhatsApp. Fire-and-forget — must not block (or delay) the popup below.
     api.leads
-      .submit({ name: n, phone: ph, interest, message: message.trim() || undefined, source: 'contact_form' })
+      .submit({ name: n, phone: ph, interest, message: message.trim() || undefined, source: 'contact_form', company })
       .catch(() => {});
     const lines = [
       'Hi Effort Education! I’d like to book a call.',
@@ -167,6 +168,19 @@ export default function ContactLeadForm({ whatsapp }: { whatsapp: string }) {
             placeholder="Child’s class, preferred timing, a question…"
           />
         </div>
+      </div>
+
+      {/* Honeypot: off-screen, hidden from real users & assistive tech; bots fill it. */}
+      <div aria-hidden="true" style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, overflow: 'hidden' }}>
+        <label htmlFor="lf-company">Company</label>
+        <input
+          id="lf-company"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
+        />
       </div>
 
       {error && <p className="mt-3 text-xs text-destructive">{error}</p>}

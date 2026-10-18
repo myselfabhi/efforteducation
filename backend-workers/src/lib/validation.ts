@@ -186,6 +186,8 @@ export const CreateLeadSchema = z.object({
   interest: z.string().max(80).optional().nullable(),
   message: z.string().max(2000).optional().nullable(),
   source: z.string().max(40).optional().nullable(),
+  // Honeypot: a hidden form field real users never fill. Any value = a bot.
+  company: z.string().max(200).optional().nullable(),
 });
 
 // ── Skills (mastery) ──────────────────────────────────────────────────────────

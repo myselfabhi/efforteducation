@@ -6,19 +6,45 @@ import { notifyMany } from '../services/notifications';
 
 const leads = new Hono<AppContext>();
 
+// A salted, non-reversible fingerprint of the submitter IP — for rate-limiting
+// only; we never store the raw IP.
+async function hashIp(ip: string, salt: string): Promise<string> {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${salt}:${ip}`));
+  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+const RATE_LIMIT = 5; // submissions per IP per window
+const RATE_WINDOW_MIN = 10;
+
 // POST /api/leads — PUBLIC capture from the "Book a call" form. No auth: this is
-// the marketing site. Kept lightweight; the form also opens WhatsApp client-side.
+// the marketing site. Hardened with a honeypot + per-IP rate limit.
 leads.post('/', validateBody(CreateLeadSchema), async (c) => {
   const db = c.get('db');
-  const { name, phone, email, interest, message, source } = getValid<{
+  const { name, phone, email, interest, message, source, company } = getValid<{
     name: string; phone: string; email?: string | null;
-    interest?: string | null; message?: string | null; source?: string | null;
+    interest?: string | null; message?: string | null; source?: string | null; company?: string | null;
   }>(c);
+
+  // Honeypot tripped → pretend success so bots don't learn, but store nothing.
+  if (company && company.trim()) return c.json({ ok: true }, 201);
+
+  const ip = c.req.header('CF-Connecting-IP') || c.req.header('X-Forwarded-For') || 'unknown';
+  const ipHash = await hashIp(ip, c.env.JWT_SECRET);
+
   try {
+    const recent = await db.query(
+      `SELECT COUNT(*)::int AS n FROM leads
+        WHERE ip_hash = $1 AND created_at > NOW() - ($2 || ' minutes')::interval`,
+      [ipHash, String(RATE_WINDOW_MIN)],
+    );
+    if (recent.rows[0].n >= RATE_LIMIT) {
+      return c.json({ error: 'Too many requests. Please try again in a little while.' }, 429);
+    }
+
     const r = await db.query(
-      `INSERT INTO leads (name, phone, email, interest, message, source)
-       VALUES ($1, $2, $3, $4, $5, COALESCE($6, 'contact_form')) RETURNING id`,
-      [name.trim(), phone.trim(), email ?? null, interest ?? null, message ?? null, source ?? null],
+      `INSERT INTO leads (name, phone, email, interest, message, source, ip_hash)
+       VALUES ($1, $2, $3, $4, $5, COALESCE($6, 'contact_form'), $7) RETURNING id`,
+      [name.trim(), phone.trim(), email ?? null, interest ?? null, message ?? null, source ?? null, ipHash],
     );
     // Ping the team so a lead never sits unseen.
     const admins = await db.query(`SELECT id FROM users WHERE role IN ('super_admin', 'admin')`);
